@@ -48,11 +48,11 @@
 
 <!-- Desktop navbar: visible sm (640px) and above -->
 <nav
-	class="card translucent-blur fixed top-4 right-4 left-4 hidden h-15 items-center p-0 text-base sm:flex md:right-20 md:left-20 md:h-20 md:text-xl"
+	class="card translucent-blur fixed top-4 right-4 left-4 hidden h-15 items-center border border-transparent bg-clip-padding p-0 text-base transition-all duration-200 sm:flex md:right-20 md:left-20 md:h-20 md:text-xl"
 	class:scrolled={scrollY > 10}
 >
 	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
-	<div class="vr h-8 md:h-12"></div>
+	<div class="vr mx-13 h-8 border-l border-[rgba(170,170,170,0.75)] md:h-12"></div>
 	<ul class="lhs flex gap-16 md:gap-8">
 		<a href={resolve('/about')}>Sobre</a>
 		<a href={resolve('/rules')}>Regras</a>
@@ -97,16 +97,6 @@
 
 <style>
 	nav {
-		border: 1px solid transparent;
-		background-clip: padding-box;
-		transition:
-			left 0.2s,
-			right 0.2s,
-			top 0.2s,
-			border-radius 0.2s;
-
-		border-radius: 40px;
-
 		&.scrolled {
 			left: 0;
 			right: 0;
@@ -139,11 +129,6 @@
 
 		&.scrolled::before {
 			background: rgba(0, 0, 0, 0);
-		}
-
-		& .vr {
-			border-left: 1px solid rgba(170, 170, 170, 0.75);
-			margin-inline: 52px;
 		}
 	}
 </style>
