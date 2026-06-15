@@ -51,7 +51,7 @@
 	class="card translucent-blur fixed top-4 right-4 left-4 hidden h-15 items-center p-0 text-base sm:flex md:right-20 md:left-20 md:h-20 md:text-xl"
 	class:scrolled={scrollY > 10}
 >
-	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="m-0 h-full" />
+	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
 	<div class="vr h-8 md:h-12"></div>
 	<ul class="lhs flex gap-16 md:gap-8">
 		<a href={resolve('/about')}>Sobre</a>
