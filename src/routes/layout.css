@@ -21,10 +21,6 @@ body {
 	background: rgba(10, 0, 24, 1);
 }
 
-body {
-	height: 200vh;
-}
-
 .card {
 	@apply rounded-(--default-card-radius) bg-(--card-bg) p-6 shadow-lg;
 }

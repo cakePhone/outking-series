@@ -2,6 +2,7 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Navbar from '$lib/components/navbar.svelte';
+	import Footer from '$lib/components/footer.svelte';
 
 	let { children } = $props();
 </script>
@@ -17,6 +18,7 @@
 </svelte:head>
 <Navbar />
 {@render children()}
+<Footer />
 
 <style>
 </style>
