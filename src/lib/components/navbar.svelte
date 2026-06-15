@@ -48,12 +48,12 @@
 
 <!-- Desktop navbar: visible sm (640px) and above -->
 <nav
-	class="card translucent-blur fixed top-4 right-4 left-4 hidden h-15 items-center text-base sm:right-8 sm:left-8 sm:flex md:right-20 md:left-20 md:h-20 md:text-xl"
+	class="card translucent-blur fixed top-4 right-4 left-4 hidden h-15 items-center p-0 text-base sm:flex md:right-20 md:left-20 md:h-20 md:text-xl"
 	class:scrolled={scrollY > 10}
 >
-	<img src="/navbar-logo.svg" alt="OutKing Series Logo" height="40" />
-	<div class="vr h-13.5"></div>
-	<ul class="lhs flex gap-16 md:gap-12">
+	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="m-0 h-full" />
+	<div class="vr h-8 md:h-12"></div>
+	<ul class="lhs flex gap-16 md:gap-8">
 		<a href={resolve('/about')}>Sobre</a>
 		<a href={resolve('/rules')}>Regras</a>
 		<a href={resolve('/archive')}>Arquivo</a>
