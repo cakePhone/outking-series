@@ -5,6 +5,7 @@
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
+	let isMobile = $state(false);
 
 	function toggleMenu() {
 		menuOpen = !menuOpen;
@@ -18,6 +19,10 @@
 		if (e.key === 'Escape' && menuOpen) closeMenu();
 	}
 
+	// On mobile: scrolled when menu is closed (unified top bar).
+	// On desktop: scrolled when page is scrolled past 10px.
+	let scrolled = $derived(isMobile ? !menuOpen : scrollY > 10);
+
 	$effect(() => {
 		if (menuOpen) {
 			document.body.style.overflow = 'hidden';
@@ -28,6 +33,14 @@
 	});
 
 	onMount(() => {
+		const mql = window.matchMedia('(max-width: 639px)');
+		isMobile = mql.matches;
+
+		const onResize = (e: MediaQueryListEvent) => {
+			isMobile = e.matches;
+		};
+		mql.addEventListener('change', onResize);
+
 		let ticking = false;
 		const onScroll = () => {
 			if (!ticking) {
@@ -40,7 +53,10 @@
 		};
 
 		window.addEventListener('scroll', onScroll, { passive: true });
-		return () => window.removeEventListener('scroll', onScroll);
+		return () => {
+			mql.removeEventListener('change', onResize);
+			window.removeEventListener('scroll', onScroll);
+		};
 	});
 </script>
 
@@ -55,8 +71,8 @@
 	  class:scrolled triggers on scroll
 -->
 <nav
-	class="card translucent-blur fixed top-0 right-0 left-0 z-50 flex h-15 items-center rounded-none border border-transparent bg-clip-padding p-4 text-base transition-all duration-200 sm:top-4 sm:right-8 sm:left-8 sm:rounded-[40px] md:right-10 md:left-10 md:h-20 md:p-6 md:text-xl lg:right-20 lg:left-20"
-	class:scrolled={scrollY > 10}
+	class="card translucent-blur fixed top-4 right-2 left-2 z-50 flex h-15 items-center rounded-[40px] border border-transparent bg-clip-padding p-4 text-base transition-all duration-200 sm:right-8 sm:left-8 md:right-10 md:left-10 md:h-20 md:p-6 md:text-xl lg:right-20 lg:left-20"
+	class:scrolled
 >
 	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
 
@@ -68,11 +84,14 @@
 		<a href={resolve('/archive')}>Arquivo</a>
 	</ul>
 
-	<a class="mr-4 ml-auto sm:mr-0" href={resolve('/login')}>Login</a>
+	{#if !menuOpen}
+		<a class="mr-4 ml-auto sm:mr-0" href={resolve('/login')}>Login</a>
+	{/if}
 
 	<!-- Hamburger: visible only on mobile, switches to X when menu is open -->
 	<button
 		class="flex aspect-square cursor-pointer items-center justify-center rounded-4xl! border-0 p-2.5! sm:hidden"
+		class:ml-auto={menuOpen}
 		onclick={toggleMenu}
 		aria-label={menuOpen ? 'Close menu' : 'Open menu'}
 		aria-expanded={menuOpen}
@@ -96,7 +115,7 @@
 		aria-label="Navigation menu"
 		tabindex="-1"
 	>
-		<nav class="flex flex-col items-center gap-8 text-2xl">
+		<nav class="flex flex-col items-center gap-8 text-3xl">
 			<a href={resolve('/about')} onclick={closeMenu}>Sobre</a>
 			<a href={resolve('/rules')} onclick={closeMenu}>Regras</a>
 			<a href={resolve('/archive')} onclick={closeMenu}>Arquivo</a>
