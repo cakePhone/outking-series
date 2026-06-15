@@ -26,5 +26,5 @@ body {
 }
 
 .translucent-blur {
-	@apply bg-(--translucent-blur-bg) backdrop-blur-[40px];
+	@apply bg-(--translucent-blur-bg) backdrop-blur-2xl;
 }
