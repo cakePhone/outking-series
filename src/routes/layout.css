@@ -22,7 +22,7 @@ body {
 }
 
 .card {
-	@apply rounded-(--default-card-radius) bg-(--card-bg) p-6 shadow-lg;
+	@apply rounded-(--default-card-radius) bg-(--card-bg) shadow-lg;
 }
 
 .translucent-blur {

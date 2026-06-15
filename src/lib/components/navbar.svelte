@@ -21,7 +21,7 @@
 
 	// On mobile: scrolled when menu is closed (unified top bar).
 	// On desktop: scrolled when page is scrolled past 10px.
-	let scrolled = $derived(isMobile ? !menuOpen : scrollY > 10);
+	let scrolled = $derived(isMobile || scrollY > 10);
 
 	$effect(() => {
 		if (menuOpen) {
