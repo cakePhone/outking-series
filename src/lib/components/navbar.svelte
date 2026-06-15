@@ -46,35 +46,45 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<!-- Desktop navbar: visible sm (640px) and above -->
+<!--
+	Single navbar that adapts:
+	- Mobile (default): scrolled look — top-0, full-width, no border-radius
+	  Shows: logo | login | hamburger
+	- Desktop (sm+): pill-shaped, offset from edges
+	  Shows: logo | nav links | login
+	  class:scrolled triggers on scroll
+-->
 <nav
-	class="card translucent-blur fixed top-4 right-4 left-4 hidden h-15 items-center border border-transparent bg-clip-padding p-0 text-base transition-all duration-200 sm:flex md:right-20 md:left-20 md:h-20 md:text-xl"
+	class="card translucent-blur fixed top-0 right-0 left-0 z-50 flex h-15 items-center rounded-none border border-transparent bg-clip-padding p-4 text-base transition-all duration-200 sm:top-4 sm:right-8 sm:left-8 sm:rounded-[40px] md:right-10 md:left-10 md:h-20 md:p-6 md:text-xl lg:right-20 lg:left-20"
 	class:scrolled={scrollY > 10}
 >
 	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
-	<div class="vr mx-13 h-8 border-l border-[rgba(170,170,170,0.75)] md:h-12"></div>
-	<ul class="lhs flex gap-16 md:gap-8">
+
+	<!-- Divider + nav links: visible only on desktop -->
+	<div class="vr mx-13 hidden h-8 border-l border-[rgba(170,170,170,0.75)] sm:block md:h-12"></div>
+	<ul class="lhs hidden gap-16 sm:flex md:gap-8">
 		<a href={resolve('/about')}>Sobre</a>
 		<a href={resolve('/rules')}>Regras</a>
 		<a href={resolve('/archive')}>Arquivo</a>
 	</ul>
-	<a class="mr-5 ml-auto" href={resolve('/login')}>Login</a>
+
+	<a class="mr-4 ml-auto sm:mr-0" href={resolve('/login')}>Login</a>
+
+	<!-- Hamburger: visible only on mobile, switches to X when menu is open -->
+	<button
+		class="flex aspect-square cursor-pointer items-center justify-center rounded-4xl! border-0 p-2.5! sm:hidden"
+		onclick={toggleMenu}
+		aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+		aria-expanded={menuOpen}
+	>
+		<Icon icon={menuOpen ? 'mdi:close' : 'mdi:menu'} height="28" />
+	</button>
 </nav>
 
-<!-- Mobile hamburger button: hidden sm and above -->
-<button
-	class="card fixed top-4 right-4 z-50 flex aspect-square cursor-pointer items-center justify-center rounded-4xl! border-0 p-2.5! sm:hidden"
-	onclick={toggleMenu}
-	aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-	aria-expanded={menuOpen}
->
-	<Icon icon={menuOpen ? 'mdi:close' : 'mdi:menu'} height="28" />
-</button>
-
-<!-- Mobile fullscreen overlay -->
+<!-- Mobile fullscreen overlay: appears below the navbar -->
 {#if menuOpen}
 	<div
-		class="translucent-blur fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 sm:hidden"
+		class="translucent-blur fixed top-15 right-0 bottom-0 left-0 z-40 flex flex-col items-center justify-center gap-10 sm:hidden"
 		onclick={(e) => {
 			if (e.target === e.currentTarget) closeMenu();
 		}}
