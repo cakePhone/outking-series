@@ -2,10 +2,21 @@
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import Icon from '@iconify/svelte';
+	import { signIn, signOut, useSession } from '$lib/auth-client';
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
 	let isMobile = $state(false);
+
+	const session = useSession();
+
+	async function handleLogin() {
+		await signIn.social({ provider: 'discord' });
+	}
+
+	async function handleLogout() {
+		await signOut();
+	}
 
 	function toggleMenu() {
 		menuOpen = !menuOpen;
@@ -85,7 +96,20 @@
 	</ul>
 
 	{#if !menuOpen}
-		<a class="mr-4 ml-auto sm:mr-0" href={resolve('/login')}>Login</a>
+		<div class="ml-auto flex items-center gap-2 sm:mr-0">
+			{#if $session.data?.user}
+				<span class="hidden text-base sm:inline">{$session.data.user.name}</span>
+				<button
+					class="cursor-pointer appearance-none border-0 bg-transparent p-0"
+					onclick={handleLogout}>Sair</button
+				>
+			{:else}
+				<button
+					class="cursor-pointer appearance-none border-0 bg-transparent p-0"
+					onclick={handleLogin}>Login</button
+				>
+			{/if}
+		</div>
 	{/if}
 
 	<!-- Hamburger: visible only on mobile, switches to X when menu is open -->
@@ -119,7 +143,24 @@
 			<a href={resolve('/about')} onclick={closeMenu}>Sobre</a>
 			<a href={resolve('/rules')} onclick={closeMenu}>Regras</a>
 			<a href={resolve('/archive')} onclick={closeMenu}>Arquivo</a>
-			<a class="mt-10" href={resolve('/login')} onclick={closeMenu}>Login</a>
+			{#if $session.data?.user}
+				<span class="mt-4">{$session.data.user.name}</span>
+				<button
+					class="mt-10 cursor-pointer appearance-none border-0 bg-transparent p-0"
+					onclick={() => {
+						handleLogout();
+						closeMenu();
+					}}>Sair</button
+				>
+			{:else}
+				<button
+					class="mt-10 cursor-pointer appearance-none border-0 bg-transparent p-0"
+					onclick={() => {
+						handleLogin();
+						closeMenu();
+					}}>Login</button
+				>
+			{/if}
 		</nav>
 	</div>
 {/if}
