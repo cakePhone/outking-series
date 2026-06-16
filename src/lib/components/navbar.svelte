@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import Icon from '@iconify/svelte';
 	import { signIn, signOut, useSession } from '$lib/auth-client';
+	import UserPopover from './user-popover.svelte';
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
@@ -98,11 +99,7 @@
 	{#if !menuOpen}
 		<div class="ml-auto flex items-center gap-2 sm:mr-0">
 			{#if $session.data?.user}
-				<span class="hidden text-base sm:inline">{$session.data.user.name}</span>
-				<button
-					class="cursor-pointer appearance-none border-0 bg-transparent p-0"
-					onclick={handleLogout}>Sair</button
-				>
+				<UserPopover />
 			{:else}
 				<button
 					class="cursor-pointer appearance-none border-0 bg-transparent p-0"
