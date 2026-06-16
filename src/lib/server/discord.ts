@@ -61,11 +61,14 @@ async function fetchDiscordProfile(accessToken: string): Promise<DiscordProfile>
 	return res.json();
 }
 
-async function fetchGuildMember(accessToken: string, guildId: string): Promise<DiscordGuildMember> {
+async function fetchGuildMember(
+	accessToken: string,
+	guildId: string
+): Promise<DiscordGuildMember | null> {
 	const res = await fetch(`${DISCORD_API}/users/@me/guilds/${guildId}/member`, {
 		headers: { Authorization: `Bearer ${accessToken}` }
 	});
-	if (!res.ok) return { roles: [], nick: null, avatar: null };
+	if (!res.ok) return null;
 	return res.json();
 }
 
@@ -116,6 +119,13 @@ export function getDiscordDecorationUrl(asset: string | null): string | null {
 export function resolveHighestRole(roles: DiscordRole[]): DiscordRole | null {
 	if (roles.length === 0) return null;
 	return roles.reduce((highest, role) => (role.position > highest.position ? role : highest));
+}
+
+export async function isGuildMember(userId: string): Promise<boolean> {
+	const token = await getDiscordAccessToken(userId);
+	if (!token || !GUILD_ID) return false;
+	const member = await fetchGuildMember(token, GUILD_ID);
+	return member !== null;
 }
 
 export async function fetchDiscordUserData(
