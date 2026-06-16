@@ -1,11 +1,10 @@
 import { db } from '$lib/server/db';
 import { account } from '$lib/server/db/auth.schema';
 import { eq, and } from 'drizzle-orm';
+import { env } from '$env/dynamic/private';
 
 const DISCORD_API = 'https://discord.com/api/v10';
-
-/** TODO: Replace with the OutKing Series guild ID */
-const GUILD_ID = '';
+const GUILD_ID = env.DISCORD_GUILD_ID;
 
 export interface DiscordProfile {
 	id: string;
@@ -71,8 +70,9 @@ async function fetchGuildMember(accessToken: string, guildId: string): Promise<D
 }
 
 async function fetchGuildRoles(guildId: string): Promise<DiscordRole[]> {
+	if (!env.DISCORD_BOT_TOKEN) return [];
 	const res = await fetch(`${DISCORD_API}/guilds/${guildId}/roles`, {
-		headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` }
+		headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` }
 	});
 	if (!res.ok) return [];
 	return res.json();

@@ -135,9 +135,7 @@
 						{:else if discord?.guildMember}
 							<span class="text-sm text-[#888]">Membro do servidor</span>
 						{:else}
-							<span class="text-sm text-[#888]"
-								>Adicione o ID da guilda em<br />src/lib/server/discord.ts</span
-							>
+							<span class="text-sm text-[#888]">Adicione DISCORD_GUILD_ID ao .env</span>
 						{/if}
 					</div>
 
