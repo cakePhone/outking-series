@@ -4,7 +4,7 @@
 
 :root {
 	--default-card-radius: 40px;
-	--card-bg: rgba(43, 0, 74, 1);
+	--card-bg: rgba(43, 0, 74, 0.8);
 	--translucent-blur-bg: rgba(217, 217, 217, 0.05);
 }
 
@@ -22,7 +22,7 @@ body {
 }
 
 .card {
-	@apply rounded-(--default-card-radius) bg-(--card-bg) shadow-lg;
+	@apply bg-(--card-bg) shadow-lg backdrop-blur-xl;
 }
 
 .translucent-blur {
