@@ -68,7 +68,12 @@ async function fetchGuildMember(
 	const res = await fetch(`${DISCORD_API}/users/@me/guilds/${guildId}/member`, {
 		headers: { Authorization: `Bearer ${accessToken}` }
 	});
-	if (!res.ok) return null;
+	if (res.status === 404) return null; // user is not in this guild
+	if (!res.ok) {
+		const body = await res.text().catch(() => '');
+		console.error(`[discord] fetchGuildMember failed: ${res.status} ${res.statusText} — ${body}`);
+		return null;
+	}
 	return res.json();
 }
 
@@ -122,8 +127,15 @@ export function resolveHighestRole(roles: DiscordRole[]): DiscordRole | null {
 }
 
 export async function isGuildMember(userId: string): Promise<boolean> {
+	if (!GUILD_ID) {
+		console.error('[discord] isGuildMember: DISCORD_GUILD_ID not set');
+		return false;
+	}
 	const token = await getDiscordAccessToken(userId);
-	if (!token || !GUILD_ID) return false;
+	if (!token) {
+		console.error(`[discord] isGuildMember: no Discord access token for user ${userId}`);
+		return false;
+	}
 	const member = await fetchGuildMember(token, GUILD_ID);
 	return member !== null;
 }
