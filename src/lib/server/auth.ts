@@ -11,14 +11,10 @@ export const auth = betterAuth({
 	database: drizzleAdapter(db, { provider: 'sqlite' }),
 	emailAndPassword: { enabled: true },
 	socialProviders: {
-		github: {
-			clientId: env.GITHUB_CLIENT_ID,
-			clientSecret: env.GITHUB_CLIENT_SECRET
-		},
 		discord: {
 			clientId: env.DISCORD_CLIENT_ID!,
 			clientSecret: env.DISCORD_CLIENT_SECRET!,
-			scopes: ['identify', 'email', 'guilds', 'guilds.members.read']
+			scope: ['identify', 'email', 'guilds', 'guilds.members.read']
 		}
 	},
 	plugins: [
