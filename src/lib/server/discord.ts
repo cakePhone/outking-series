@@ -43,14 +43,90 @@ export interface DiscordUserData {
 const cache = new Map<string, { data: DiscordUserData; expires: number }>();
 const TTL = 5 * 60 * 1000; // 5 minutes
 
-export async function getDiscordAccessToken(userId: string): Promise<string | null> {
+export async function getDiscordToken(userId: string): Promise<{
+	accessToken: string;
+	refreshToken: string | null;
+	expiresAt: Date | null;
+} | null> {
 	const [acct] = await db
-		.select({ accessToken: account.accessToken })
+		.select({
+			accessToken: account.accessToken,
+			refreshToken: account.refreshToken,
+			accessTokenExpiresAt: account.accessTokenExpiresAt
+		})
 		.from(account)
 		.where(and(eq(account.userId, userId), eq(account.providerId, 'discord')))
 		.limit(1);
 
-	return acct?.accessToken ?? null;
+	if (!acct?.accessToken) return null;
+	return {
+		accessToken: acct.accessToken,
+		refreshToken: acct.refreshToken ?? null,
+		expiresAt: acct.accessTokenExpiresAt ?? null
+	};
+}
+
+async function refreshDiscordToken(refreshToken: string): Promise<{
+	access_token: string;
+	refresh_token: string;
+	expires_in: number;
+}> {
+	const res = await fetch(`${DISCORD_API}/oauth2/token`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		body: new URLSearchParams({
+			client_id: env.DISCORD_CLIENT_ID!,
+			client_secret: env.DISCORD_CLIENT_SECRET!,
+			grant_type: 'refresh_token',
+			refresh_token: refreshToken
+		})
+	});
+	if (!res.ok) {
+		const body = await res.text().catch(() => '');
+		throw new Error(`Discord token refresh failed: ${res.status} — ${body}`);
+	}
+	return res.json();
+}
+
+async function storeDiscordTokens(
+	userId: string,
+	tokens: { access_token: string; refresh_token: string; expires_in: number }
+): Promise<void> {
+	await db
+		.update(account)
+		.set({
+			accessToken: tokens.access_token,
+			refreshToken: tokens.refresh_token,
+			accessTokenExpiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+			updatedAt: new Date()
+		})
+		.where(and(eq(account.userId, userId), eq(account.providerId, 'discord')));
+}
+
+/** Returns a valid access token, refreshing it if expired or within 60s of expiry. */
+export async function getValidDiscordToken(userId: string): Promise<string | null> {
+	const tokens = await getDiscordToken(userId);
+	if (!tokens) return null;
+
+	// Refresh if expired or within 60 seconds of expiry
+	const needsRefresh = tokens.expiresAt && tokens.expiresAt.getTime() - Date.now() < 60_000;
+
+	if (needsRefresh) {
+		if (!tokens.refreshToken) {
+			console.error(`[discord] Token expired but no refresh token for user ${userId}`);
+			return null;
+		}
+		try {
+			const fresh = await refreshDiscordToken(tokens.refreshToken);
+			await storeDiscordTokens(userId, fresh);
+			return fresh.access_token;
+		} catch (e) {
+			console.error(`[discord] Token refresh failed for user ${userId}:`, e);
+			return null;
+		}
+	}
+
+	return tokens.accessToken;
 }
 
 async function fetchDiscordProfile(accessToken: string): Promise<DiscordProfile> {
@@ -131,9 +207,9 @@ export async function isGuildMember(userId: string): Promise<boolean> {
 		console.error('[discord] isGuildMember: DISCORD_GUILD_ID not set');
 		return false;
 	}
-	const token = await getDiscordAccessToken(userId);
+	const token = await getValidDiscordToken(userId);
 	if (!token) {
-		console.error(`[discord] isGuildMember: no Discord access token for user ${userId}`);
+		console.error(`[discord] isGuildMember: no valid token for user ${userId}`);
 		return false;
 	}
 	const member = await fetchGuildMember(token, GUILD_ID);

@@ -1,5 +1,5 @@
 import {
-	getDiscordAccessToken,
+	getValidDiscordToken,
 	fetchDiscordUserData,
 	type DiscordUserData
 } from '$lib/server/discord';
@@ -9,7 +9,7 @@ export const load = async ({ locals }: { locals: App.Locals }) => {
 	let discord: DiscordUserData | null = null;
 
 	if (user) {
-		const token = await getDiscordAccessToken(user.id);
+		const token = await getValidDiscordToken(user.id);
 		if (token) {
 			try {
 				discord = await fetchDiscordUserData(user.id, token);
