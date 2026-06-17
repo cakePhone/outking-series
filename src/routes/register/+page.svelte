@@ -32,24 +32,22 @@
 	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Suplentes', 'Equipa Técnica', 'Rever'];
 
 	function addPlayer(target: 'players' | 'substitutes') {
-		$formData[target].push({ discord: '', riot_id: '', display_name: '' });
+		$formData[target] = [...$formData[target], { discord: '', riot_id: '', display_name: '' }];
 	}
 
 	function removePlayer(target: 'players' | 'substitutes', i: number) {
-		$formData[target].splice(i, 1);
+		$formData[target] = $formData[target].filter((_, idx) => idx !== i);
 	}
 
 	function addStaff() {
-		$formData.staff.push({
-			discord: '',
-			riot_id: '',
-			display_name: '',
-			role: 'coach' as const
-		});
+		$formData.staff = [
+			...$formData.staff,
+			{ discord: '', riot_id: '', display_name: '', role: 'coach' as const }
+		];
 	}
 
 	function removeStaff(i: number) {
-		$formData.staff.splice(i, 1);
+		$formData.staff = $formData.staff.filter((_, idx) => idx !== i);
 	}
 </script>
 
