@@ -31,7 +31,9 @@ export const actions: Actions = {
 	default: async (event) => {
 		if (!event.locals.user) throw redirect(303, '/');
 
-		const form = await superValidate(event, zod4(teamRegisterSchema));
+		const form = await superValidate(event, zod4(teamRegisterSchema), {
+			dataType: 'json'
+		});
 
 		if (!form.valid) {
 			return message(form, {

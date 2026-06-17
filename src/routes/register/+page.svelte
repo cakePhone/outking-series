@@ -13,7 +13,8 @@
 		enhance,
 		message: flashMessage
 	} = superForm(data.form, {
-		validators: zod4(teamRegisterSchema)
+		validators: zod4(teamRegisterSchema),
+		dataType: 'json'
 	});
 
 	const roles: { value: string; label: string }[] = [
