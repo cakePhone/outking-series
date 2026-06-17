@@ -9,6 +9,9 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) throw redirect(303, '/');
 
+	const parentData = await event.parent();
+	const discordUsername = parentData.discord?.profile.username ?? event.locals.user.name ?? '';
+
 	const form = await superValidate(zod4(teamRegisterSchema), {
 		defaults: {
 			creator_riot_id: '',
@@ -27,7 +30,7 @@ export const load: PageServerLoad = async (event) => {
 		form,
 		isMember: member,
 		inviteUrl: env.DISCORD_INVITE_URL ?? '#',
-		userDiscord: event.locals.user.name ?? ''
+		userDiscord: discordUsername
 	};
 };
 

@@ -277,7 +277,7 @@
 							type="text"
 							name="players[{i}].discord"
 							bind:value={$formData.players[i].discord}
-							placeholder="Discord (Ex: nome#0000) *"
+							placeholder="Discord (Ex: @username) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
@@ -333,7 +333,7 @@
 							type="text"
 							name="staff[{i}].discord"
 							bind:value={$formData.staff[i].discord}
-							placeholder="Discord (Ex: nome#0000) *"
+							placeholder="Discord (Ex: @username) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
