@@ -384,14 +384,9 @@
 							type="text"
 							name="staff[{i}].role"
 							bind:value={$formData.staff[i].role}
-							placeholder="Cargo (Ex: Coach, Analista) *"
-							list="staff-roles"
+							placeholder="Cargo *"
 							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
-						<datalist id="staff-roles">
-							<option value="Coach" />
-							<option value="Analista" />
-						</datalist>
 						{#if $errors.staff?.[i]?.role}
 							<span class="block text-sm text-[#f44]">{$errors.staff[i].role}</span>
 						{/if}
