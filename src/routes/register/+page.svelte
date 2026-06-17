@@ -53,6 +53,21 @@
 		$formData.staff = $formData.staff.filter((_, idx) => idx !== i);
 	}
 
+	// Pre-fill first player slot when creator selects "Jogador"
+	$effect(() => {
+		const first = $formData.players[0];
+		if (
+			$formData.creator_role === 'player' &&
+			first &&
+			!first.discord &&
+			!first.riot_id &&
+			!first.display_name
+		) {
+			first.discord = data.userDiscord;
+			first.riot_id = $formData.creator_riot_id;
+		}
+	});
+
 	const stepFields: Record<number, (keyof TeamRegisterForm)[]> = {
 		0: ['creator_riot_id', 'creator_role'],
 		1: ['team_name', 'team_tag'],
