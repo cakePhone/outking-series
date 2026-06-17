@@ -48,10 +48,9 @@
 	--radius-full: 9999px;
 }
 
-/* ── Default theme ─────────────────────── */
+/* ── Default (off-season) theme ────────── */
 
-:root,
-[data-theme='default'] {
+:root {
 	--theme-primary: #5865f2;
 	--theme-primary-hover: #4752c4;
 
@@ -85,113 +84,11 @@
 	--theme-gradient-end: rgba(94, 94, 94, 0);
 }
 
-/* ── Summer theme ───────────────────────── */
-
-[data-theme='summer'] {
-	--theme-primary: #ff6b35;
-	--theme-primary-hover: #e55a2b;
-
-	--theme-surface: rgba(30, 60, 20, 0.8);
-	--theme-surface-muted: rgba(200, 180, 150, 0.05);
-	--theme-bg: #0d1b0e;
-
-	--theme-accent: #c46200;
-	--theme-accent-text: #ffd699;
-
-	--theme-text: #f5f0e8;
-	--theme-text-muted: #b8a890;
-	--theme-text-dim: #8a7a60;
-
-	--theme-success: #66cc66;
-	--theme-success-bg: rgba(102, 204, 102, 0.1);
-	--theme-error: #ff6644;
-	--theme-error-bg: rgba(255, 102, 68, 0.1);
-
-	--theme-border: rgba(180, 160, 140, 0.3);
-	--theme-border-strong: rgba(180, 160, 140, 0.75);
-	--theme-border-subtle: rgba(180, 160, 140, 0.15);
-
-	--theme-section-bg: rgba(255, 255, 255, 0.03);
-	--theme-button-bg: rgba(255, 255, 255, 0.06);
-	--theme-button-bg-hover: rgba(255, 255, 255, 0.12);
-	--theme-step-inactive: rgba(255, 255, 255, 0.06);
-	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
-
-	--theme-gradient-start: rgba(140, 110, 60, 1);
-	--theme-gradient-end: rgba(140, 110, 60, 0);
-}
-
-/* ── Winter theme ───────────────────────── */
-
-[data-theme='winter'] {
-	--theme-primary: #6eb5ff;
-	--theme-primary-hover: #5a9ee0;
-
-	--theme-surface: rgba(10, 20, 50, 0.8);
-	--theme-surface-muted: rgba(180, 200, 230, 0.05);
-	--theme-bg: #0a0e1a;
-
-	--theme-accent: #1a3a6a;
-	--theme-accent-text: #a8d4ff;
-
-	--theme-text: #e8f0fa;
-	--theme-text-muted: #a0b8d0;
-	--theme-text-dim: #7080a0;
-
-	--theme-success: #44ccaa;
-	--theme-success-bg: rgba(68, 204, 170, 0.1);
-	--theme-error: #ff6688;
-	--theme-error-bg: rgba(255, 102, 136, 0.1);
-
-	--theme-border: rgba(150, 170, 200, 0.3);
-	--theme-border-strong: rgba(150, 170, 200, 0.75);
-	--theme-border-subtle: rgba(150, 170, 200, 0.15);
-
-	--theme-section-bg: rgba(255, 255, 255, 0.03);
-	--theme-button-bg: rgba(255, 255, 255, 0.06);
-	--theme-button-bg-hover: rgba(255, 255, 255, 0.12);
-	--theme-step-inactive: rgba(255, 255, 255, 0.06);
-	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
-
-	--theme-gradient-start: rgba(100, 140, 200, 1);
-	--theme-gradient-end: rgba(100, 140, 200, 0);
-}
-
-/* ── Spring theme ───────────────────────── */
-
-[data-theme='spring'] {
-	--theme-primary: #44cc88;
-	--theme-primary-hover: #38aa70;
-
-	--theme-surface: rgba(20, 50, 30, 0.8);
-	--theme-surface-muted: rgba(180, 210, 190, 0.05);
-	--theme-bg: #0d1410;
-
-	--theme-accent: #2a6a3a;
-	--theme-accent-text: #a0e8b8;
-
-	--theme-text: #eaf5ec;
-	--theme-text-muted: #a0c0a8;
-	--theme-text-dim: #709878;
-
-	--theme-success: #55dd66;
-	--theme-success-bg: rgba(85, 221, 102, 0.1);
-	--theme-error: #ff5566;
-	--theme-error-bg: rgba(255, 85, 102, 0.1);
-
-	--theme-border: rgba(140, 180, 150, 0.3);
-	--theme-border-strong: rgba(140, 180, 150, 0.75);
-	--theme-border-subtle: rgba(140, 180, 150, 0.15);
-
-	--theme-section-bg: rgba(255, 255, 255, 0.03);
-	--theme-button-bg: rgba(255, 255, 255, 0.06);
-	--theme-button-bg-hover: rgba(255, 255, 255, 0.12);
-	--theme-step-inactive: rgba(255, 255, 255, 0.06);
-	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
-
-	--theme-gradient-start: rgba(80, 150, 100, 1);
-	--theme-gradient-end: rgba(80, 150, 100, 0);
-}
+/* ============================================
+   Tournament themes
+   Add seasonal blocks below, e.g.:
+   [data-theme='spring-2026'] { ... }
+   ============================================ */
 
 /* ============================================
    Base styles
