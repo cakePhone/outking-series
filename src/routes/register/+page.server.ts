@@ -66,9 +66,6 @@ export const actions: Actions = {
 			data: JSON.stringify(form.data)
 		});
 
-		return message(form, {
-			type: 'success',
-			text: 'Equipa registada com sucesso! A tua inscrição será revista em breve.'
-		});
+		throw redirect(303, '/team');
 	}
 };
