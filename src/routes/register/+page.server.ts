@@ -11,6 +11,11 @@ export const load: PageServerLoad = async (event) => {
 
 	const form = await superValidate(zod4(teamRegisterSchema), {
 		defaults: {
+			creator_riot_id: '',
+			team_name: '',
+			team_tag: '',
+			team_logo_url: '',
+			team_socials: '',
 			players: [{ discord: '', riot_id: '', display_name: '' }],
 			substitutes: [],
 			staff: []
