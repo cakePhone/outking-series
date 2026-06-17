@@ -104,7 +104,7 @@
 							{discord?.profile.global_name ?? discord?.profile.username ?? 'Unknown'}
 						</span>
 						{#if discord?.profile.global_name && discord.profile.global_name !== discord.profile.username}
-							<span class="text-sm text-[#888]">
+							<span class="text-sm text-text-dim">
 								@{discord.profile.username}
 							</span>
 						{/if}
@@ -112,7 +112,7 @@
 				</div>
 				<!-- Logout -->
 				<button
-					class="mt-4 w-full cursor-pointer border-0 bg-[rgba(255,255,255,0.08)] px-4 py-2 text-sm transition-colors hover:bg-[rgba(255,255,255,0.14)]"
+					class="mt-4 w-full cursor-pointer border-0 bg-button-ghost px-4 py-2 text-sm transition-colors hover:bg-button-ghost-hover"
 					onclick={handleLogout}
 				>
 					Sair

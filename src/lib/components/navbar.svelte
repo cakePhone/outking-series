@@ -91,7 +91,7 @@
 	</a>
 
 	<!-- Divider + nav links: visible only on desktop -->
-	<div class="vr mx-13 hidden h-8 border-l border-[rgba(170,170,170,0.75)] sm:block md:h-12"></div>
+	<div class="vr mx-13 hidden h-8 border-l border-border-strong sm:block md:h-12"></div>
 	<ul class="lhs hidden gap-16 sm:flex md:gap-8">
 		<a href={resolve('/about')}>Sobre</a>
 		<a href={resolve('/rules')}>Regras</a>
@@ -181,9 +181,9 @@
 			padding: 1px;
 			background: linear-gradient(
 				90deg,
-				rgba(94, 94, 94, 1) 0%,
-				rgba(94, 94, 94, 0) 50%,
-				rgba(94, 94, 94, 1) 100%
+				var(--theme-gradient-start) 0%,
+				var(--theme-gradient-end) 50%,
+				var(--theme-gradient-start) 100%
 			);
 			mask:
 				linear-gradient(#fff 0 0) content-box,

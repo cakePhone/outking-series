@@ -23,6 +23,7 @@
 	--color-text: var(--theme-text);
 	--color-text-muted: var(--theme-text-muted);
 	--color-text-dim: var(--theme-text-dim);
+	--color-text-inactive: var(--theme-text-inactive);
 
 	--color-success: var(--theme-success);
 	--color-success-bg: var(--theme-success-bg);
@@ -64,6 +65,7 @@
 	--theme-text: #ffffff;
 	--theme-text-muted: #aaaaaa;
 	--theme-text-dim: #888888;
+	--theme-text-inactive: #666666;
 
 	--theme-success: #44ff44;
 	--theme-success-bg: rgba(0, 255, 0, 0.1);

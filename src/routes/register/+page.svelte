@@ -89,13 +89,13 @@
 
 <div class="mx-auto max-w-2xl px-4 pt-24 pb-16">
 	<h1 class="mb-2 text-center text-3xl">Registo de Equipa</h1>
-	<p class="mb-8 text-center text-[#aaa]">
+	<p class="mb-8 text-center text-text-muted">
 		Inscreve a tua equipa para participar nos torneios da OutKing Series.
 	</p>
 
 	{#if !data.isMember}
 		<div class="card flex flex-col items-center gap-4 p-8 text-center">
-			<Icon icon="mdi:discord" height="48" class="text-[#5865F2]" />
+			<Icon icon="mdi:discord" height="48" class="text-primary" />
 			<p class="text-lg">
 				Parece que ainda não fazes parte do servidor da Outking, apenas membros do servidor podem
 				participar:
@@ -104,7 +104,7 @@
 				href={data.inviteUrl}
 				target="_blank"
 				rel="external noopener noreferrer"
-				class="rounded-lg bg-[#5865F2] px-6 py-3 font-semibold text-white no-underline transition-colors hover:bg-[#4752C4]"
+				class="rounded-lg bg-primary px-6 py-3 font-semibold text-white no-underline transition-colors hover:bg-primary-hover"
 			>
 				Entrar no Servidor
 			</a>
@@ -115,10 +115,10 @@
 			{#each stepLabels as label, i}
 				<button
 					class="flex-1 cursor-pointer rounded-full border-0 px-2 py-2 text-center text-xs transition-colors"
-					class:bg-[#5865F2]={i <= step}
+					class:bg-primary={i <= step}
 					class:text-white={i <= step}
-					class:bg-[rgba(255,255,255,0.06)]={i > step}
-					class:text-[#666]={i > step}
+					class:bg-step-inactive={i > step}
+					class:text-text-inactive={i > step}
 					onclick={async () => {
 						if (i > step) {
 							for (let s = step; s < i; s++) {
@@ -143,10 +143,10 @@
 			{#if $flashMessage}
 				<div
 					class="mb-6 rounded-lg p-3 text-sm"
-					class:bg-[rgba(0,255,0,0.1)]={$flashMessage.type === 'success'}
-					class:text-[#4f4]={$flashMessage.type === 'success'}
-					class:bg-[rgba(255,0,0,0.1)]={$flashMessage.type === 'error'}
-					class:text-[#f44]={$flashMessage.type === 'error'}
+					class:bg-success-bg={$flashMessage.type === 'success'}
+					class:text-success={$flashMessage.type === 'success'}
+					class:bg-error-bg={$flashMessage.type === 'error'}
+					class:text-error={$flashMessage.type === 'error'}
 				>
 					{$flashMessage.text}
 				</div>
@@ -157,38 +157,39 @@
 				<h2 class="mb-6 text-xl">Quem cria a equipa</h2>
 
 				<div class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Discord</span>
+					<span class="text-sm text-text-muted">Discord</span>
 					<input
 						type="text"
 						value={data.userDiscord}
 						disabled
-						class="rounded-lg border border-[rgba(170,170,170,0.15)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#888] outline-none"
+						class="rounded-lg border border-border-subtle bg-disabled px-4 py-3 text-text-dim outline-none"
 					/>
 				</div>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]"
-						>Riot ID (Nome#Tag) <span class="text-[#f44]">*</span></span
+					<span class="text-sm text-text-muted"
+						>Riot ID (Nome#Tag) <span class="text-error">*</span></span
 					>
 					<input
 						type="text"
 						name="creator_riot_id"
 						bind:value={$formData.creator_riot_id}
 						placeholder="Ex: OutKing#1234"
-						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
+						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
 					/>
 					{#if $errors.creator_riot_id}
-						<span class="text-sm text-[#f44]">{$errors.creator_riot_id}</span>
+						<span class="text-sm text-error">{$errors.creator_riot_id}</span>
 					{/if}
 				</label>
 
 				<label class="flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Cargo na equipa <span class="text-[#f44]">*</span></span
+					<span class="text-sm text-text-muted"
+						>Cargo na equipa <span class="text-error">*</span></span
 					>
 					<select
 						name="creator_role"
 						bind:value={$formData.creator_role}
-						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
+						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
 					>
 						<option value="">Seleciona...</option>
 						{#each roles as r}
@@ -196,7 +197,7 @@
 						{/each}
 					</select>
 					{#if $errors.creator_role}
-						<span class="text-sm text-[#f44]">{$errors.creator_role}</span>
+						<span class="text-sm text-error">{$errors.creator_role}</span>
 					{/if}
 				</label>
 			{/if}
@@ -206,22 +207,24 @@
 				<h2 class="mb-6 text-xl">Sobre a equipa</h2>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Nome da equipa <span class="text-[#f44]">*</span></span>
+					<span class="text-sm text-text-muted"
+						>Nome da equipa <span class="text-error">*</span></span
+					>
 					<input
 						type="text"
 						name="team_name"
 						bind:value={$formData.team_name}
 						placeholder="Ex: OutKing Dragons"
-						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
+						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
 					/>
 					{#if $errors.team_name}
-						<span class="text-sm text-[#f44]">{$errors.team_name}</span>
+						<span class="text-sm text-error">{$errors.team_name}</span>
 					{/if}
 				</label>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]"
-						>Tag (2-5 carateres) <span class="text-[#f44]">*</span></span
+					<span class="text-sm text-text-muted"
+						>Tag (2-5 carateres) <span class="text-error">*</span></span
 					>
 					<input
 						type="text"
@@ -229,54 +232,54 @@
 						bind:value={$formData.team_tag}
 						placeholder="Ex: OKD"
 						maxlength="5"
-						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 uppercase transition-colors outline-none focus:border-[#5865F2]"
+						class="rounded-lg border border-border bg-transparent px-4 py-3 uppercase transition-colors outline-none focus:border-primary"
 					/>
 					{#if $errors.team_tag}
-						<span class="text-sm text-[#f44]">{$errors.team_tag}</span>
+						<span class="text-sm text-error">{$errors.team_tag}</span>
 					{/if}
 				</label>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Logo (URL)</span>
+					<span class="text-sm text-text-muted">Logo (URL)</span>
 					<input
 						type="url"
 						name="team_logo_url"
 						bind:value={$formData.team_logo_url}
 						placeholder="https://..."
-						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
+						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
 					/>
 					{#if $errors.team_logo_url}
-						<span class="text-sm text-[#f44]">{$errors.team_logo_url}</span>
+						<span class="text-sm text-error">{$errors.team_logo_url}</span>
 					{/if}
 				</label>
 
 				<label class="flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Redes sociais (opcional)</span>
+					<span class="text-sm text-text-muted">Redes sociais (opcional)</span>
 					<input
 						type="text"
 						name="team_socials"
 						bind:value={$formData.team_socials}
 						placeholder="Ex: @outking no X, /outking no Discord"
-						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
+						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
 					/>
 				</label>
 			{/if}
 
 			<!-- Step 2: Players -->
 			{#if step === 2}
-				<h2 class="mb-6 text-xl">Jogadores <span class="text-[#f44]">*</span></h2>
-				<p class="mb-4 text-sm text-[#aaa]">
+				<h2 class="mb-6 text-xl">Jogadores <span class="text-error">*</span></h2>
+				<p class="mb-4 text-sm text-text-muted">
 					Adiciona os jogadores da equipa (até 7, incluindo suplentes).
 				</p>
 
 				{#each $formData.players as _, i}
-					<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
+					<div class="mb-4 rounded-lg bg-section p-4">
 						<div class="mb-2 flex items-center justify-between">
-							<span class="text-sm text-[#aaa]">Jogador {i + 1}</span>
+							<span class="text-sm text-text-muted">Jogador {i + 1}</span>
 							{#if $formData.players.length > 1}
 								<button
 									type="button"
-									class="cursor-pointer border-0 bg-transparent p-1 text-[#f44]"
+									class="cursor-pointer border-0 bg-transparent p-1 text-error"
 									onclick={() => removePlayer(i)}
 								>
 									<Icon icon="mdi:close" height="18" />
@@ -288,36 +291,36 @@
 							name="players[{i}].discord"
 							bind:value={$formData.players[i].discord}
 							placeholder="Discord (Ex: @username) *"
-							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.players?.[i]?.discord}
-							<span class="mb-2 block text-sm text-[#f44]">{$errors.players[i].discord}</span>
+							<span class="mb-2 block text-sm text-error">{$errors.players[i].discord}</span>
 						{/if}
 						<input
 							type="text"
 							name="players[{i}].riot_id"
 							bind:value={$formData.players[i].riot_id}
 							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.players?.[i]?.riot_id}
-							<span class="mb-2 block text-sm text-[#f44]">{$errors.players[i].riot_id}</span>
+							<span class="mb-2 block text-sm text-error">{$errors.players[i].riot_id}</span>
 						{/if}
 						<input
 							type="text"
 							name="players[{i}].display_name"
 							bind:value={$formData.players[i].display_name}
 							placeholder="Nome para os casters *"
-							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.players?.[i]?.display_name}
-							<span class="block text-sm text-[#f44]">{$errors.players[i].display_name}</span>
+							<span class="block text-sm text-error">{$errors.players[i].display_name}</span>
 						{/if}
 					</div>
 				{/each}
 
 				{#if $errors.players?._errors}
-					<span class="mb-2 block text-sm text-[#f44]">
+					<span class="mb-2 block text-sm text-error">
 						{$errors.players._errors.join(', ')}
 					</span>
 				{/if}
@@ -325,7 +328,7 @@
 				{#if $formData.players.length < 7}
 					<button
 						type="button"
-						class="cursor-pointer rounded-lg border border-dashed border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm text-[#aaa] transition-colors hover:border-[#5865F2] hover:text-[#5865F2]"
+						class="cursor-pointer rounded-lg border border-dashed border-border bg-transparent px-4 py-3 text-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
 						onclick={addPlayer}
 					>
 						+ Adicionar jogador
@@ -336,15 +339,15 @@
 			<!-- Step 3: Staff -->
 			{#if step === 3}
 				<h2 class="mb-6 text-xl">Equipa Técnica</h2>
-				<p class="mb-4 text-sm text-[#aaa]">Adiciona coach e/ou analista (opcional).</p>
+				<p class="mb-4 text-sm text-text-muted">Adiciona coach e/ou analista (opcional).</p>
 
 				{#each $formData.staff as _, i}
-					<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
+					<div class="mb-4 rounded-lg bg-section p-4">
 						<div class="mb-2 flex items-center justify-between">
-							<span class="text-sm text-[#aaa]">Staff {i + 1}</span>
+							<span class="text-sm text-text-muted">Staff {i + 1}</span>
 							<button
 								type="button"
-								class="cursor-pointer border-0 bg-transparent p-1 text-[#f44]"
+								class="cursor-pointer border-0 bg-transparent p-1 text-error"
 								onclick={() => removeStaff(i)}
 							>
 								<Icon icon="mdi:close" height="18" />
@@ -355,47 +358,47 @@
 							name="staff[{i}].discord"
 							bind:value={$formData.staff[i].discord}
 							placeholder="Discord (Ex: @username) *"
-							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.staff?.[i]?.discord}
-							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].discord}</span>
+							<span class="mb-2 block text-sm text-error">{$errors.staff[i].discord}</span>
 						{/if}
 						<input
 							type="text"
 							name="staff[{i}].riot_id"
 							bind:value={$formData.staff[i].riot_id}
 							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.staff?.[i]?.riot_id}
-							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].riot_id}</span>
+							<span class="mb-2 block text-sm text-error">{$errors.staff[i].riot_id}</span>
 						{/if}
 						<input
 							type="text"
 							name="staff[{i}].display_name"
 							bind:value={$formData.staff[i].display_name}
 							placeholder="Nome para os casters *"
-							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.staff?.[i]?.display_name}
-							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].display_name}</span>
+							<span class="mb-2 block text-sm text-error">{$errors.staff[i].display_name}</span>
 						{/if}
 						<input
 							type="text"
 							name="staff[{i}].role"
 							bind:value={$formData.staff[i].role}
 							placeholder="Cargo *"
-							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
 						/>
 						{#if $errors.staff?.[i]?.role}
-							<span class="block text-sm text-[#f44]">{$errors.staff[i].role}</span>
+							<span class="block text-sm text-error">{$errors.staff[i].role}</span>
 						{/if}
 					</div>
 				{/each}
 
 				<button
 					type="button"
-					class="cursor-pointer rounded-lg border border-dashed border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm text-[#aaa] transition-colors hover:border-[#5865F2] hover:text-[#5865F2]"
+					class="cursor-pointer rounded-lg border border-dashed border-border bg-transparent px-4 py-3 text-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
 					onclick={addStaff}
 				>
 					+ Adicionar staff
@@ -406,8 +409,8 @@
 			{#if step === 4}
 				<h2 class="mb-6 text-xl">Rever inscrição</h2>
 
-				<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
-					<h3 class="mb-2 text-sm text-[#aaa]">Quem cria</h3>
+				<div class="mb-4 rounded-lg bg-section p-4">
+					<h3 class="mb-2 text-sm text-text-muted">Quem cria</h3>
 					<p><strong>Discord:</strong> {data.userDiscord}</p>
 					<p><strong>Riot ID:</strong> {$formData.creator_riot_id || '—'}</p>
 					<p>
@@ -416,8 +419,8 @@
 					</p>
 				</div>
 
-				<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
-					<h3 class="mb-2 text-sm text-[#aaa]">Equipa</h3>
+				<div class="mb-4 rounded-lg bg-section p-4">
+					<h3 class="mb-2 text-sm text-text-muted">Equipa</h3>
 					<p><strong>Nome:</strong> {$formData.team_name || '—'}</p>
 					<p><strong>Tag:</strong> {$formData.team_tag || '—'}</p>
 					{#if $formData.team_logo_url}
@@ -428,8 +431,8 @@
 					{/if}
 				</div>
 
-				<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
-					<h3 class="mb-2 text-sm text-[#aaa]">
+				<div class="mb-4 rounded-lg bg-section p-4">
+					<h3 class="mb-2 text-sm text-text-muted">
 						Jogadores ({$formData.players.length})
 					</h3>
 					{#each $formData.players as p, i}
@@ -440,8 +443,8 @@
 				</div>
 
 				{#if $formData.staff.length > 0}
-					<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
-						<h3 class="mb-2 text-sm text-[#aaa]">
+					<div class="mb-4 rounded-lg bg-section p-4">
+						<h3 class="mb-2 text-sm text-text-muted">
 							Equipa Técnica ({$formData.staff.length})
 						</h3>
 						{#each $formData.staff as st, i}
@@ -458,7 +461,7 @@
 				{#if step > 0}
 					<button
 						type="button"
-						class="cursor-pointer rounded-lg border-0 bg-[rgba(255,255,255,0.08)] px-6 py-3 text-sm transition-colors hover:bg-[rgba(255,255,255,0.14)]"
+						class="cursor-pointer rounded-lg border-0 bg-button-ghost px-6 py-3 text-sm transition-colors hover:bg-button-ghost-hover"
 						onclick={() => (step = step - 1)}
 					>
 						← Anterior
@@ -470,7 +473,7 @@
 				{#if step < 4}
 					<button
 						type="button"
-						class="cursor-pointer rounded-lg bg-[#5865F2] px-6 py-3 text-sm transition-colors hover:bg-[#4752C4]"
+						class="cursor-pointer rounded-lg bg-primary px-6 py-3 text-sm transition-colors hover:bg-primary-hover"
 						onclick={nextStep}
 					>
 						Seguinte →
@@ -478,7 +481,7 @@
 				{:else}
 					<button
 						type="submit"
-						class="cursor-pointer rounded-lg bg-[#5865F2] px-8 py-3 font-semibold transition-colors hover:bg-[#4752C4]"
+						class="cursor-pointer rounded-lg bg-primary px-8 py-3 font-semibold transition-colors hover:bg-primary-hover"
 					>
 						Submeter Inscrição
 					</button>
