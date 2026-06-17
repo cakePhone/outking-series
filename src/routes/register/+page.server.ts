@@ -17,7 +17,6 @@ export const load: PageServerLoad = async (event) => {
 			team_logo_url: '',
 			team_socials: '',
 			players: [{ discord: '', riot_id: '', display_name: '' }],
-			substitutes: [],
 			staff: []
 		}
 	});

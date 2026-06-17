@@ -32,14 +32,14 @@
 
 	let step = $state(0);
 
-	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Suplentes', 'Equipa Técnica', 'Rever'];
+	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Equipa Técnica', 'Rever'];
 
-	function addPlayer(target: 'players' | 'substitutes') {
-		$formData[target] = [...$formData[target], { discord: '', riot_id: '', display_name: '' }];
+	function addPlayer() {
+		$formData.players = [...$formData.players, { discord: '', riot_id: '', display_name: '' }];
 	}
 
-	function removePlayer(target: 'players' | 'substitutes', i: number) {
-		$formData[target] = $formData[target].filter((_, idx) => idx !== i);
+	function removePlayer(i: number) {
+		$formData.players = $formData.players.filter((_, idx) => idx !== i);
 	}
 
 	function addStaff() {
@@ -58,8 +58,7 @@
 		1: ['team_name', 'team_tag'],
 		2: ['players'],
 		3: [],
-		4: [],
-		5: []
+		4: []
 	};
 
 	async function nextStep() {
@@ -268,7 +267,7 @@
 								<button
 									type="button"
 									class="cursor-pointer border-0 bg-transparent p-1 text-[#f44]"
-									onclick={() => removePlayer('players', i)}
+									onclick={() => removePlayer(i)}
 								>
 									<Icon icon="mdi:close" height="18" />
 								</button>
@@ -306,67 +305,15 @@
 					<button
 						type="button"
 						class="cursor-pointer rounded-lg border border-dashed border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm text-[#aaa] transition-colors hover:border-[#5865F2] hover:text-[#5865F2]"
-						onclick={() => addPlayer('players')}
+						onclick={addPlayer}
 					>
 						+ Adicionar jogador
 					</button>
 				{/if}
 			{/if}
 
-			<!-- Step 3: Substitutes -->
+			<!-- Step 3: Staff -->
 			{#if step === 3}
-				<h2 class="mb-6 text-xl">Suplentes</h2>
-				<p class="mb-4 text-sm text-[#aaa]">Adiciona até 2 suplentes (opcional).</p>
-
-				{#each $formData.substitutes as _, i}
-					<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
-						<div class="mb-2 flex items-center justify-between">
-							<span class="text-sm text-[#aaa]">Suplente {i + 1}</span>
-							<button
-								type="button"
-								class="cursor-pointer border-0 bg-transparent p-1 text-[#f44]"
-								onclick={() => removePlayer('substitutes', i)}
-							>
-								<Icon icon="mdi:close" height="18" />
-							</button>
-						</div>
-						<input
-							type="text"
-							name="substitutes[{i}].discord"
-							bind:value={$formData.substitutes[i].discord}
-							placeholder="Discord (Ex: nome#0000) *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
-						/>
-						<input
-							type="text"
-							name="substitutes[{i}].riot_id"
-							bind:value={$formData.substitutes[i].riot_id}
-							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
-						/>
-						<input
-							type="text"
-							name="substitutes[{i}].display_name"
-							bind:value={$formData.substitutes[i].display_name}
-							placeholder="Nome para os casters *"
-							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
-						/>
-					</div>
-				{/each}
-
-				{#if $formData.substitutes.length < 2}
-					<button
-						type="button"
-						class="cursor-pointer rounded-lg border border-dashed border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm text-[#aaa] transition-colors hover:border-[#5865F2] hover:text-[#5865F2]"
-						onclick={() => addPlayer('substitutes')}
-					>
-						+ Adicionar suplente
-					</button>
-				{/if}
-			{/if}
-
-			<!-- Step 4: Staff -->
-			{#if step === 4}
 				<h2 class="mb-6 text-xl">Equipa Técnica</h2>
 				<p class="mb-4 text-sm text-[#aaa]">Adiciona coach e/ou analista (opcional).</p>
 
@@ -425,8 +372,8 @@
 				</button>
 			{/if}
 
-			<!-- Step 5: Review -->
-			{#if step === 5}
+			<!-- Step 4: Review -->
+			{#if step === 4}
 				<h2 class="mb-6 text-xl">Rever inscrição</h2>
 
 				<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
@@ -462,19 +409,6 @@
 					{/each}
 				</div>
 
-				{#if $formData.substitutes.length > 0}
-					<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
-						<h3 class="mb-2 text-sm text-[#aaa]">
-							Suplentes ({$formData.substitutes.length})
-						</h3>
-						{#each $formData.substitutes as s, i}
-							<p class="text-sm">
-								{i + 1}. {s.display_name || '—'} ({s.discord || '—'})
-							</p>
-						{/each}
-					</div>
-				{/if}
-
 				{#if $formData.staff.length > 0}
 					<div class="mb-4 rounded-lg bg-[rgba(255,255,255,0.03)] p-4">
 						<h3 class="mb-2 text-sm text-[#aaa]">
@@ -504,7 +438,7 @@
 					<div></div>
 				{/if}
 
-				{#if step < 5}
+				{#if step < 4}
 					<button
 						type="button"
 						class="cursor-pointer rounded-lg bg-[#5865F2] px-6 py-3 text-sm transition-colors hover:bg-[#4752C4]"

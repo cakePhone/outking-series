@@ -26,14 +26,11 @@ export const teamRegisterSchema = z.object({
 	team_logo_url: z.string().url('URL inválida').optional().or(z.literal('')),
 	team_socials: z.string().optional().or(z.literal('')),
 
-	// Roster (1-7: up to 5 starters + 2 subs)
+	// Roster (1-7: including substitutes)
 	players: z
 		.array(playerSchema)
 		.min(1, 'Adiciona pelo menos 1 jogador')
 		.max(7, 'Máximo 7 jogadores'),
-
-	// Substitutes (0-2)
-	substitutes: z.array(playerSchema).max(2, 'Máximo 2 suplentes'),
 
 	// Technical staff
 	staff: z.array(staffSchema)
