@@ -86,7 +86,9 @@
 	class="card translucent-blur fixed top-4 right-2 left-2 z-50 flex h-15 items-center rounded-[40px] border border-transparent bg-clip-padding p-4 text-base transition-all duration-200 sm:right-8 sm:left-8 md:right-10 md:left-10 md:h-20 md:p-6 md:text-xl lg:right-20 lg:left-20"
 	class:scrolled
 >
-	<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
+	<a href={resolve('/')}>
+		<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
+	</a>
 
 	<!-- Divider + nav links: visible only on desktop -->
 	<div class="vr mx-13 hidden h-8 border-l border-[rgba(170,170,170,0.75)] sm:block md:h-12"></div>
