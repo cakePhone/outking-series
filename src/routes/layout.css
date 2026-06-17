@@ -52,8 +52,8 @@
 /* ── Default (off-season) theme ────────── */
 
 :root {
-	--theme-primary: #5865f2;
-	--theme-primary-hover: #4752c4;
+	--theme-primary: #8b5cf6;
+	--theme-primary-hover: #7c3aed;
 
 	--theme-surface: rgba(43, 0, 74, 0.8);
 	--theme-surface-muted: rgba(217, 217, 217, 0.05);
