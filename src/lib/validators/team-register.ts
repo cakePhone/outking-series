@@ -26,10 +26,10 @@ export const teamRegisterSchema = z.object({
 	team_logo_url: z.string().url('URL inválida').optional().or(z.literal('')),
 	team_socials: z.string().optional().or(z.literal('')),
 
-	// Roster (1-7: including substitutes)
+	// Roster (5-7: minimum 5 for Valorant, up to 2 substitutes)
 	players: z
 		.array(playerSchema)
-		.min(1, 'Adiciona pelo menos 1 jogador')
+		.min(5, 'Mínimo 5 jogadores para uma equipa de Valorant')
 		.max(7, 'Máximo 7 jogadores'),
 
 	// Technical staff
