@@ -3,7 +3,7 @@
 
 <div class="relative h-screen w-full">
 	<img class="h-full w-full object-cover" src="/pearl.jpg" alt="" />
-	<div class="absolute inset-0 bg-accent opacity-60 mix-blend-multiply"></div>
+	<div class="absolute inset-0 bg-accent opacity-100 mix-blend-multiply"></div>
 </div>
 
 <style>

@@ -109,19 +109,6 @@ body {
 	background: var(--color-background);
 }
 
-body::before {
-	content: '';
-	position: fixed;
-	inset: 0;
-	z-index: -1;
-	background:
-		var(--theme-accent),
-		url(/pearl.jpg) center/cover no-repeat;
-	background-blend-mode: multiply;
-	filter: grayscale(100%);
-	opacity: 0.15;
-}
-
 .card {
 	@apply bg-surface shadow-lg backdrop-blur-xl;
 }
