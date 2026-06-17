@@ -293,15 +293,21 @@
 							name="players[{i}].discord"
 							bind:value={$formData.players[i].discord}
 							placeholder="Discord (Ex: @username) *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
+						{#if $errors.players?.[i]?.discord}
+							<span class="mb-2 block text-sm text-[#f44]">{$errors.players[i].discord}</span>
+						{/if}
 						<input
 							type="text"
 							name="players[{i}].riot_id"
 							bind:value={$formData.players[i].riot_id}
 							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
+						{#if $errors.players?.[i]?.riot_id}
+							<span class="mb-2 block text-sm text-[#f44]">{$errors.players[i].riot_id}</span>
+						{/if}
 						<input
 							type="text"
 							name="players[{i}].display_name"
@@ -309,12 +315,15 @@
 							placeholder="Nome para os casters *"
 							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
+						{#if $errors.players?.[i]?.display_name}
+							<span class="block text-sm text-[#f44]">{$errors.players[i].display_name}</span>
+						{/if}
 					</div>
 				{/each}
 
-				{#if $errors.players}
+				{#if $errors.players?._errors}
 					<span class="mb-2 block text-sm text-[#f44]">
-						{$errors.players?._errors?.join(', ') ?? $errors.players}
+						{$errors.players._errors.join(', ')}
 					</span>
 				{/if}
 
@@ -351,22 +360,31 @@
 							name="staff[{i}].discord"
 							bind:value={$formData.staff[i].discord}
 							placeholder="Discord (Ex: @username) *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
+						{#if $errors.staff?.[i]?.discord}
+							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].discord}</span>
+						{/if}
 						<input
 							type="text"
 							name="staff[{i}].riot_id"
 							bind:value={$formData.staff[i].riot_id}
 							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
+						{#if $errors.staff?.[i]?.riot_id}
+							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].riot_id}</span>
+						{/if}
 						<input
 							type="text"
 							name="staff[{i}].display_name"
 							bind:value={$formData.staff[i].display_name}
 							placeholder="Nome para os casters *"
-							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
+							class="mb-1 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
+						{#if $errors.staff?.[i]?.display_name}
+							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].display_name}</span>
+						{/if}
 						<select
 							name="staff[{i}].role"
 							bind:value={$formData.staff[i].role}
@@ -377,6 +395,9 @@
 								<option value={r.value}>{r.label}</option>
 							{/each}
 						</select>
+						{#if $errors.staff?.[i]?.role}
+							<span class="block text-sm text-[#f44]">{$errors.staff[i].role}</span>
+						{/if}
 					</div>
 				{/each}
 
