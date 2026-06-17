@@ -298,7 +298,9 @@
 				{/each}
 
 				{#if $errors.players}
-					<span class="mb-2 block text-sm text-[#f44]">{$errors.players}</span>
+					<span class="mb-2 block text-sm text-[#f44]">
+						{$errors.players?._errors?.join(', ') ?? $errors.players}
+					</span>
 				{/if}
 
 				{#if $formData.players.length < 7}
