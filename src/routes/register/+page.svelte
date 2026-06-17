@@ -4,6 +4,7 @@
 	import { teamRegisterSchema } from '$lib/validators/team-register';
 	import Icon from '@iconify/svelte';
 	import type { PageProps } from './$types';
+	import type { TeamRegisterForm } from '$lib/validators/team-register';
 
 	let { data }: PageProps = $props();
 
@@ -11,7 +12,8 @@
 		form: formData,
 		errors,
 		enhance,
-		message: flashMessage
+		message: flashMessage,
+		validate
 	} = superForm(data.form, {
 		validators: zod4(teamRegisterSchema),
 		dataType: 'json'
@@ -48,6 +50,24 @@
 
 	function removeStaff(i: number) {
 		$formData.staff = $formData.staff.filter((_, idx) => idx !== i);
+	}
+
+	const stepFields: Record<number, (keyof TeamRegisterForm)[]> = {
+		0: ['creator_riot_id', 'creator_role'],
+		1: ['team_name', 'team_tag'],
+		2: ['players'],
+		3: [],
+		4: [],
+		5: []
+	};
+
+	async function nextStep() {
+		const fields = stepFields[step];
+		if (fields?.length) {
+			const result = await validate({ fields, update: true });
+			if (!result.valid) return;
+		}
+		step++;
 	}
 </script>
 
@@ -87,7 +107,19 @@
 					class:text-white={i <= step}
 					class:bg-[rgba(255,255,255,0.06)]={i > step}
 					class:text-[#666]={i > step}
-					onclick={() => (step = i)}
+					onclick={async () => {
+						if (i > step) {
+							// validate all steps up to the target
+							for (let s = step; s < i; s++) {
+								const fields = stepFields[s];
+								if (fields?.length) {
+									const result = await validate({ fields, update: true });
+									if (!result.valid) return;
+								}
+							}
+						}
+						step = i;
+					}}
 				>
 					{label}
 				</button>
@@ -467,7 +499,7 @@
 					<button
 						type="button"
 						class="cursor-pointer rounded-lg bg-[#5865F2] px-6 py-3 text-sm transition-colors hover:bg-[#4752C4]"
-						onclick={() => (step = step + 1)}
+						onclick={nextStep}
 					>
 						Seguinte →
 					</button>
