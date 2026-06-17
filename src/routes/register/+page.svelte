@@ -160,7 +160,9 @@
 				</div>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Riot ID (Nome#Tag)</span>
+					<span class="text-sm text-[#aaa]"
+						>Riot ID (Nome#Tag) <span class="text-[#f44]">*</span></span
+					>
 					<input
 						type="text"
 						name="creator_riot_id"
@@ -174,7 +176,8 @@
 				</label>
 
 				<label class="flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Cargo na equipa</span>
+					<span class="text-sm text-[#aaa]">Cargo na equipa <span class="text-[#f44]">*</span></span
+					>
 					<select
 						name="creator_role"
 						bind:value={$formData.creator_role}
@@ -196,7 +199,7 @@
 				<h2 class="mb-6 text-xl">Sobre a equipa</h2>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Nome da equipa</span>
+					<span class="text-sm text-[#aaa]">Nome da equipa <span class="text-[#f44]">*</span></span>
 					<input
 						type="text"
 						name="team_name"
@@ -210,7 +213,9 @@
 				</label>
 
 				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-[#aaa]">Tag (2-5 carateres)</span>
+					<span class="text-sm text-[#aaa]"
+						>Tag (2-5 carateres) <span class="text-[#f44]">*</span></span
+					>
 					<input
 						type="text"
 						name="team_tag"
@@ -252,7 +257,7 @@
 
 			<!-- Step 2: Players -->
 			{#if step === 2}
-				<h2 class="mb-6 text-xl">Jogadores</h2>
+				<h2 class="mb-6 text-xl">Jogadores <span class="text-[#f44]">*</span></h2>
 				<p class="mb-4 text-sm text-[#aaa]">
 					Adiciona os jogadores da equipa (até 7, incluindo suplentes).
 				</p>
@@ -275,21 +280,21 @@
 							type="text"
 							name="players[{i}].discord"
 							bind:value={$formData.players[i].discord}
-							placeholder="Discord (Ex: nome#0000)"
+							placeholder="Discord (Ex: nome#0000) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
 							type="text"
 							name="players[{i}].riot_id"
 							bind:value={$formData.players[i].riot_id}
-							placeholder="Riot ID (Ex: Nome#Tag)"
+							placeholder="Riot ID (Ex: Nome#Tag) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
 							type="text"
 							name="players[{i}].display_name"
 							bind:value={$formData.players[i].display_name}
-							placeholder="Nome para os casters"
+							placeholder="Nome para os casters *"
 							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 					</div>
@@ -331,21 +336,21 @@
 							type="text"
 							name="substitutes[{i}].discord"
 							bind:value={$formData.substitutes[i].discord}
-							placeholder="Discord (Ex: nome#0000)"
+							placeholder="Discord (Ex: nome#0000) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
 							type="text"
 							name="substitutes[{i}].riot_id"
 							bind:value={$formData.substitutes[i].riot_id}
-							placeholder="Riot ID (Ex: Nome#Tag)"
+							placeholder="Riot ID (Ex: Nome#Tag) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
 							type="text"
 							name="substitutes[{i}].display_name"
 							bind:value={$formData.substitutes[i].display_name}
-							placeholder="Nome para os casters"
+							placeholder="Nome para os casters *"
 							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 					</div>
@@ -383,21 +388,21 @@
 							type="text"
 							name="staff[{i}].discord"
 							bind:value={$formData.staff[i].discord}
-							placeholder="Discord (Ex: nome#0000)"
+							placeholder="Discord (Ex: nome#0000) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
 							type="text"
 							name="staff[{i}].riot_id"
 							bind:value={$formData.staff[i].riot_id}
-							placeholder="Riot ID (Ex: Nome#Tag)"
+							placeholder="Riot ID (Ex: Nome#Tag) *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<input
 							type="text"
 							name="staff[{i}].display_name"
 							bind:value={$formData.staff[i].display_name}
-							placeholder="Nome para os casters"
+							placeholder="Nome para os casters *"
 							class="mb-2 w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						/>
 						<select
@@ -405,7 +410,7 @@
 							bind:value={$formData.staff[i].role}
 							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
 						>
-							<option value="">Cargo...</option>
+							<option value="">Cargo... *</option>
 							{#each staffRoles as r}
 								<option value={r.value}>{r.label}</option>
 							{/each}
