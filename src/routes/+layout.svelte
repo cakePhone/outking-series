@@ -17,8 +17,7 @@
 	/>
 </svelte:head>
 <Navbar />
-{@render children()}
+<main class="min-h-screen">
+	{@render children()}
+</main>
 <Footer />
-
-<style>
-</style>
