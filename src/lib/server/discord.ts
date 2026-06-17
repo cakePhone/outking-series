@@ -137,7 +137,7 @@ async function fetchDiscordProfile(accessToken: string): Promise<DiscordProfile>
 	return res.json();
 }
 
-async function fetchGuildMember(
+export async function fetchGuildMember(
 	accessToken: string,
 	guildId: string
 ): Promise<DiscordGuildMember | null> {

@@ -4,6 +4,8 @@ import { teamRegisterSchema } from '$lib/validators/team-register';
 import { isGuildMember } from '$lib/server/discord';
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
+import { db } from '$lib/server/db';
+import { submission } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -58,8 +60,11 @@ export const actions: Actions = {
 			});
 		}
 
-		// TODO: persist team registration to database
-		console.log('[register] Team registration:', form.data);
+		// Save to database
+		await db.insert(submission).values({
+			userId: event.locals.user.id,
+			data: JSON.stringify(form.data)
+		});
 
 		return message(form, {
 			type: 'success',
