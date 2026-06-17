@@ -31,7 +31,6 @@
 	];
 
 	let step = $state(0);
-	let tried = $state(new Set<number>());
 
 	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Suplentes', 'Equipa Técnica', 'Rever'];
 
@@ -64,8 +63,6 @@
 	};
 
 	async function nextStep() {
-		tried.add(step);
-		tried = new Set(tried); // trigger reactivity
 		const fields = stepFields[step];
 		if (fields?.length) {
 			const result = await validate({ fields, update: true });
@@ -113,10 +110,7 @@
 					class:text-[#666]={i > step}
 					onclick={async () => {
 						if (i > step) {
-							// validate all steps up to the target
 							for (let s = step; s < i; s++) {
-								tried.add(s);
-								tried = new Set(tried);
 								const fields = stepFields[s];
 								if (fields?.length) {
 									const result = await validate({ fields, update: true });
@@ -170,7 +164,7 @@
 						placeholder="Ex: OutKing#1234"
 						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
 					/>
-					{#if tried.has(0) && $errors.creator_riot_id}
+					{#if $errors.creator_riot_id}
 						<span class="text-sm text-[#f44]">{$errors.creator_riot_id}</span>
 					{/if}
 				</label>
@@ -188,7 +182,7 @@
 							<option value={r.value}>{r.label}</option>
 						{/each}
 					</select>
-					{#if tried.has(0) && $errors.creator_role}
+					{#if $errors.creator_role}
 						<span class="text-sm text-[#f44]">{$errors.creator_role}</span>
 					{/if}
 				</label>
@@ -207,7 +201,7 @@
 						placeholder="Ex: OutKing Dragons"
 						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
 					/>
-					{#if tried.has(1) && $errors.team_name}
+					{#if $errors.team_name}
 						<span class="text-sm text-[#f44]">{$errors.team_name}</span>
 					{/if}
 				</label>
@@ -224,7 +218,7 @@
 						maxlength="5"
 						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 uppercase transition-colors outline-none focus:border-[#5865F2]"
 					/>
-					{#if tried.has(1) && $errors.team_tag}
+					{#if $errors.team_tag}
 						<span class="text-sm text-[#f44]">{$errors.team_tag}</span>
 					{/if}
 				</label>
@@ -238,7 +232,7 @@
 						placeholder="https://..."
 						class="rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 transition-colors outline-none focus:border-[#5865F2]"
 					/>
-					{#if tried.has(1) && $errors.team_logo_url}
+					{#if $errors.team_logo_url}
 						<span class="text-sm text-[#f44]">{$errors.team_logo_url}</span>
 					{/if}
 				</label>
@@ -300,7 +294,7 @@
 					</div>
 				{/each}
 
-				{#if tried.has(2) && $errors.players}
+				{#if $errors.players}
 					<span class="mb-2 block text-sm text-[#f44]">{$errors.players}</span>
 				{/if}
 
