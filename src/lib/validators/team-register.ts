@@ -10,7 +10,7 @@ const staffSchema = z.object({
 	discord: z.string().min(2, 'Discord obrigatório'),
 	riot_id: z.string().min(3, 'Riot ID obrigatório').max(22),
 	display_name: z.string().min(2, 'Nome para casters obrigatório').max(32),
-	role: z.enum(['coach', 'analyst'], { message: 'Seleciona um cargo' })
+	role: z.string().min(2, 'Cargo obrigatório')
 });
 
 export const teamRegisterSchema = z.object({

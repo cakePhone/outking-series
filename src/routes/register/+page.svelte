@@ -25,11 +25,6 @@
 		{ value: 'player', label: 'Jogador' }
 	];
 
-	const staffRoles: { value: string; label: string }[] = [
-		{ value: 'coach', label: 'Coach' },
-		{ value: 'analyst', label: 'Analista' }
-	];
-
 	let step = $state(0);
 
 	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Equipa Técnica', 'Rever'];
@@ -45,7 +40,7 @@
 	function addStaff() {
 		$formData.staff = [
 			...$formData.staff,
-			{ discord: '', riot_id: '', display_name: '', role: 'coach' as const }
+			{ discord: '', riot_id: '', display_name: '', role: '' }
 		];
 	}
 
@@ -72,7 +67,7 @@
 		0: ['creator_riot_id', 'creator_role'],
 		1: ['team_name', 'team_tag'],
 		2: ['players'],
-		3: [],
+		3: ['staff'],
 		4: []
 	};
 
@@ -385,16 +380,18 @@
 						{#if $errors.staff?.[i]?.display_name}
 							<span class="mb-2 block text-sm text-[#f44]">{$errors.staff[i].display_name}</span>
 						{/if}
-						<select
+						<input
+							type="text"
 							name="staff[{i}].role"
 							bind:value={$formData.staff[i].role}
+							placeholder="Cargo (Ex: Coach, Analista) *"
+							list="staff-roles"
 							class="w-full rounded-lg border border-[rgba(170,170,170,0.3)] bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-[#5865F2]"
-						>
-							<option value="">Cargo... *</option>
-							{#each staffRoles as r}
-								<option value={r.value}>{r.label}</option>
-							{/each}
-						</select>
+						/>
+						<datalist id="staff-roles">
+							<option value="Coach" />
+							<option value="Analista" />
+						</datalist>
 						{#if $errors.staff?.[i]?.role}
 							<span class="block text-sm text-[#f44]">{$errors.staff[i].role}</span>
 						{/if}
@@ -454,8 +451,7 @@
 						</h3>
 						{#each $formData.staff as st, i}
 							<p class="text-sm">
-								{i + 1}. {st.display_name || '—'} — {staffRoles.find((r) => r.value === st.role)
-									?.label ?? '—'}
+								{i + 1}. {st.display_name || '—'} — {st.role || '—'}
 							</p>
 						{/each}
 					</div>
