@@ -65,8 +65,8 @@
 	async function nextStep() {
 		const fields = stepFields[step];
 		if (fields?.length) {
-			const result = await validate({ fields, update: true });
-			if (!result.valid) return;
+			await validate({ fields, update: true });
+			if (fields.some((f) => $errors[f])) return;
 		}
 		step++;
 	}
@@ -113,8 +113,8 @@
 							for (let s = step; s < i; s++) {
 								const fields = stepFields[s];
 								if (fields?.length) {
-									const result = await validate({ fields, update: true });
-									if (!result.valid) return;
+									await validate({ fields, update: true });
+									if (fields.some((f) => $errors[f])) return;
 								}
 							}
 						}
