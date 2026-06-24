@@ -2,14 +2,12 @@
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import Icon from '@iconify/svelte';
-	import { signIn, signOut, useSession } from '$lib/auth-client';
+	import { signIn, signOut, session } from '$lib/auth-client';
 	import UserPopover from './user-popover.svelte';
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
 	let isMobile = $state(false);
-
-	const session = useSession();
 
 	async function handleLogin() {
 		await signIn.social({ provider: 'discord' });

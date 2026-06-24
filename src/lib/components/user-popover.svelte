@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { signOut } from '$lib/auth-client';
-	import { page } from '$app/state';
+	import { signOut, session } from '$lib/auth-client';
 	import { invalidateAll } from '$app/navigation';
 	import type { DiscordUserData } from '$lib/server/discord';
 
@@ -9,7 +8,7 @@
 	let popoverEl = $state<HTMLDivElement>();
 	let discord = $state<DiscordUserData | null>(null);
 
-	const user = $derived(page.data.user ?? null);
+	const user = $derived($session.data?.user ?? null);
 
 	onMount(() => {
 		if (!user) return;
