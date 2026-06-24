@@ -37,6 +37,7 @@ export interface DiscordUserData {
 	avatarUrl: string;
 	guildAvatarUrl: string | null;
 	bannerUrl: string | null;
+	accentColor: string | null;
 	decorationUrl: string | null;
 }
 
@@ -234,6 +235,9 @@ export async function fetchDiscordUserData(
 		highestRole = resolveHighestRole(guildRoles);
 	}
 
+	const accentColor =
+		profile.accent_color != null ? `#${profile.accent_color.toString(16).padStart(6, '0')}` : null;
+
 	const data: DiscordUserData = {
 		profile,
 		guildMember,
@@ -243,9 +247,9 @@ export async function fetchDiscordUserData(
 			? getDiscordGuildAvatarUrl(GUILD_ID, profile.id, guildMember.avatar)
 			: null,
 		bannerUrl: getDiscordBannerUrl(profile.id, profile.banner),
+		accentColor,
 		decorationUrl: getDiscordDecorationUrl(profile.avatar_decoration_data?.asset ?? null)
 	};
-
 	cache.set(userId, { data, expires: Date.now() + TTL });
 	return data;
 }

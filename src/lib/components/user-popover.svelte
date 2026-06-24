@@ -71,7 +71,7 @@
 		<!-- Dropdown panel -->
 		{#if open}
 			<div
-				class="card absolute top-full right-0 z-50 w-56 overflow-hidden rounded-xl"
+				class="card absolute top-full right-0 z-50 h-fit w-56 overflow-hidden rounded-xl"
 				role="menu"
 				tabindex="-1"
 				onclick={(e) => e.stopPropagation()}
@@ -80,12 +80,12 @@
 				}}
 			>
 				<!-- Banner header -->
-				{#if discord?.bannerUrl}
-					<div
-						class="h-20 w-full bg-cover bg-center"
-						style="background-image: url({discord.bannerUrl})"
-					></div>
-				{/if}
+				<div
+					class="h-20 w-full bg-cover bg-center"
+					style={discord?.bannerUrl
+						? `background-image: url(${discord.bannerUrl}); background-color: ${discord.accentColor ?? '#000'}`
+						: `background-color: ${discord?.accentColor ?? 'var(--theme-accent)'}`}
+				></div>
 
 				<div class="-mt-5 flex items-center gap-2 px-4">
 					<!-- Avatar (overlaps banner) -->
@@ -95,7 +95,7 @@
 								discord?.avatarUrl ??
 								`https://cdn.discordapp.com/embed/avatars/0.png`}
 							alt={discord?.profile.username ?? 'User'}
-							class="aspect-square w-full rounded-full border-4 border-(--card-bg)"
+							class="aspect-square w-full rounded-full border-4 border-(--color-surface)"
 						/>
 						{#if discord?.decorationUrl}
 							<img
