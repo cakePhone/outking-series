@@ -93,9 +93,9 @@
 	<!-- Divider + nav links: visible only on desktop -->
 	<div class="vr mx-13 hidden h-8 border-l border-border-strong sm:block md:h-12"></div>
 	<ul class="lhs hidden gap-16 sm:flex md:gap-8">
-		<a href={resolve('/about')}>Sobre</a>
+		<a href={resolve('/teams')}>Equipas</a>
+		<a href={resolve('/events')}>Events</a>
 		<a href={resolve('/rules')}>Regras</a>
-		<a href={resolve('/archive')}>Arquivo</a>
 	</ul>
 
 	{#if !menuOpen}
