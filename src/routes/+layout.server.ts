@@ -1,23 +1,5 @@
-import {
-	getValidDiscordToken,
-	fetchDiscordUserData,
-	type DiscordUserData
-} from '$lib/server/discord';
+import type { LayoutServerLoad } from './$types';
 
-export const load = async ({ locals }: { locals: App.Locals }) => {
-	const user = locals.user ?? null;
-	let discord: DiscordUserData | null = null;
-
-	if (user) {
-		const token = await getValidDiscordToken(user.id);
-		if (token) {
-			try {
-				discord = await fetchDiscordUserData(user.id, token);
-			} catch {
-				// Discord API might be down — just show basic user info
-			}
-		}
-	}
-
-	return { user, discord };
+export const load: LayoutServerLoad = async ({ locals }) => {
+	return { user: locals.user ?? null };
 };

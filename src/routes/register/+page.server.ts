@@ -11,8 +11,7 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) throw redirect(303, '/');
 
-	const parentData = await event.parent();
-	const discordUsername = parentData.discord?.profile.username ?? event.locals.user.name ?? '';
+	const discordUsername = event.locals.user.name ?? '';
 
 	const form = await superValidate(zod4(teamRegisterSchema), {
 		defaults: {
