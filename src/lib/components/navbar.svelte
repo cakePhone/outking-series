@@ -4,6 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import { signIn, signOut, session } from '$lib/auth-client';
 	import UserPopover from './user-popover.svelte';
+	import Logo from './Logo.svelte';
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
@@ -84,8 +85,8 @@
 	class="card translucent-blur fixed top-4 right-2 left-2 z-50 flex h-15 items-center rounded-[40px] border border-transparent bg-clip-padding p-4 text-base transition-all duration-200 sm:right-8 sm:left-8 md:right-10 md:left-10 md:h-20 md:p-6 md:text-xl lg:right-20 lg:left-20"
 	class:scrolled
 >
-	<a href={resolve('/')}>
-		<img src="/navbar-logo.svg" alt="OutKing Series Logo" class="h-8 md:h-12" />
+	<a href={resolve('/')} class="h-8 text-white md:h-12" aria-label="OutKing Series home">
+		<Logo />
 	</a>
 
 	<!-- Divider + nav links: visible only on desktop -->
