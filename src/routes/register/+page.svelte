@@ -26,6 +26,8 @@
 	];
 
 	let step = $state(0);
+	let creatorRankError = $state<string | null>(null);
+	let checkingCreatorRank = $state(false);
 
 	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Equipa Técnica', 'Rever'];
 
@@ -63,6 +65,13 @@
 		}
 	});
 
+	// Clear rank error when the creator changes their Riot ID or role
+	$effect(() => {
+		void $formData.creator_riot_id;
+		void $formData.creator_role;
+		creatorRankError = null;
+	});
+
 	const stepFields: Record<number, (keyof TeamRegisterForm)[]> = {
 		0: ['creator_riot_id', 'creator_role'],
 		1: ['team_name', 'team_tag'],
@@ -78,6 +87,42 @@
 				await validate(field, { update: true });
 			}
 			if (fields.some((f) => $errors[f])) return;
+
+			// Step 0: validate creator rank via Riot API if role is 'player'
+			if (step === 0 && $formData.creator_role === 'player' && $formData.creator_riot_id) {
+				checkingCreatorRank = true;
+				creatorRankError = null;
+				try {
+					const res = await fetch('/api/riot/check-rank', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ riotId: $formData.creator_riot_id })
+					});
+					const result = await res.json();
+					if (!result.passed) {
+						switch (result.reason) {
+							case 'invalid_format':
+								creatorRankError = 'Formato inválido. Usa: Nome#Tag';
+								break;
+							case 'not_found':
+								creatorRankError = 'Riot ID não encontrado. Verifica o nome e a tag.';
+								break;
+							case 'unranked':
+								creatorRankError = 'Ainda não tens rank competitivo.';
+								break;
+							case 'rank_too_low':
+								creatorRankError = `Rank atual: ${result.rank}. Mínimo exigido: Ascendente 3.`;
+								break;
+						}
+						checkingCreatorRank = false;
+						return;
+					}
+				} catch {
+					// API unavailable — allow proceeding
+				} finally {
+					checkingCreatorRank = false;
+				}
+			}
 		}
 		step++;
 	}
@@ -179,6 +224,12 @@
 					/>
 					{#if $errors.creator_riot_id}
 						<span class="text-sm text-error">{$errors.creator_riot_id}</span>
+					{/if}
+					{#if creatorRankError}
+						<span class="text-sm text-error">{creatorRankError}</span>
+					{/if}
+					{#if checkingCreatorRank}
+						<span class="text-sm text-text-dim">A verificar rank...</span>
 					{/if}
 				</label>
 
