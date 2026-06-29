@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -14,8 +15,8 @@
 		</p>
 		<p class="mt-4 text-sm text-text-dim">
 			Explora as
-			<a href="/teams" class="text-primary hover:underline">equipas</a> da série ou vê as
-			<a href="/rules" class="text-primary hover:underline">regras</a> do torneio.
+			<a href={resolve('/teams')} class="text-primary hover:underline">equipas</a> da série ou vê as
+			<a href={resolve('/rules')} class="text-primary hover:underline">regras</a> do torneio.
 		</p>
 	</div>
 </div>
