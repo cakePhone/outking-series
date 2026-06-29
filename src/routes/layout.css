@@ -20,6 +20,9 @@
 	--color-accent: var(--theme-accent);
 	--color-accent-text: var(--theme-accent-text);
 
+	--color-bg-accent: var(--theme-bg-image-accent);
+	--color-bg-accent-text: var(--theme-bg-image-text);
+
 	--color-text: var(--theme-text);
 	--color-text-muted: var(--theme-text-muted);
 	--color-text-dim: var(--theme-text-dim);
@@ -93,30 +96,33 @@
    [data-theme='spring-2026'] { ... }
    ============================================ */
 
-[data-theme='summer-2026'] {
-	--theme-primary: #8b5cf6;
-	--theme-primary-hover: #7c3aed;
+[data-theme='horizon-summer-2026'] {
+	--theme-primary: #ff7a00;
+	--theme-primary-hover: #ff9833;
 
-	--theme-surface: #1a4cff;
-	--theme-surface-muted: rgba(217, 217, 217, 0.05);
-	--theme-bg: #0a0018;
+	--theme-accent: #ff1493;
+	--theme-accent-text: #ffb3d9;
 
-	--theme-accent: var(--theme-surface);
-	--theme-accent-text: #e4c0ff;
+	--theme-bg-image-accent: #325fba;
+	--theme-bg-image-text: #fdfffb;
+
+	--theme-bg: #0f1b5c;
+	--theme-surface: rgba(30, 43, 140, 0.6);
+	--theme-surface-muted: rgba(255, 255, 255, 0.05);
 
 	--theme-text: #ffffff;
-	--theme-text-muted: #aaaaaa;
-	--theme-text-dim: #888888;
-	--theme-text-inactive: #666666;
+	--theme-text-muted: #a0b0ff;
+	--theme-text-dim: #7080d0;
+	--theme-text-inactive: #5060a0;
 
 	--theme-success: #44ff44;
 	--theme-success-bg: rgba(0, 255, 0, 0.1);
 	--theme-error: #ff4444;
 	--theme-error-bg: rgba(255, 0, 0, 0.1);
 
-	--theme-border: rgba(170, 170, 170, 0.3);
-	--theme-border-strong: rgba(170, 170, 170, 0.75);
-	--theme-border-subtle: rgba(170, 170, 170, 0.15);
+	--theme-border: rgba(255, 122, 0, 0.3);
+	--theme-border-strong: rgba(255, 122, 0, 0.75);
+	--theme-border-subtle: rgba(255, 122, 0, 0.15);
 
 	--theme-section-bg: rgba(255, 255, 255, 0.03);
 	--theme-button-bg: rgba(255, 255, 255, 0.08);
@@ -124,8 +130,8 @@
 	--theme-step-inactive: rgba(255, 255, 255, 0.06);
 	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
 
-	--theme-gradient-start: rgba(94, 94, 94, 1);
-	--theme-gradient-end: rgba(94, 94, 94, 0);
+	--theme-gradient-start: rgba(255, 122, 0, 1);
+	--theme-gradient-end: rgba(255, 20, 147, 0);
 }
 
 /* ============================================

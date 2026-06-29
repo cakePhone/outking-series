@@ -6,17 +6,17 @@
 	<title>Eventos - OutKing Series</title>
 </svelte:head>
 
-<div class="mx-auto max-w-2xl px-4 pt-24 pb-16 text-center">
-	<h1 class="mb-4 text-3xl font-bold">Eventos</h1>
-	<div class="card rounded-card p-10">
-		<p class="text-text-muted">
+<article>
+	<h1>Eventos</h1>
+	<div class="card rounded-card p-4">
+		<p>
 			Calendário de torneios, jornadas e transmissões da OutKing Series. Fica atento - os próximos
 			eventos serão anunciados em breve.
 		</p>
-		<p class="mt-4 text-sm text-text-dim">
+		<p>
 			Vê as
 			<a href={resolve('/teams')} class="text-primary hover:underline">equipas participantes</a>
 			na época atual.
 		</p>
 	</div>
-</div>
+</article>

@@ -3,14 +3,14 @@
 </script>
 
 <section class="bg-section py-24">
-	<div class="mx-auto max-w-5xl px-4">
-		<h2 class="mb-4 text-center text-3xl font-bold">Novidades da Série</h2>
-		<p class="mx-auto mb-12 max-w-2xl text-center text-text-muted">
+	<div class="mx-auto flex max-w-5xl flex-col gap-4 px-4">
+		<h2 class="text-center text-3xl font-bold">Novidades da Série</h2>
+		<p class="mx-auto max-w-2xl text-center text-text-muted">
 			Acompanha as últimas atualizações sobre épocas, calendários e anúncios da OutKing Series.
 		</p>
 
 		<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-			<article class="card overflow-hidden rounded-card">
+			<div class="card overflow-hidden rounded-card">
 				<div class="flex h-32 items-center justify-center bg-primary/10">
 					<Icon icon="mdi:calendar-star" class="h-12 w-12 text-primary/40" />
 				</div>
@@ -22,9 +22,9 @@
 						atento às nossas redes.
 					</p>
 				</div>
-			</article>
+			</div>
 
-			<article class="card overflow-hidden rounded-card">
+			<div class="card overflow-hidden rounded-card">
 				<div class="flex h-32 items-center justify-center bg-primary/10">
 					<Icon icon="mdi:account-group" class="h-12 w-12 text-primary/40" />
 				</div>
@@ -36,9 +36,9 @@
 						corrida pela coroa.
 					</p>
 				</div>
-			</article>
+			</div>
 
-			<article class="card overflow-hidden rounded-card">
+			<div class="card overflow-hidden rounded-card">
 				<div class="flex h-32 items-center justify-center bg-primary/10">
 					<Icon icon="mdi:discord" class="h-12 w-12 text-primary/40" />
 				</div>
@@ -50,7 +50,7 @@
 						equipas e receberes novidades em primeira mão.
 					</p>
 				</div>
-			</article>
+			</div>
 		</div>
 
 		<p class="mt-8 text-center text-sm text-text-dim">

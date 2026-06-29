@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import Card from '../card.svelte';
 </script>
 
 <section class="mx-auto max-w-5xl px-4 py-24">
@@ -10,7 +11,7 @@
 	</p>
 
 	<div class="grid gap-6 md:grid-cols-3">
-		<div class="card rounded-card p-6">
+		<Card>
 			<div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
 				<Icon icon="mdi:flag-checkered" class="h-5 w-5 text-primary" />
 			</div>
@@ -19,7 +20,7 @@
 				A OutKing Series nasceu em 2024 com o objetivo de criar um espaço competitivo dedicado ao
 				talento português no VALORANT.
 			</p>
-		</div>
+		</Card>
 
 		<div class="card rounded-card p-6">
 			<div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
