@@ -95,7 +95,7 @@
 								discord?.avatarUrl ??
 								`https://cdn.discordapp.com/embed/avatars/0.png`}
 							alt={discord?.profile.username ?? 'User'}
-							class="aspect-square w-full rounded-full border-4 border-(--color-surface)"
+							class="aspect-square w-full rounded-full border-4 border-surface"
 						/>
 						{#if discord?.decorationUrl}
 							<img

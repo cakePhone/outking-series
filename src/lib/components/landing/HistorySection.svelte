@@ -5,7 +5,7 @@
 <section class="mx-auto max-w-5xl px-4 py-24">
 	<h2 class="mb-4 text-center text-3xl font-bold">A Nossa História</h2>
 	<p class="mx-auto mb-12 max-w-2xl text-center text-text-muted">
-		Da paixão pelo competitivo nasceu a OutKing Series — um circuito pensado para elevar o cenário
+		Da paixão pelo competitivo nasceu a OutKing Series - um circuito pensado para elevar o cenário
 		português de VALORANT, época após época.
 	</p>
 
@@ -38,7 +38,7 @@
 			</div>
 			<h3 class="mb-2 text-lg font-semibold">O Futuro</h3>
 			<p class="text-sm text-text-muted">
-				Estamos a preparar novas épocas, parcerias e surpresas. O melhor ainda está para vir — fica
+				Estamos a preparar novas épocas, parcerias e surpresas. O melhor ainda está para vir - fica
 				atento.
 			</p>
 		</div>

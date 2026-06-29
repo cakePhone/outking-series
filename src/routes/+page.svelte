@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>OutKing Series — Torneios de VALORANT</title>
+	<title>OutKing Series - Torneios de VALORANT</title>
 </svelte:head>
 
 <HeroSection />

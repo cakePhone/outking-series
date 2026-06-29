@@ -63,7 +63,7 @@
 				<div>
 					<h2 class="text-xl font-semibold">{s.title}</h2>
 					<p class="text-sm text-text-muted">
-						{fmtDate(s.startDate)} — {fmtDate(s.endDate)}
+						{fmtDate(s.startDate)} - {fmtDate(s.endDate)}
 					</p>
 				</div>
 				<svg
@@ -124,7 +124,7 @@
 									</div>
 									<div class="ml-auto text-right text-sm text-text-dim">
 										<span class="font-semibold text-success">{team.wins}W</span>
-										<span class="mx-1">—</span>
+										<span class="mx-1">-</span>
 										<span class="font-semibold text-error">{team.losses}L</span>
 										{#if team.matchesPlayed > 0}
 											<div class="text-xs text-text-muted">{team.matchesPlayed} jogos</div>
