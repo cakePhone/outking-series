@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard — OutKing Series</title>
+	<title>Dashboard - OutKing Series</title>
 </svelte:head>
 
 <div class="mx-auto max-w-5xl px-4 pt-24 pb-16">
@@ -17,7 +17,7 @@
 		<div class="card p-8 text-center text-text-muted">Nenhuma submissão encontrada.</div>
 	{:else}
 		<div class="flex flex-col gap-4">
-			{#each data.submissions as s}
+			{#each data.submissions as s (s.id)}
 				{@const d = s.data}
 				<div
 					class="card flex flex-col gap-3 p-6"
@@ -78,7 +78,7 @@
 							>Jogadores ({d.players?.length ?? 0})</summary
 						>
 						<ul class="mt-2 flex flex-col gap-1 pl-4">
-							{#each d.players ?? [] as p}
+							{#each d.players ?? [] as p, i (`player-${i}`)}
 								<li>{p.display_name || '—'} ({p.discord || '—'})</li>
 							{/each}
 						</ul>
@@ -88,7 +88,7 @@
 						<details class="text-sm">
 							<summary class="cursor-pointer text-text-muted">Staff ({d.staff.length})</summary>
 							<ul class="mt-2 flex flex-col gap-1 pl-4">
-								{#each d.staff as st}
+								{#each d.staff as st, i (`staff-${i}`)}
 									<li>{st.display_name || '—'} — {st.role || '—'}</li>
 								{/each}
 							</ul>
