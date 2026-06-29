@@ -6,7 +6,7 @@
    Theme tokens — switch via data-theme on <html>
    ============================================ */
 
-@theme {
+@theme inline {
 	--color-white: #ffffff;
 	--color-black: #000000;
 
@@ -45,6 +45,7 @@
 
 	/* Radii */
 	--radius-card: 40px;
+	--radius-card-small: 20px;
 	--radius-form: 8px;
 	--radius-full: 9999px;
 }
@@ -55,7 +56,7 @@
 	--theme-primary: #8b5cf6;
 	--theme-primary-hover: #7c3aed;
 
-	--theme-surface: rgba(43, 0, 74, 0.8);
+	--theme-surface: rgba(43, 0, 74, 1);
 	--theme-surface-muted: rgba(217, 217, 217, 0.05);
 	--theme-bg: #0a0018;
 
@@ -92,6 +93,41 @@
    [data-theme='spring-2026'] { ... }
    ============================================ */
 
+[data-theme='summer-2026'] {
+	--theme-primary: #8b5cf6;
+	--theme-primary-hover: #7c3aed;
+
+	--theme-surface: #1a4cff;
+	--theme-surface-muted: rgba(217, 217, 217, 0.05);
+	--theme-bg: #0a0018;
+
+	--theme-accent: var(--theme-surface);
+	--theme-accent-text: #e4c0ff;
+
+	--theme-text: #ffffff;
+	--theme-text-muted: #aaaaaa;
+	--theme-text-dim: #888888;
+	--theme-text-inactive: #666666;
+
+	--theme-success: #44ff44;
+	--theme-success-bg: rgba(0, 255, 0, 0.1);
+	--theme-error: #ff4444;
+	--theme-error-bg: rgba(255, 0, 0, 0.1);
+
+	--theme-border: rgba(170, 170, 170, 0.3);
+	--theme-border-strong: rgba(170, 170, 170, 0.75);
+	--theme-border-subtle: rgba(170, 170, 170, 0.15);
+
+	--theme-section-bg: rgba(255, 255, 255, 0.03);
+	--theme-button-bg: rgba(255, 255, 255, 0.08);
+	--theme-button-bg-hover: rgba(255, 255, 255, 0.14);
+	--theme-step-inactive: rgba(255, 255, 255, 0.06);
+	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
+
+	--theme-gradient-start: rgba(94, 94, 94, 1);
+	--theme-gradient-end: rgba(94, 94, 94, 0);
+}
+
 /* ============================================
    Base styles
    ============================================ */
@@ -118,7 +154,7 @@ body {
 }
 
 article {
-	@apply mx-auto mt-30 max-w-[80ch] px-6 md:px-0;
+	@apply mx-auto mt-30 max-w-prose px-6 md:px-0;
 
 	& h1,
 	& h2,
