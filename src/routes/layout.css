@@ -12,10 +12,11 @@
    ============================================ */
 
 @theme inline {
-	/* ── 6 themable colors ────────────── */
+	/* ── 7 themable colors ────────────── */
 	--color-primary: var(--theme-primary);
 	--color-primary-hover: var(--theme-primary-hover);
 	--color-accent: var(--theme-accent);
+	--color-overlay: var(--theme-overlay);
 	--color-surface: var(--theme-surface);
 	--color-background: var(--theme-background);
 	--color-surface-muted: var(--theme-surface-muted);
@@ -28,7 +29,7 @@
 
 	/* ── Text on accent / hero surfaces ─ */
 	--color-accent-text: var(--theme-text);
-	--color-bg-accent: var(--theme-accent);
+	--color-bg-accent: var(--theme-overlay);
 	--color-bg-accent-text: var(--theme-text);
 
 	/* ── Semantic (static) ────────────── */
@@ -111,6 +112,7 @@
 	--theme-primary: #8b5cf6;
 	--theme-primary-hover: #7c3aed;
 	--theme-accent: #5b00a1;
+	--theme-overlay: #1a0033;
 	--theme-surface: #2b004a;
 	--theme-background: #0a0018;
 	--theme-surface-muted: rgb(217 217 217 / 0.05);
@@ -192,6 +194,7 @@
 	--theme-primary: #ff7a00;
 	--theme-primary-hover: #ff9833;
 	--theme-accent: #ff1493;
+	--theme-overlay: #325fba;
 	--theme-surface: #1e2b8c;
 	--theme-background: #0f1b5c;
 	--theme-surface-muted: rgb(255 255 255 / 0.06);
