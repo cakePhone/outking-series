@@ -213,8 +213,8 @@
 
 html,
 body {
-	color: var(--color-text);
-	background: var(--color-background);
+	color: var(--theme-text);
+	background: var(--theme-background);
 }
 
 .card {
