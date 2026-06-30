@@ -50,7 +50,7 @@
 	--color-step-inactive: var(--theme-step-inactive);
 	--color-disabled: var(--theme-disabled-bg);
 
-	/* ── Gradient (derived from primary) ─ */
+	/* ── Gradient (navbar glint) ──────── */
 	--color-gradient-start: var(--theme-gradient-start);
 	--color-gradient-end: var(--theme-gradient-end);
 
@@ -137,8 +137,8 @@
 	--theme-step-inactive: color-mix(in srgb, var(--theme-surface-muted) 30%, transparent 70%);
 	--theme-disabled-bg: color-mix(in srgb, var(--theme-surface-muted) 20%, transparent 80%);
 
-	/* Gradient (navbar border): fades primary to transparent */
-	--theme-gradient-start: var(--theme-primary);
+	/* Gradient (navbar border): white glint at edges, fades to center */
+	--theme-gradient-start: rgb(255 255 255 / 0.12);
 	--theme-gradient-end: transparent;
 
 	/* Semantic colors (static - not themed per season) */
