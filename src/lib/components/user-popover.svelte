@@ -36,13 +36,6 @@
 
 	const hasBanner = $derived(!!discord?.bannerUrl);
 	const accentColor = $derived(discord?.accentColor ?? 'var(--theme-accent)');
-
-	const bgStyle = $derived(() => {
-		if (discord?.bannerUrl) {
-			return `background-image: url(${discord.bannerUrl}); background-size: cover; background-position: center;`;
-		}
-		return `background-color: color-mix(in srgb, ${accentColor} 20%, var(--color-card) 80%);`;
-	});
 </script>
 
 {#if user}
@@ -54,7 +47,10 @@
 			</Avatar.Root>
 		</DropdownMenu.Trigger>
 
-		<DropdownMenu.Content align="end" class="w-56 p-0" style={bgStyle}>
+		<DropdownMenu.Content align="end" class="w-56 overflow-hidden p-0">
+			<!-- Background layer -->
+			<div class="absolute inset-0 rounded-[inherit]" style={bgStyle}></div>
+
 			<!-- Logo watermark: only when no banner -->
 			{#if !hasBanner}
 				<div
@@ -84,6 +80,5 @@
 				<DropdownMenu.Item onclick={handleLogout}>Sair</DropdownMenu.Item>
 			</DropdownMenu.Group>
 		</DropdownMenu.Content>
-		>
 	</DropdownMenu.Root>
 {/if}
