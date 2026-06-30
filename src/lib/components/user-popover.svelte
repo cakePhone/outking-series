@@ -41,7 +41,7 @@
 		if (discord?.bannerUrl) {
 			return `background-image: url(${discord.bannerUrl}); background-size: cover; background-position: center;`;
 		}
-		return `background-image: linear-gradient(${accentColor}30, ${accentColor}30);`;
+		return `background-color: color-mix(in srgb, ${accentColor} 20%, var(--color-card) 80%);`;
 	});
 </script>
 
@@ -54,40 +54,36 @@
 			</Avatar.Root>
 		</DropdownMenu.Trigger>
 
-		<DropdownMenu.Content align="end" class="w-56 p-0">
-			<div class="relative overflow-hidden rounded-[inherit]">
-				<!-- Background -->
-				<div class="absolute inset-0 bg-card" style={bgStyle}></div>
-
-				<!-- Logo watermark: only when no banner -->
-				{#if !hasBanner}
-					<div
-						class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10"
-					>
-						<Logo />
-					</div>
-				{/if}
-
-				<!-- Content -->
-				<div class="relative z-10 flex items-center gap-3 p-4 pt-5">
-					<Avatar.Root class="size-12  md:size-16">
-						<Avatar.Image src={avatarUrl} alt={displayName} />
-						<Avatar.Fallback>{initials}</Avatar.Fallback>
-					</Avatar.Root>
-					<div class="flex flex-col">
-						<span class="text-sm font-semibold">{displayName}</span>
-						{#if discord?.profile.global_name && discord.profile.global_name !== discord.profile.username}
-							<span class="text-xs text-muted-foreground">@{username}</span>
-						{/if}
-					</div>
+		<DropdownMenu.Content align="end" class="w-56 p-0" style={bgStyle}>
+			<!-- Logo watermark: only when no banner -->
+			{#if !hasBanner}
+				<div
+					class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10"
+				>
+					<Logo />
 				</div>
+			{/if}
 
-				<Separator />
-
-				<DropdownMenu.Group>
-					<DropdownMenu.Item onclick={handleLogout}>Sair</DropdownMenu.Item>
-				</DropdownMenu.Group>
+			<!-- Content -->
+			<div class="relative z-10 flex items-center gap-3 p-4 pt-5">
+				<Avatar.Root class="size-12  md:size-16">
+					<Avatar.Image src={avatarUrl} alt={displayName} />
+					<Avatar.Fallback>{initials}</Avatar.Fallback>
+				</Avatar.Root>
+				<div class="flex flex-col">
+					<span class="text-sm font-semibold">{displayName}</span>
+					{#if discord?.profile.global_name && discord.profile.global_name !== discord.profile.username}
+						<span class="text-xs text-muted-foreground">@{username}</span>
+					{/if}
+				</div>
 			</div>
+
+			<Separator />
+
+			<DropdownMenu.Group>
+				<DropdownMenu.Item onclick={handleLogout}>Sair</DropdownMenu.Item>
+			</DropdownMenu.Group>
 		</DropdownMenu.Content>
+		>
 	</DropdownMenu.Root>
 {/if}
