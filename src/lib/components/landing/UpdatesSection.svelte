@@ -1,5 +1,7 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import Users from '@lucide/svelte/icons/users';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
 	import * as Card from '$lib/components/ui/card';
 </script>
 
@@ -13,7 +15,7 @@
 		<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 			<Card.Root class="overflow-hidden">
 				<div class="flex h-32 items-center justify-center bg-primary/10">
-					<Icon icon="mdi:calendar-star" class="h-12 w-12 text-primary/40" />
+					<Sparkles class="size-12 text-primary/40" />
 				</div>
 				<Card.Content class="flex flex-col gap-2">
 					<span class="text-xs text-text-dim">Brevemente</span>
@@ -27,7 +29,7 @@
 
 			<Card.Root class="overflow-hidden">
 				<div class="flex h-32 items-center justify-center bg-primary/10">
-					<Icon icon="mdi:account-group" class="h-12 w-12 text-primary/40" />
+					<Users class="size-12 text-primary/40" />
 				</div>
 				<Card.Content class="flex flex-col gap-2">
 					<span class="text-xs text-text-dim">A Decorrer</span>
@@ -41,7 +43,7 @@
 
 			<Card.Root class="overflow-hidden">
 				<div class="flex h-32 items-center justify-center bg-primary/10">
-					<Icon icon="mdi:discord" class="h-12 w-12 text-primary/40" />
+					<DiscordIcon class="size-12 text-primary/40" />
 				</div>
 				<Card.Content class="flex flex-col gap-2">
 					<span class="text-xs text-text-dim">Comunidade</span>

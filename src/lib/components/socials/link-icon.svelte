@@ -4,19 +4,16 @@
 </script>
 
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import CircleHelp from '@lucide/svelte/icons/circle-help';
+	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
+	import XIcon from '$lib/components/icons/XIcon.svelte';
+	import TwitchIcon from '$lib/components/icons/TwitchIcon.svelte';
 
 	interface Props {
 		platform: LinkIconPlatform;
 	}
 
 	let { platform }: Props = $props();
-
-	const platform_icon_map: Record<LinkIconPlatform, string> = {
-		x: 'ri:twitter-x-fill',
-		discord: 'ic:baseline-discord',
-		twitch: 'mdi:twitch'
-	};
 
 	const platform_url_map: Record<LinkIconPlatform, string> = {
 		x: 'https://x.com/OutKingSeries',
@@ -30,6 +27,15 @@
 	href={platform_url_map[platform] ?? '#'}
 	target="_blank"
 	rel="external noopener noreferrer"
+	aria-label={platform}
 >
-	<Icon icon={platform_icon_map[platform] ?? 'mdi:question-mark'} height="32" />
+	{#if platform === 'x'}
+		<XIcon class="size-8" />
+	{:else if platform === 'discord'}
+		<DiscordIcon class="size-8" />
+	{:else if platform === 'twitch'}
+		<TwitchIcon class="size-8" />
+	{:else}
+		<CircleHelp class="size-8" />
+	{/if}
 </a>

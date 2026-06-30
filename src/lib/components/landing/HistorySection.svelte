@@ -1,5 +1,7 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import Flag from '@lucide/svelte/icons/flag';
+	import Trophy from '@lucide/svelte/icons/trophy';
+	import Rocket from '@lucide/svelte/icons/rocket';
 	import * as Card from '$lib/components/ui/card';
 </script>
 
@@ -14,7 +16,7 @@
 		<Card.Root>
 			<Card.Content class="flex flex-col gap-2">
 				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-					<Icon icon="mdi:flag-checkered" class="h-5 w-5 text-primary" />
+					<Flag class="size-5 text-primary" />
 				</div>
 				<Card.Title>Fundacao</Card.Title>
 				<Card.Description>
@@ -27,7 +29,7 @@
 		<Card.Root>
 			<Card.Content class="flex flex-col gap-2">
 				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-					<Icon icon="mdi:trophy" class="h-5 w-5 text-primary" />
+					<Trophy class="size-5 text-primary" />
 				</div>
 				<Card.Title>Primeira Epoca</Card.Title>
 				<Card.Description>
@@ -40,7 +42,7 @@
 		<Card.Root>
 			<Card.Content class="flex flex-col gap-2">
 				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-					<Icon icon="mdi:rocket-launch" class="h-5 w-5 text-primary" />
+					<Rocket class="size-5 text-primary" />
 				</div>
 				<Card.Title>O Futuro</Card.Title>
 				<Card.Description>

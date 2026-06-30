@@ -2,7 +2,8 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { teamRegisterSchema } from '$lib/validators/team-register';
-	import Icon from '@iconify/svelte';
+	import X from '@lucide/svelte/icons/x';
+	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
 	import type { PageProps } from './$types';
 	import type { TeamRegisterForm } from '$lib/validators/team-register';
 	import { Button } from '$lib/components/ui/button';
@@ -146,7 +147,7 @@
 
 	{#if !data.isMember}
 		<Alert.Root>
-			<Icon icon="mdi:discord" height="48" class="text-primary" />
+			<DiscordIcon class="size-12 text-primary" />
 			<Alert.Title>Não és membro</Alert.Title>
 			<Alert.Description>
 				Parece que ainda não fazes parte do servidor da Outking, apenas membros do servidor podem
@@ -340,7 +341,7 @@
 												size="icon-sm"
 												onclick={() => removePlayer(i)}
 											>
-												<Icon icon="mdi:close" height="18" />
+												<X />
 											</Button>
 										{/if}
 									</div>
@@ -413,7 +414,7 @@
 											size="icon-sm"
 											onclick={() => removeStaff(i)}
 										>
-											<Icon icon="mdi:close" height="18" />
+											<X />
 										</Button>
 									</div>
 
