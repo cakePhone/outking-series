@@ -79,8 +79,8 @@
 		<Logo />
 	</a>
 
-	<Separator orientation="vertical" class="mx-13 hidden h-8 sm:block md:h-12" />
-	<ul class="lhs hidden gap-16 sm:flex md:gap-8">
+	<Separator orientation="vertical" class="mx-10 hidden sm:block" />
+	<ul class="lhs hidden gap-8 sm:flex">
 		<a href={resolve('/teams')}>Equipas</a>
 		<a href={resolve('/events')}>Eventos</a>
 		<a href={resolve('/rules')}>Regras</a>
@@ -118,7 +118,7 @@
 		<Sheet.Overlay class="sm:hidden" />
 		<Sheet.Content
 			side="top"
-			class="flex flex-col items-center gap-8 pt-20 pb-12 text-3xl sm:hidden"
+			class="flex flex-col items-center gap-8 pt-20 pb-12 text-xl sm:hidden"
 		>
 			<Sheet.Header class="sr-only">
 				<Sheet.Title>Navigation menu</Sheet.Title>
@@ -127,29 +127,6 @@
 			<a href={resolve('/about')} onclick={closeMenu}>Sobre</a>
 			<a href={resolve('/rules')} onclick={closeMenu}>Regras</a>
 			<a href={resolve('/archive')} onclick={closeMenu}>Arquivo</a>
-			{#if $session.data?.user}
-				<span class="mt-4">{$session.data.user.name}</span>
-				<Button
-					variant="ghost"
-					class="mt-10"
-					onclick={() => {
-						handleLogout();
-						closeMenu();
-					}}
-				>
-					Sair
-				</Button>
-			{:else}
-				<Button
-					class="mt-10"
-					onclick={() => {
-						handleLogin();
-						closeMenu();
-					}}
-				>
-					Login
-				</Button>
-			{/if}
 		</Sheet.Content>
 	</Sheet.Portal>
 </Sheet.Root>
