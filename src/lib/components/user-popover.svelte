@@ -5,7 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Separator } from '$lib/components/ui/separator';
-	import Logo from './Logo.svelte';
+	import Logo from './icons/OutkingIcon.svelte';
 	import type { DiscordUserData } from '$lib/server/discord';
 
 	let discord = $state<DiscordUserData | null>(null);
@@ -70,7 +70,7 @@
 
 				<!-- Content -->
 				<div class="relative z-10 flex items-center gap-3 p-4 pt-5">
-					<Avatar.Root class="size-12 border-2 border-background md:size-16">
+					<Avatar.Root class="size-12  md:size-16">
 						<Avatar.Image src={avatarUrl} alt={displayName} />
 						<Avatar.Fallback>{initials}</Avatar.Fallback>
 					</Avatar.Root>
