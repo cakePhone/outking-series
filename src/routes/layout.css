@@ -1,63 +1,91 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "shadcn-svelte/tailwind.css";
-@import "@fontsource-variable/oxanium";
+@import 'tw-animate-css';
+@import 'shadcn-svelte/tailwind.css';
+@import '@fontsource-variable/oxanium';
 
 @custom-variant dark (&:is(.dark *));
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
 /* ============================================
-   Theme tokens — switch via data-theme on <html>
+   Design tokens — Tailwind utility mappings
    ============================================ */
 
 @theme inline {
-	--color-white: #ffffff;
-	--color-black: #000000;
-
+	/* ── 6 themable colors ────────────── */
 	--color-primary: var(--theme-primary);
 	--color-primary-hover: var(--theme-primary-hover);
-
-	--color-surface: var(--theme-surface);
-	--color-surface-muted: var(--theme-surface-muted);
-	--color-background: var(--theme-bg);
-
 	--color-accent: var(--theme-accent);
-	--color-accent-text: var(--theme-accent-text);
+	--color-surface: var(--theme-surface);
+	--color-background: var(--theme-background);
+	--color-surface-muted: var(--theme-surface-muted);
 
-	--color-bg-accent: var(--theme-bg-image-accent);
-	--color-bg-accent-text: var(--theme-bg-image-text);
-
+	/* ── Text (derived from background) ─ */
 	--color-text: var(--theme-text);
 	--color-text-muted: var(--theme-text-muted);
 	--color-text-dim: var(--theme-text-dim);
 	--color-text-inactive: var(--theme-text-inactive);
 
+	/* ── Text on accent / hero surfaces ─ */
+	--color-accent-text: var(--theme-text);
+	--color-bg-accent: var(--theme-accent);
+	--color-bg-accent-text: var(--theme-text);
+
+	/* ── Semantic (static) ────────────── */
 	--color-success: var(--theme-success);
 	--color-success-bg: var(--theme-success-bg);
 	--color-error: var(--theme-error);
 	--color-error-bg: var(--theme-error-bg);
 
+	/* ── Borders (derived from text) ──── */
 	--color-border: var(--theme-border);
 	--color-border-strong: var(--theme-border-strong);
 	--color-border-subtle: var(--theme-border-subtle);
 
+	/* ── Element backgrounds (derived from surface-muted) ─ */
 	--color-section: var(--theme-section-bg);
 	--color-button-ghost: var(--theme-button-bg);
 	--color-button-ghost-hover: var(--theme-button-bg-hover);
 	--color-step-inactive: var(--theme-step-inactive);
 	--color-disabled: var(--theme-disabled-bg);
 
+	/* ── Gradient (derived from primary) ─ */
 	--color-gradient-start: var(--theme-gradient-start);
 	--color-gradient-end: var(--theme-gradient-end);
 
-	/* Radii */
+	/* ── shadcn-svelte compatibility ──── */
+	--color-foreground: var(--theme-text);
+	--color-card: var(--theme-surface);
+	--color-card-foreground: var(--theme-text);
+	--color-popover: var(--theme-surface);
+	--color-popover-foreground: var(--theme-text);
+	--color-primary-foreground: color-mix(in srgb, var(--theme-primary) 5%, #ffffff 95%);
+	--color-secondary: var(--theme-surface-muted);
+	--color-secondary-foreground: var(--theme-text-muted);
+	--color-muted: color-mix(in srgb, var(--theme-surface-muted) 50%, transparent 50%);
+	--color-muted-foreground: var(--theme-text-dim);
+	--color-accent-foreground: var(--theme-text);
+	--color-destructive: var(--theme-error);
+	--color-ring: var(--theme-primary);
+	--color-input: color-mix(in srgb, var(--theme-text-muted) 15%, transparent 85%);
+
+	/* ── Radii ─────────────────────────── */
 	--radius-card: 40px;
 	--radius-card-small: 20px;
 	--radius-form: 8px;
 	--radius-full: 9999px;
+	--radius-sm: 0.25rem;
+	--radius-md: 0.375rem;
+	--radius-lg: 0.5rem;
+	--radius-xl: 0.75rem;
+	--radius-2xl: 1rem;
+	--radius-3xl: 1.5rem;
+	--radius-4xl: 2rem;
+
 	--font-sans: 'Oxanium Variable', sans-serif;
 	--font-heading: 'Oxanium Variable', sans-serif;
+
+	/* ── shadcn layout tokens (static) ─ */
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -71,140 +99,102 @@
 	--color-chart-3: var(--chart-3);
 	--color-chart-2: var(--chart-2);
 	--color-chart-1: var(--chart-1);
-	--color-ring: var(--ring);
-	--color-input: var(--input);
-	--color-destructive: var(--destructive);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-muted: var(--muted);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-secondary: var(--secondary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-popover: var(--popover);
-	--color-card-foreground: var(--card-foreground);
-	--color-card: var(--card);
-	--color-foreground: var(--foreground);
-	--radius-sm: calc(var(--radius) * 0.6);
-	--radius-md: calc(var(--radius) * 0.8);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) * 1.4);
-	--radius-2xl: calc(var(--radius) * 1.8);
-	--radius-3xl: calc(var(--radius) * 2.2);
-	--radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── Default (off-season) theme ────────── */
+/* ============================================
+   Default (off-season) theme
+   Only these 6 colors change per season.
+   Everything else auto-derives below.
+   ============================================ */
 
 :root {
 	--theme-primary: #8b5cf6;
 	--theme-primary-hover: #7c3aed;
-
-	--theme-surface: rgba(43, 0, 74, 1);
-	--theme-surface-muted: rgba(217, 217, 217, 0.05);
-	--theme-bg: #0a0018;
-
 	--theme-accent: #5b00a1;
-	--theme-accent-text: #e4c0ff;
+	--theme-surface: #2b004a;
+	--theme-background: #0a0018;
+	--theme-surface-muted: rgb(217 217 217 / 0.05);
 
-	--theme-text: #ffffff;
-	--theme-text-muted: #aaaaaa;
-	--theme-text-dim: #888888;
-	--theme-text-inactive: #666666;
+	/* ──── Derived colors (computed once, adapt to the 6 above) ──── */
 
+	/* Text: white-ish with a hint of the background color */
+	--theme-text: color-mix(in srgb, var(--theme-background) 5%, #ffffff 95%);
+	--theme-text-muted: color-mix(in srgb, var(--theme-background) 5%, #a0a0a0 95%);
+	--theme-text-dim: color-mix(in srgb, var(--theme-background) 5%, #707070 95%);
+	--theme-text-inactive: color-mix(in srgb, var(--theme-background) 5%, #505050 95%);
+
+	/* Borders: semi-transparent variants of muted text */
+	--theme-border: color-mix(in srgb, var(--theme-text-muted) 25%, transparent 75%);
+	--theme-border-strong: color-mix(in srgb, var(--theme-text-muted) 65%, transparent 35%);
+	--theme-border-subtle: color-mix(in srgb, var(--theme-text-muted) 12%, transparent 88%);
+
+	/* Element backgrounds: derived from surface-muted at various opacities */
+	--theme-section-bg: color-mix(in srgb, var(--theme-surface-muted) 50%, transparent 50%);
+	--theme-button-bg: color-mix(in srgb, var(--theme-surface-muted) 65%, transparent 35%);
+	--theme-button-bg-hover: color-mix(in srgb, var(--theme-surface-muted) 90%, transparent 10%);
+	--theme-step-inactive: color-mix(in srgb, var(--theme-surface-muted) 30%, transparent 70%);
+	--theme-disabled-bg: color-mix(in srgb, var(--theme-surface-muted) 20%, transparent 80%);
+
+	/* Gradient (navbar border): fades primary to transparent */
+	--theme-gradient-start: var(--theme-primary);
+	--theme-gradient-end: transparent;
+
+	/* Semantic colors (static - not themed per season) */
 	--theme-success: #44ff44;
-	--theme-success-bg: rgba(0, 255, 0, 0.1);
+	--theme-success-bg: rgb(0 255 0 / 0.1);
 	--theme-error: #ff4444;
-	--theme-error-bg: rgba(255, 0, 0, 0.1);
+	--theme-error-bg: rgb(255 0 0 / 0.1);
 
-	--theme-border: rgba(170, 170, 170, 0.3);
-	--theme-border-strong: rgba(170, 170, 170, 0.75);
-	--theme-border-subtle: rgba(170, 170, 170, 0.15);
+	/* ──── shadcn-svelte base variables (dark theme) ──── */
+	--background: var(--theme-background);
+	--foreground: var(--theme-text);
+	--card: var(--theme-surface);
+	--card-foreground: var(--theme-text);
+	--popover: var(--theme-surface);
+	--popover-foreground: var(--theme-text);
+	--primary: var(--theme-primary);
+	--primary-foreground: color-mix(in srgb, var(--theme-primary) 5%, #ffffff 95%);
+	--secondary: var(--theme-surface-muted);
+	--secondary-foreground: var(--theme-text-muted);
+	--muted: color-mix(in srgb, var(--theme-surface-muted) 50%, transparent 50%);
+	--muted-foreground: var(--theme-text-dim);
+	--accent: var(--theme-accent);
+	--accent-foreground: var(--theme-text);
+	--destructive: var(--theme-error);
+	--border: var(--theme-border);
+	--input: color-mix(in srgb, var(--theme-text-muted) 15%, transparent 85%);
+	--ring: var(--theme-primary);
 
-	--theme-section-bg: rgba(255, 255, 255, 0.03);
-	--theme-button-bg: rgba(255, 255, 255, 0.08);
-	--theme-button-bg-hover: rgba(255, 255, 255, 0.14);
-	--theme-step-inactive: rgba(255, 255, 255, 0.06);
-	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
-
-	--theme-gradient-start: rgba(94, 94, 94, 1);
-	--theme-gradient-end: rgba(94, 94, 94, 0);
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.145 0 0);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.491 0.27 292.581);
-	--primary-foreground: oklch(0.969 0.016 293.756);
-	--secondary: oklch(0.967 0.001 286.375);
-	--secondary-foreground: oklch(0.21 0.006 285.885);
-	--muted: oklch(0.97 0 0);
-	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
-	--accent-foreground: oklch(0.205 0 0);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
-	--chart-1: oklch(0.811 0.111 293.571);
-	--chart-2: oklch(0.606 0.25 292.717);
+	/* shadcn layout tokens (static) */
+	--radius: 0.5rem;
+	--chart-1: var(--theme-primary);
+	--chart-2: var(--theme-accent);
 	--chart-3: oklch(0.541 0.281 293.009);
 	--chart-4: oklch(0.491 0.27 292.581);
 	--chart-5: oklch(0.432 0.232 292.759);
-	--radius: 0rem;
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: oklch(0.541 0.281 293.009);
-	--sidebar-primary-foreground: oklch(0.969 0.016 293.756);
-	--sidebar-accent: oklch(0.97 0 0);
-	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.922 0 0);
-	--sidebar-ring: oklch(0.708 0 0);
+	--sidebar: oklch(0.205 0 0);
+	--sidebar-foreground: oklch(0.985 0 0);
+	--sidebar-primary: var(--theme-primary);
+	--sidebar-primary-foreground: color-mix(in srgb, var(--theme-primary) 5%, #ffffff 95%);
+	--sidebar-accent: oklch(0.269 0 0);
+	--sidebar-accent-foreground: oklch(0.985 0 0);
+	--sidebar-border: var(--theme-border);
+	--sidebar-ring: var(--theme-primary);
 }
 
 /* ============================================
-   Tournament themes
-   Add seasonal blocks below, e.g.:
-   [data-theme='spring-2026'] { ... }
+   Seasonal tournament themes
+   Add blocks below. Each only needs the 6 colors
+   — text, borders, backgrounds auto-derive.
    ============================================ */
 
 [data-theme='horizon-summer-2026'] {
 	--theme-primary: #ff7a00;
 	--theme-primary-hover: #ff9833;
-
 	--theme-accent: #ff1493;
-	--theme-accent-text: #ffb3d9;
-
-	--theme-bg-image-accent: #325fba;
-	--theme-bg-image-text: #fdfffb;
-
-	--theme-bg: #0f1b5c;
-	--theme-surface: rgba(30, 43, 140, 0.6);
-	--theme-surface-muted: rgba(255, 255, 255, 0.05);
-
-	--theme-text: #ffffff;
-	--theme-text-muted: #a0b0ff;
-	--theme-text-dim: #7080d0;
-	--theme-text-inactive: #5060a0;
-
-	--theme-success: #44ff44;
-	--theme-success-bg: rgba(0, 255, 0, 0.1);
-	--theme-error: #ff4444;
-	--theme-error-bg: rgba(255, 0, 0, 0.1);
-
-	--theme-border: rgba(255, 122, 0, 0.3);
-	--theme-border-strong: rgba(255, 122, 0, 0.75);
-	--theme-border-subtle: rgba(255, 122, 0, 0.15);
-
-	--theme-section-bg: rgba(255, 255, 255, 0.03);
-	--theme-button-bg: rgba(255, 255, 255, 0.08);
-	--theme-button-bg-hover: rgba(255, 255, 255, 0.14);
-	--theme-step-inactive: rgba(255, 255, 255, 0.06);
-	--theme-disabled-bg: rgba(255, 255, 255, 0.04);
-
-	--theme-gradient-start: rgba(255, 122, 0, 1);
-	--theme-gradient-end: rgba(255, 20, 147, 0);
+	--theme-surface: #1e2b8c;
+	--theme-background: #0f1b5c;
+	--theme-surface-muted: rgb(255 255 255 / 0.06);
 }
 
 /* ============================================
@@ -259,40 +249,6 @@ article {
 	& p {
 		@apply my-4 text-justify leading-relaxed;
 	}
-}
-
-.dark {
-	--background: oklch(0.145 0 0);
-	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.205 0 0);
-	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.205 0 0);
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.432 0.232 292.759);
-	--primary-foreground: oklch(0.969 0.016 293.756);
-	--secondary: oklch(0.274 0.006 286.033);
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.708 0 0);
-	--accent: oklch(0.269 0 0);
-	--accent-foreground: oklch(0.985 0 0);
-	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.556 0 0);
-	--chart-1: oklch(0.811 0.111 293.571);
-	--chart-2: oklch(0.606 0.25 292.717);
-	--chart-3: oklch(0.541 0.281 293.009);
-	--chart-4: oklch(0.491 0.27 292.581);
-	--chart-5: oklch(0.432 0.232 292.759);
-	--sidebar: oklch(0.205 0 0);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.606 0.25 292.717);
-	--sidebar-primary-foreground: oklch(0.969 0.016 293.756);
-	--sidebar-accent: oklch(0.269 0 0);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
