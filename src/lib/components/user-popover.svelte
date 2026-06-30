@@ -36,6 +36,13 @@
 
 	const hasBanner = $derived(!!discord?.bannerUrl);
 	const accentColor = $derived(discord?.accentColor ?? 'var(--theme-accent)');
+
+	const bgStyle = $derived.by(() => {
+		if (discord?.bannerUrl) {
+			return `background-image: url(${discord.bannerUrl}); background-size: cover; background-position: center;`;
+		}
+		return `background-color: color-mix(in srgb, ${accentColor} 20%, var(--popover) 80%);`;
+	});
 </script>
 
 {#if user}
