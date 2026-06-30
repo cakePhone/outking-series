@@ -1,10 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import Icon from '@iconify/svelte';
 	import { signIn, signOut, session } from '$lib/auth-client';
+	import { Button } from '$lib/components/ui/button';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import UserPopover from './user-popover.svelte';
 	import Logo from './Logo.svelte';
+	import MenuIcon from '@lucide/svelte/icons/menu';
+	import XIcon from '@lucide/svelte/icons/x';
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
@@ -18,10 +22,6 @@
 		await signOut();
 	}
 
-	function toggleMenu() {
-		menuOpen = !menuOpen;
-	}
-
 	function closeMenu() {
 		menuOpen = false;
 	}
@@ -30,8 +30,6 @@
 		if (e.key === 'Escape' && menuOpen) closeMenu();
 	}
 
-	// On mobile: scrolled when menu is closed (unified top bar).
-	// On desktop: scrolled when page is scrolled past 10px.
 	let scrolled = $derived(isMobile || scrollY > 10);
 
 	$effect(() => {
@@ -73,14 +71,6 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<!--
-	Single navbar that adapts:
-	- Mobile (default): scrolled look — top-0, full-width, no border-radius
-	  Shows: logo | login | hamburger
-	- Desktop (sm+): pill-shaped, offset from edges
-	  Shows: logo | nav links | login
-	  class:scrolled triggers on scroll
--->
 <nav
 	class="card translucent-blur fixed top-4 right-2 left-2 z-50 flex h-15 items-center rounded-card border border-transparent bg-clip-padding p-4 text-base transition-all duration-200 sm:right-8 sm:left-8 md:right-10 md:left-10 md:h-20 md:p-6 md:text-xl lg:right-20 lg:left-20"
 	class:scrolled
@@ -89,8 +79,7 @@
 		<Logo />
 	</a>
 
-	<!-- Divider + nav links: visible only on desktop -->
-	<div class="vr mx-13 hidden h-8 border-l border-border-strong sm:block md:h-12"></div>
+	<Separator orientation="vertical" class="mx-13 hidden h-8 sm:block md:h-12" />
 	<ul class="lhs hidden gap-16 sm:flex md:gap-8">
 		<a href={resolve('/teams')}>Equipas</a>
 		<a href={resolve('/events')}>Eventos</a>
@@ -102,66 +91,68 @@
 			{#if $session.data?.user}
 				<UserPopover />
 			{:else}
-				<button
-					class="cursor-pointer appearance-none border-0 bg-transparent p-0"
-					onclick={handleLogin}>Login</button
-				>
+				<Button variant="ghost" onclick={handleLogin}>Login</Button>
 			{/if}
 		</div>
 	{/if}
 
-	<!-- Hamburger: visible only on mobile, switches to X when menu is open -->
-	<button
-		class="flex aspect-square cursor-pointer items-center justify-center rounded-4xl! border-0 p-2.5! sm:hidden"
-		class:ml-auto={menuOpen}
-		onclick={toggleMenu}
+	<!-- Mobile hamburger: opens Sheet -->
+	<Button
+		variant="ghost"
+		size="icon"
+		class="sm:hidden {menuOpen ? 'ml-auto' : ''}"
+		onclick={() => (menuOpen = !menuOpen)}
 		aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-		aria-expanded={menuOpen}
 	>
-		<Icon icon={menuOpen ? 'mdi:close' : 'mdi:menu'} height="28" />
-	</button>
+		{#if menuOpen}
+			<XIcon />
+		{:else}
+			<MenuIcon />
+		{/if}
+	</Button>
 </nav>
 
-<!-- Mobile fullscreen overlay: appears below the navbar -->
-{#if menuOpen}
-	<div
-		class="translucent-blur fixed top-15 right-0 bottom-0 left-0 z-40 flex flex-col items-center justify-center gap-10 sm:hidden"
-		onclick={(e) => {
-			if (e.target === e.currentTarget) closeMenu();
-		}}
-		onkeydown={(e) => {
-			if (e.key === 'Escape') closeMenu();
-		}}
-		role="dialog"
-		aria-modal="true"
-		aria-label="Navigation menu"
-		tabindex="-1"
-	>
-		<nav class="flex flex-col items-center gap-8 text-3xl">
+<!-- Mobile Sheet navigation -->
+<Sheet.Root bind:open={menuOpen}>
+	<Sheet.Portal>
+		<Sheet.Overlay class="sm:hidden" />
+		<Sheet.Content
+			side="top"
+			class="flex flex-col items-center gap-8 pt-20 pb-12 text-3xl sm:hidden"
+		>
+			<Sheet.Header class="sr-only">
+				<Sheet.Title>Navigation menu</Sheet.Title>
+				<Sheet.Description>Site navigation links</Sheet.Description>
+			</Sheet.Header>
 			<a href={resolve('/about')} onclick={closeMenu}>Sobre</a>
 			<a href={resolve('/rules')} onclick={closeMenu}>Regras</a>
 			<a href={resolve('/archive')} onclick={closeMenu}>Arquivo</a>
 			{#if $session.data?.user}
 				<span class="mt-4">{$session.data.user.name}</span>
-				<button
-					class="mt-10 cursor-pointer appearance-none border-0 bg-transparent p-0"
+				<Button
+					variant="ghost"
+					class="mt-10"
 					onclick={() => {
 						handleLogout();
 						closeMenu();
-					}}>Sair</button
+					}}
 				>
+					Sair
+				</Button>
 			{:else}
-				<button
-					class="mt-10 cursor-pointer appearance-none border-0 bg-transparent p-0"
+				<Button
+					class="mt-10"
 					onclick={() => {
 						handleLogin();
 						closeMenu();
-					}}>Login</button
+					}}
 				>
+					Login
+				</Button>
 			{/if}
-		</nav>
-	</div>
-{/if}
+		</Sheet.Content>
+	</Sheet.Portal>
+</Sheet.Root>
 
 <style>
 	nav {

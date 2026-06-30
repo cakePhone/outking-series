@@ -1,27 +1,18 @@
 <script lang="ts">
-	import { SvelteSet } from 'svelte/reactivity';
 	import type { PageData } from './$types';
+	import { Input } from '$lib/components/ui/input';
+	import { Badge } from '$lib/components/ui/badge';
+	import * as Card from '$lib/components/ui/card';
+	import * as Accordion from '$lib/components/ui/accordion';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	let { data }: { data: PageData } = $props();
 
 	let searchQuery = $state('');
-	let expandedSeasons = new SvelteSet<number>();
-
-	// Expand ongoing seasons by default
-	$effect(() => {
-		expandedSeasons.clear();
-		for (const s of data.seasons) {
-			if (s.endDate === null) expandedSeasons.add(s.id);
-		}
-	});
-
-	function toggleSeason(id: number) {
-		if (expandedSeasons.has(id)) {
-			expandedSeasons.delete(id);
-		} else {
-			expandedSeasons.add(id);
-		}
-	}
+	let expandedSeasons = $state<string[]>(
+		data.seasons.filter((s) => s.endDate === null).map((s) => s.id.toString())
+	);
 
 	function filteredTeams(teams: (typeof data.seasons)[0]['teams']) {
 		if (!searchQuery.trim()) return teams;
@@ -49,106 +40,82 @@
 		<p class="text-center text-text-muted">Nenhuma época encontrada.</p>
 	{/if}
 
-	{#each data.seasons as s (s.id)}
-		{@const isExpanded = expandedSeasons.has(s.id)}
-		{@const teams = filteredTeams(s.teams)}
+	<Tooltip.Provider delayDuration={500}>
+		<Accordion.Root type="multiple" bind:value={expandedSeasons}>
+			{#each data.seasons as s (s.id)}
+				{@const teams = filteredTeams(s.teams)}
 
-		<!-- Season card (level 0) -->
-		<div class="card mb-6 overflow-hidden">
-			<button
-				class="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent px-6 py-4 text-left"
-				onclick={() => toggleSeason(s.id)}
-				aria-expanded={isExpanded}
-			>
-				<div>
-					<h2 class="text-xl font-semibold">{s.title}</h2>
-					<p class="text-sm text-text-muted">
-						{fmtDate(s.startDate)} - {fmtDate(s.endDate)}
-					</p>
-				</div>
-				<svg
-					class="h-5 w-5 transition-transform"
-					class:rotate-180={isExpanded}
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M19 9l-7 7-7-7"
-					/>
-				</svg>
-			</button>
+				<Accordion.Item value={s.id.toString()}>
+					<Accordion.Trigger>
+						<div>
+							<h2 class="text-xl font-semibold">{s.title}</h2>
+							<p class="text-sm text-text-muted">
+								{fmtDate(s.startDate)} - {fmtDate(s.endDate)}
+							</p>
+						</div>
+					</Accordion.Trigger>
+					<Accordion.Content>
+						<!-- Search -->
+						<div class="mt-4 mb-6">
+							<Input bind:value={searchQuery} placeholder="Procurar equipa..." class="max-w-sm" />
+						</div>
 
-			{#if isExpanded}
-				<div class="border-t border-border px-6 pb-6">
-					<!-- Search -->
-					<div class="mt-4 mb-6">
-						<input
-							type="text"
-							bind:value={searchQuery}
-							placeholder="Procurar equipa..."
-							class="w-full max-w-sm rounded-lg border border-border bg-transparent px-4 py-2 text-sm transition-colors outline-none focus:border-primary"
-						/>
-					</div>
+						{#if teams.length === 0}
+							<p class="text-sm text-text-muted">
+								{searchQuery ? 'Nenhuma equipa encontrada.' : 'Nenhuma equipa nesta época.'}
+							</p>
+						{/if}
 
-					{#if teams.length === 0}
-						<p class="text-sm text-text-muted">
-							{searchQuery ? 'Nenhuma equipa encontrada.' : 'Nenhuma equipa nesta época.'}
-						</p>
-					{/if}
-
-					<div class="grid gap-4 sm:grid-cols-2">
-						{#each teams as team (team.id)}
-							<!-- Team card (level 1) -->
-							<div class="card bg-section p-4">
-								<div class="mb-3 flex items-center gap-3">
-									{#if team.logoUrl}
-										<img
-											src={team.logoUrl}
-											alt={team.name}
-											class="h-10 w-10 rounded-lg object-cover"
-										/>
-									{:else}
-										<div
-											class="flex h-10 w-10 items-center justify-center rounded-lg bg-button-ghost text-lg font-bold text-text-muted"
-										>
-											{team.tag.slice(0, 2).toUpperCase()}
+						<div class="grid gap-4 sm:grid-cols-2">
+							{#each teams as team (team.id)}
+								<Card.Root>
+									<Card.Content>
+										<div class="mb-3 flex items-center gap-3">
+											<Avatar.Root class="size-10 rounded-lg">
+												{#if team.logoUrl}
+													<Avatar.Image src={team.logoUrl} alt={team.name} />
+												{/if}
+												<Avatar.Fallback>
+													{team.tag.slice(0, 2).toUpperCase()}
+												</Avatar.Fallback>
+											</Avatar.Root>
+											<div>
+												<h3 class="font-semibold">{team.name}</h3>
+												<span class="text-sm text-text-muted">[{team.tag}]</span>
+											</div>
+											<div class="ml-auto text-right text-sm text-text-dim">
+												<span class="font-semibold text-success">{team.wins}W</span>
+												<span class="mx-1">-</span>
+												<span class="font-semibold text-error">{team.losses}L</span>
+												{#if team.matchesPlayed > 0}
+													<div class="text-xs text-text-muted">{team.matchesPlayed} jogos</div>
+												{/if}
+											</div>
 										</div>
-									{/if}
-									<div>
-										<h3 class="font-semibold">{team.name}</h3>
-										<span class="text-sm text-text-muted">[{team.tag}]</span>
-									</div>
-									<div class="ml-auto text-right text-sm text-text-dim">
-										<span class="font-semibold text-success">{team.wins}W</span>
-										<span class="mx-1">-</span>
-										<span class="font-semibold text-error">{team.losses}L</span>
-										{#if team.matchesPlayed > 0}
-											<div class="text-xs text-text-muted">{team.matchesPlayed} jogos</div>
-										{/if}
-									</div>
-								</div>
 
-								<!-- Roster (inline badges, NOT cards) -->
-								<div class="flex flex-wrap gap-1.5">
-									{#each team.roster as p (p.playerId)}
-										<span
-											class="inline-flex items-center gap-1 rounded-full bg-button-ghost px-2 py-0.5 text-xs"
-											title="{p.role}: {p.displayName} ({p.riotId})"
-										>
-											<span class="text-text-dim">{roleLabel[p.role] ?? p.role}:</span>
-											<span class="font-medium">{p.displayName}</span>
-										</span>
-									{/each}
-								</div>
-							</div>
-						{/each}
-					</div>
-				</div>
-			{/if}
-		</div>
-	{/each}
+										<!-- Roster -->
+										<div class="flex flex-wrap gap-1.5">
+											{#each team.roster as p (p.playerId)}
+												<Tooltip.Root>
+													<Tooltip.Trigger>
+														<Badge variant="secondary">
+															<span class="text-text-dim">{roleLabel[p.role] ?? p.role}:</span>
+															<span class="font-medium">{p.displayName}</span>
+														</Badge>
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														{p.role}: {p.displayName} ({p.riotId})
+													</Tooltip.Content>
+												</Tooltip.Root>
+											{/each}
+										</div>
+									</Card.Content>
+								</Card.Root>
+							{/each}
+						</div>
+					</Accordion.Content>
+				</Accordion.Item>
+			{/each}
+		</Accordion.Root>
+	</Tooltip.Provider>
 </div>

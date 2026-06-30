@@ -2,10 +2,11 @@
 	import { onMount } from 'svelte';
 	import { signOut, session } from '$lib/auth-client';
 	import { invalidateAll } from '$app/navigation';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import { Separator } from '$lib/components/ui/separator';
 	import type { DiscordUserData } from '$lib/server/discord';
 
-	let open = $state(false);
-	let popoverEl = $state<HTMLDivElement>();
 	let discord = $state<DiscordUserData | null>(null);
 
 	const user = $derived($session.data?.user ?? null);
@@ -23,109 +24,56 @@
 		await invalidateAll();
 	}
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') open = false;
-	}
-
-	$effect(() => {
-		if (!open) return;
-		const close = (e: MouseEvent) => {
-			if (popoverEl && !popoverEl.contains(e.target as Node)) open = false;
-		};
-		// Small delay so the same click that opened it doesn't close it
-		const id = setTimeout(() => document.addEventListener('click', close), 0);
-		return () => {
-			clearTimeout(id);
-			document.removeEventListener('click', close);
-		};
-	});
+	const avatarUrl = $derived(
+		discord?.guildAvatarUrl ??
+			discord?.avatarUrl ??
+			'https://cdn.discordapp.com/embed/avatars/0.png'
+	);
+	const displayName = $derived(discord?.profile.global_name ?? discord?.profile.username ?? 'User');
+	const username = $derived(discord?.profile.username ?? 'unknown');
+	const initials = $derived(displayName.slice(0, 2).toUpperCase());
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
-
 {#if user}
-	<div class="relative h-12 w-12" bind:this={popoverEl}>
-		<!-- Trigger: avatar button -->
-		<button
-			class="cursor-pointer border-0 bg-transparent"
-			onclick={() => (open = !open)}
+	<DropdownMenu.Root>
+		<DropdownMenu.Trigger
+			class="cursor-pointer appearance-none border-0 bg-transparent p-0"
 			aria-label="User menu"
-			aria-expanded={open}
 		>
-			<div class="relative">
-				<img
-					src={discord?.avatarUrl ?? `https://cdn.discordapp.com/embed/avatars/0.png`}
-					alt={discord?.profile.username ?? 'User'}
-					class="h-full w-full rounded-full"
-				/>
-				{#if discord?.decorationUrl}
-					<img
-						src={discord.decorationUrl}
-						alt=""
-						class="pointer-events-none absolute top-1/2 left-1/2 z-20 min-h-[120%] min-w-[120%] -translate-x-1/2 -translate-y-1/2"
-					/>
-				{/if}
-			</div>
-		</button>
+			<Avatar.Root class="size-12">
+				<Avatar.Image src={avatarUrl} alt={displayName} />
+				<Avatar.Fallback>{initials}</Avatar.Fallback>
+			</Avatar.Root>
+		</DropdownMenu.Trigger>
 
-		<!-- Dropdown panel -->
-		{#if open}
+		<DropdownMenu.Content align="end" class="w-56 overflow-hidden p-0">
+			<!-- Banner header -->
 			<div
-				class="card absolute top-full right-0 z-50 h-fit w-56 overflow-hidden rounded-xl"
-				role="menu"
-				tabindex="-1"
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={(e) => {
-					if (e.key === 'Escape') open = false;
-				}}
-			>
-				<!-- Banner header -->
-				<div
-					class="h-20 w-full bg-cover bg-center"
-					style={discord?.bannerUrl
-						? `background-image: url(${discord.bannerUrl}); background-color: ${discord.accentColor ?? '#000'}`
-						: `background-color: ${discord?.accentColor ?? 'var(--theme-accent)'}`}
-				></div>
+				class="h-20 w-full bg-cover bg-center"
+				style={discord?.bannerUrl
+					? `background-image: url(${discord.bannerUrl}); background-color: ${discord.accentColor ?? '#000'}`
+					: `background-color: ${discord?.accentColor ?? 'var(--theme-accent)'}`}
+			></div>
 
-				<div class="-mt-5 flex items-center gap-2 px-4">
-					<!-- Avatar (overlaps banner) -->
-					<div class="relative w-20 flex-none">
-						<img
-							src={discord?.guildAvatarUrl ??
-								discord?.avatarUrl ??
-								`https://cdn.discordapp.com/embed/avatars/0.png`}
-							alt={discord?.profile.username ?? 'User'}
-							class="aspect-square w-full rounded-full border-4 border-surface"
-						/>
-						{#if discord?.decorationUrl}
-							<img
-								src={discord.decorationUrl}
-								alt=""
-								class="pointer-events-none absolute top-1/2 left-1/2 min-h-[120%] min-w-[120%] -translate-x-1/2 -translate-y-1/2"
-							/>
-						{/if}
-					</div>
-
-					<!-- Username -->
-					<div class="m-0 mt-5 flex flex-col text-center">
-						<span class="text-lg font-semibold">
-							{discord?.profile.global_name ?? discord?.profile.username ?? 'Unknown'}
-						</span>
-						{#if discord?.profile.global_name && discord.profile.global_name !== discord.profile.username}
-							<span class="text-sm text-text-dim">
-								@{discord.profile.username}
-							</span>
-						{/if}
-					</div>
+			<!-- Profile section: avatar overlapping banner -->
+			<div class="-mt-5 flex items-center gap-3 px-4 pb-3">
+				<Avatar.Root class="size-16 border-4 border-background">
+					<Avatar.Image src={avatarUrl} alt={displayName} />
+					<Avatar.Fallback>{initials}</Avatar.Fallback>
+				</Avatar.Root>
+				<div class="flex flex-col">
+					<span class="text-sm font-semibold">{displayName}</span>
+					{#if discord?.profile.global_name && discord.profile.global_name !== discord.profile.username}
+						<span class="text-xs text-muted-foreground">@{username}</span>
+					{/if}
 				</div>
-				<!-- Logout -->
-				<button
-					class="mt-4 w-full cursor-pointer border-0 bg-button-ghost px-4 py-2 text-sm transition-colors hover:bg-button-ghost-hover"
-					onclick={handleLogout}
-				>
-					Sair
-				</button>
 			</div>
-		{/if}
-	</div>
+
+			<Separator />
+
+			<DropdownMenu.Group>
+				<DropdownMenu.Item onclick={handleLogout}>Sair</DropdownMenu.Item>
+			</DropdownMenu.Group>
+		</DropdownMenu.Content>
+	</DropdownMenu.Root>
 {/if}

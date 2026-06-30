@@ -5,6 +5,12 @@
 	import Icon from '@iconify/svelte';
 	import type { PageProps } from './$types';
 	import type { TeamRegisterForm } from '$lib/validators/team-register';
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
+	import * as Select from '$lib/components/ui/select';
+	import * as Card from '$lib/components/ui/card';
+	import * as Alert from '$lib/components/ui/alert';
+	import * as Field from '$lib/components/ui/field';
 
 	let { data }: PageProps = $props();
 
@@ -139,31 +145,27 @@
 	</p>
 
 	{#if !data.isMember}
-		<div class="card flex flex-col items-center gap-4 p-8 text-center">
+		<Alert.Root>
 			<Icon icon="mdi:discord" height="48" class="text-primary" />
-			<p class="text-lg">
+			<Alert.Title>Não és membro</Alert.Title>
+			<Alert.Description>
 				Parece que ainda não fazes parte do servidor da Outking, apenas membros do servidor podem
-				participar:
-			</p>
-			<a
-				href={data.inviteUrl}
-				target="_blank"
-				rel="external noopener noreferrer"
-				class="rounded-lg bg-primary px-6 py-3 font-semibold text-white no-underline transition-colors hover:bg-primary-hover"
-			>
-				Entrar no Servidor
-			</a>
-		</div>
+				participar.
+			</Alert.Description>
+			<Alert.Action>
+				<Button href={data.inviteUrl} target="_blank" rel="external noopener noreferrer">
+					Entrar no Servidor
+				</Button>
+			</Alert.Action>
+		</Alert.Root>
 	{:else}
 		<!-- Step progress -->
 		<div class="mb-8 flex gap-1">
 			{#each stepLabels as label, i}
-				<button
-					class="flex-1 cursor-pointer rounded-full border-0 px-2 py-2 text-center text-xs transition-colors"
-					class:bg-primary={i <= step}
-					class:text-white={i <= step}
-					class:bg-step-inactive={i > step}
-					class:text-text-inactive={i > step}
+				<Button
+					variant={i <= step ? 'default' : 'secondary'}
+					size="xs"
+					class="flex-1"
 					onclick={async () => {
 						if (i > step) {
 							for (let s = step; s < i; s++) {
@@ -180,364 +182,366 @@
 					}}
 				>
 					{label}
-				</button>
+				</Button>
 			{/each}
 		</div>
 
-		<form method="POST" use:enhance class="card p-8">
-			{#if $flashMessage}
-				<div
-					class="mb-6 rounded-lg p-3 text-sm"
-					class:bg-success-bg={$flashMessage.type === 'success'}
-					class:text-success={$flashMessage.type === 'success'}
-					class:bg-error-bg={$flashMessage.type === 'error'}
-					class:text-error={$flashMessage.type === 'error'}
-				>
-					{$flashMessage.text}
-				</div>
-			{/if}
-
-			<!-- Step 0: Creator -->
-			{#if step === 0}
-				<h2 class="mb-6 text-xl">Quem cria a equipa</h2>
-
-				<div class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-text-muted">Discord</span>
-					<input
-						type="text"
-						value={data.userDiscord}
-						disabled
-						class="rounded-lg border border-border-subtle bg-disabled px-4 py-3 text-text-dim outline-none"
-					/>
-				</div>
-
-				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-text-muted"
-						>Riot ID (Nome#Tag) <span class="text-error">*</span></span
-					>
-					<input
-						type="text"
-						name="creator_riot_id"
-						bind:value={$formData.creator_riot_id}
-						placeholder="Ex: OutKing#1234"
-						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
-					/>
-					{#if $errors.creator_riot_id}
-						<span class="text-sm text-error">{$errors.creator_riot_id}</span>
+		<Card.Root>
+			<Card.Content class="p-8">
+				<form method="POST" use:enhance>
+					{#if $flashMessage}
+						<Alert.Root
+							variant={$flashMessage.type === 'error' ? 'destructive' : 'default'}
+							class="mb-6"
+						>
+							<Alert.Description>{$flashMessage.text}</Alert.Description>
+						</Alert.Root>
 					{/if}
-					{#if creatorRankError}
-						<span class="text-sm text-error">{creatorRankError}</span>
+
+					<!-- Step 0: Creator -->
+					{#if step === 0}
+						<h2 class="mb-6 text-xl">Quem cria a equipa</h2>
+
+						<Field.FieldGroup>
+							<Field.Field data-disabled>
+								<Field.FieldLabel for="creator_discord">Discord</Field.FieldLabel>
+								<Input id="creator_discord" value={data.userDiscord} disabled />
+							</Field.Field>
+
+							<Field.Field
+								data-invalid={$errors.creator_riot_id || creatorRankError ? true : undefined}
+							>
+								<Field.FieldLabel for="creator_riot_id">
+									Riot ID (Nome#Tag) <span class="text-error">*</span>
+								</Field.FieldLabel>
+								<Input
+									id="creator_riot_id"
+									name="creator_riot_id"
+									bind:value={$formData.creator_riot_id}
+									placeholder="Ex: OutKing#1234"
+									aria-invalid={$errors.creator_riot_id || creatorRankError ? true : undefined}
+								/>
+								{#if $errors.creator_riot_id}
+									<Field.FieldError>{$errors.creator_riot_id}</Field.FieldError>
+								{/if}
+								{#if creatorRankError}
+									<Field.FieldError>{creatorRankError}</Field.FieldError>
+								{/if}
+								{#if checkingCreatorRank}
+									<Field.FieldDescription>A verificar rank...</Field.FieldDescription>
+								{/if}
+							</Field.Field>
+
+							<Field.Field data-invalid={$errors.creator_role ? true : undefined}>
+								<Field.FieldLabel for="creator_role">
+									Cargo na equipa <span class="text-error">*</span>
+								</Field.FieldLabel>
+								<input type="hidden" name="creator_role" value={$formData.creator_role} />
+								<Select.Root bind:value={$formData.creator_role}>
+									<Select.Trigger>
+										{roles.find((r) => r.value === $formData.creator_role)?.label ?? 'Seleciona...'}
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Group>
+											{#each roles as r}
+												<Select.Item value={r.value} label={r.label} />
+											{/each}
+										</Select.Group>
+									</Select.Content>
+								</Select.Root>
+								{#if $errors.creator_role}
+									<Field.FieldError>{$errors.creator_role}</Field.FieldError>
+								{/if}
+							</Field.Field>
+						</Field.FieldGroup>
 					{/if}
-					{#if checkingCreatorRank}
-						<span class="text-sm text-text-dim">A verificar rank...</span>
+
+					<!-- Step 1: Team info -->
+					{#if step === 1}
+						<h2 class="mb-6 text-xl">Sobre a equipa</h2>
+
+						<Field.FieldGroup>
+							<Field.Field data-invalid={$errors.team_name ? true : undefined}>
+								<Field.FieldLabel for="team_name">
+									Nome da equipa <span class="text-error">*</span>
+								</Field.FieldLabel>
+								<Input
+									id="team_name"
+									name="team_name"
+									bind:value={$formData.team_name}
+									placeholder="Ex: OutKing Dragons"
+									aria-invalid={$errors.team_name ? true : undefined}
+								/>
+								{#if $errors.team_name}
+									<Field.FieldError>{$errors.team_name}</Field.FieldError>
+								{/if}
+							</Field.Field>
+
+							<Field.Field data-invalid={$errors.team_tag ? true : undefined}>
+								<Field.FieldLabel for="team_tag">
+									Tag (2-5 carateres) <span class="text-error">*</span>
+								</Field.FieldLabel>
+								<Input
+									id="team_tag"
+									name="team_tag"
+									bind:value={$formData.team_tag}
+									placeholder="Ex: OKD"
+									maxlength={5}
+									aria-invalid={$errors.team_tag ? true : undefined}
+								/>
+								{#if $errors.team_tag}
+									<Field.FieldError>{$errors.team_tag}</Field.FieldError>
+								{/if}
+							</Field.Field>
+
+							<Field.Field data-invalid={$errors.team_logo_url ? true : undefined}>
+								<Field.FieldLabel for="team_logo_url">Logo (URL)</Field.FieldLabel>
+								<Input
+									id="team_logo_url"
+									type="url"
+									name="team_logo_url"
+									bind:value={$formData.team_logo_url}
+									placeholder="https://..."
+									aria-invalid={$errors.team_logo_url ? true : undefined}
+								/>
+								{#if $errors.team_logo_url}
+									<Field.FieldError>{$errors.team_logo_url}</Field.FieldError>
+								{/if}
+							</Field.Field>
+
+							<Field.Field>
+								<Field.FieldLabel for="team_socials">Redes sociais (opcional)</Field.FieldLabel>
+								<Input
+									id="team_socials"
+									name="team_socials"
+									bind:value={$formData.team_socials}
+									placeholder="Ex: @outking no X, /outking no Discord"
+								/>
+							</Field.Field>
+						</Field.FieldGroup>
 					{/if}
-				</label>
 
-				<label class="flex flex-col gap-1">
-					<span class="text-sm text-text-muted"
-						>Cargo na equipa <span class="text-error">*</span></span
-					>
-					<select
-						name="creator_role"
-						bind:value={$formData.creator_role}
-						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
-					>
-						<option value="">Seleciona...</option>
-						{#each roles as r}
-							<option value={r.value}>{r.label}</option>
-						{/each}
-					</select>
-					{#if $errors.creator_role}
-						<span class="text-sm text-error">{$errors.creator_role}</span>
+					<!-- Step 2: Players -->
+					{#if step === 2}
+						<h2 class="mb-6 text-xl">Jogadores <span class="text-error">*</span></h2>
+						<p class="mb-4 text-sm text-text-muted">
+							Adiciona os jogadores da equipa (até 7, incluindo suplentes).
+						</p>
+
+						<Field.FieldGroup>
+							{#each $formData.players as _, i}
+								<div class="rounded-lg bg-section p-4">
+									<div class="mb-2 flex items-center justify-between">
+										<span class="text-sm text-text-muted">Jogador {i + 1}</span>
+										{#if $formData.players.length > 1}
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon-sm"
+												onclick={() => removePlayer(i)}
+											>
+												<Icon icon="mdi:close" height="18" />
+											</Button>
+										{/if}
+									</div>
+
+									<Field.Field data-invalid={$errors.players?.[i]?.discord ? true : undefined}>
+										<Input
+											name="players[{i}].discord"
+											bind:value={$formData.players[i].discord}
+											placeholder="Discord (Ex: @username) *"
+											aria-invalid={$errors.players?.[i]?.discord ? true : undefined}
+										/>
+										{#if $errors.players?.[i]?.discord}
+											<Field.FieldError>{$errors.players[i].discord}</Field.FieldError>
+										{/if}
+									</Field.Field>
+
+									<Field.Field data-invalid={$errors.players?.[i]?.riot_id ? true : undefined}>
+										<Input
+											name="players[{i}].riot_id"
+											bind:value={$formData.players[i].riot_id}
+											placeholder="Riot ID (Ex: Nome#Tag) *"
+											aria-invalid={$errors.players?.[i]?.riot_id ? true : undefined}
+										/>
+										{#if $errors.players?.[i]?.riot_id}
+											<Field.FieldError>{$errors.players[i].riot_id}</Field.FieldError>
+										{/if}
+									</Field.Field>
+
+									<Field.Field data-invalid={$errors.players?.[i]?.display_name ? true : undefined}>
+										<Input
+											name="players[{i}].display_name"
+											bind:value={$formData.players[i].display_name}
+											placeholder="Nome para os casters *"
+											aria-invalid={$errors.players?.[i]?.display_name ? true : undefined}
+										/>
+										{#if $errors.players?.[i]?.display_name}
+											<Field.FieldError>{$errors.players[i].display_name}</Field.FieldError>
+										{/if}
+									</Field.Field>
+								</div>
+							{/each}
+						</Field.FieldGroup>
+
+						{#if $errors.players?._errors}
+							<span class="mb-2 block text-sm text-error">
+								{$errors.players._errors.join(', ')}
+							</span>
+						{/if}
+
+						{#if $formData.players.length < 7}
+							<Button type="button" variant="outline" class="mt-4 w-full" onclick={addPlayer}>
+								+ Adicionar jogador
+							</Button>
+						{/if}
 					{/if}
-				</label>
-			{/if}
 
-			<!-- Step 1: Team info -->
-			{#if step === 1}
-				<h2 class="mb-6 text-xl">Sobre a equipa</h2>
+					<!-- Step 3: Staff -->
+					{#if step === 3}
+						<h2 class="mb-6 text-xl">Equipa Técnica</h2>
+						<p class="mb-4 text-sm text-text-muted">Adiciona coach e/ou analista (opcional).</p>
 
-				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-text-muted"
-						>Nome da equipa <span class="text-error">*</span></span
-					>
-					<input
-						type="text"
-						name="team_name"
-						bind:value={$formData.team_name}
-						placeholder="Ex: OutKing Dragons"
-						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
-					/>
-					{#if $errors.team_name}
-						<span class="text-sm text-error">{$errors.team_name}</span>
+						<Field.FieldGroup>
+							{#each $formData.staff as _, i}
+								<div class="rounded-lg bg-section p-4">
+									<div class="mb-2 flex items-center justify-between">
+										<span class="text-sm text-text-muted">Staff {i + 1}</span>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon-sm"
+											onclick={() => removeStaff(i)}
+										>
+											<Icon icon="mdi:close" height="18" />
+										</Button>
+									</div>
+
+									<Field.Field data-invalid={$errors.staff?.[i]?.discord ? true : undefined}>
+										<Input
+											name="staff[{i}].discord"
+											bind:value={$formData.staff[i].discord}
+											placeholder="Discord (Ex: @username) *"
+											aria-invalid={$errors.staff?.[i]?.discord ? true : undefined}
+										/>
+										{#if $errors.staff?.[i]?.discord}
+											<Field.FieldError>{$errors.staff[i].discord}</Field.FieldError>
+										{/if}
+									</Field.Field>
+
+									<Field.Field data-invalid={$errors.staff?.[i]?.riot_id ? true : undefined}>
+										<Input
+											name="staff[{i}].riot_id"
+											bind:value={$formData.staff[i].riot_id}
+											placeholder="Riot ID (Ex: Nome#Tag) *"
+											aria-invalid={$errors.staff?.[i]?.riot_id ? true : undefined}
+										/>
+										{#if $errors.staff?.[i]?.riot_id}
+											<Field.FieldError>{$errors.staff[i].riot_id}</Field.FieldError>
+										{/if}
+									</Field.Field>
+
+									<Field.Field data-invalid={$errors.staff?.[i]?.display_name ? true : undefined}>
+										<Input
+											name="staff[{i}].display_name"
+											bind:value={$formData.staff[i].display_name}
+											placeholder="Nome para os casters *"
+											aria-invalid={$errors.staff?.[i]?.display_name ? true : undefined}
+										/>
+										{#if $errors.staff?.[i]?.display_name}
+											<Field.FieldError>{$errors.staff[i].display_name}</Field.FieldError>
+										{/if}
+									</Field.Field>
+
+									<Field.Field data-invalid={$errors.staff?.[i]?.role ? true : undefined}>
+										<Input
+											name="staff[{i}].role"
+											bind:value={$formData.staff[i].role}
+											placeholder="Cargo *"
+											aria-invalid={$errors.staff?.[i]?.role ? true : undefined}
+										/>
+										{#if $errors.staff?.[i]?.role}
+											<Field.FieldError>{$errors.staff[i].role}</Field.FieldError>
+										{/if}
+									</Field.Field>
+								</div>
+							{/each}
+						</Field.FieldGroup>
+
+						<Button type="button" variant="outline" class="mt-4 w-full" onclick={addStaff}>
+							+ Adicionar staff
+						</Button>
 					{/if}
-				</label>
 
-				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-text-muted"
-						>Tag (2-5 carateres) <span class="text-error">*</span></span
-					>
-					<input
-						type="text"
-						name="team_tag"
-						bind:value={$formData.team_tag}
-						placeholder="Ex: OKD"
-						maxlength="5"
-						class="rounded-lg border border-border bg-transparent px-4 py-3 uppercase transition-colors outline-none focus:border-primary"
-					/>
-					{#if $errors.team_tag}
-						<span class="text-sm text-error">{$errors.team_tag}</span>
-					{/if}
-				</label>
+					<!-- Step 4: Review -->
+					{#if step === 4}
+						<h2 class="mb-6 text-xl">Rever inscrição</h2>
 
-				<label class="mb-4 flex flex-col gap-1">
-					<span class="text-sm text-text-muted">Logo (URL)</span>
-					<input
-						type="url"
-						name="team_logo_url"
-						bind:value={$formData.team_logo_url}
-						placeholder="https://..."
-						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
-					/>
-					{#if $errors.team_logo_url}
-						<span class="text-sm text-error">{$errors.team_logo_url}</span>
-					{/if}
-				</label>
+						<div class="mb-4 rounded-lg bg-section p-4">
+							<h3 class="mb-2 text-sm text-text-muted">Quem cria</h3>
+							<p><strong>Discord:</strong> {data.userDiscord}</p>
+							<p><strong>Riot ID:</strong> {$formData.creator_riot_id || '—'}</p>
+							<p>
+								<strong>Cargo:</strong>
+								{roles.find((r) => r.value === $formData.creator_role)?.label ?? '—'}
+							</p>
+						</div>
 
-				<label class="flex flex-col gap-1">
-					<span class="text-sm text-text-muted">Redes sociais (opcional)</span>
-					<input
-						type="text"
-						name="team_socials"
-						bind:value={$formData.team_socials}
-						placeholder="Ex: @outking no X, /outking no Discord"
-						class="rounded-lg border border-border bg-transparent px-4 py-3 transition-colors outline-none focus:border-primary"
-					/>
-				</label>
-			{/if}
-
-			<!-- Step 2: Players -->
-			{#if step === 2}
-				<h2 class="mb-6 text-xl">Jogadores <span class="text-error">*</span></h2>
-				<p class="mb-4 text-sm text-text-muted">
-					Adiciona os jogadores da equipa (até 7, incluindo suplentes).
-				</p>
-
-				{#each $formData.players as _, i}
-					<div class="mb-4 rounded-lg bg-section p-4">
-						<div class="mb-2 flex items-center justify-between">
-							<span class="text-sm text-text-muted">Jogador {i + 1}</span>
-							{#if $formData.players.length > 1}
-								<button
-									type="button"
-									class="cursor-pointer border-0 bg-transparent p-1 text-error"
-									onclick={() => removePlayer(i)}
-								>
-									<Icon icon="mdi:close" height="18" />
-								</button>
+						<div class="mb-4 rounded-lg bg-section p-4">
+							<h3 class="mb-2 text-sm text-text-muted">Equipa</h3>
+							<p><strong>Nome:</strong> {$formData.team_name || '—'}</p>
+							<p><strong>Tag:</strong> {$formData.team_tag || '—'}</p>
+							{#if $formData.team_logo_url}
+								<p><strong>Logo:</strong> {$formData.team_logo_url}</p>
+							{/if}
+							{#if $formData.team_socials}
+								<p><strong>Redes:</strong> {$formData.team_socials}</p>
 							{/if}
 						</div>
-						<input
-							type="text"
-							name="players[{i}].discord"
-							bind:value={$formData.players[i].discord}
-							placeholder="Discord (Ex: @username) *"
-							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.players?.[i]?.discord}
-							<span class="mb-2 block text-sm text-error">{$errors.players[i].discord}</span>
-						{/if}
-						<input
-							type="text"
-							name="players[{i}].riot_id"
-							bind:value={$formData.players[i].riot_id}
-							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.players?.[i]?.riot_id}
-							<span class="mb-2 block text-sm text-error">{$errors.players[i].riot_id}</span>
-						{/if}
-						<input
-							type="text"
-							name="players[{i}].display_name"
-							bind:value={$formData.players[i].display_name}
-							placeholder="Nome para os casters *"
-							class="w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.players?.[i]?.display_name}
-							<span class="block text-sm text-error">{$errors.players[i].display_name}</span>
-						{/if}
-					</div>
-				{/each}
 
-				{#if $errors.players?._errors}
-					<span class="mb-2 block text-sm text-error">
-						{$errors.players._errors.join(', ')}
-					</span>
-				{/if}
-
-				{#if $formData.players.length < 7}
-					<button
-						type="button"
-						class="cursor-pointer rounded-lg border border-dashed border-border bg-transparent px-4 py-3 text-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
-						onclick={addPlayer}
-					>
-						+ Adicionar jogador
-					</button>
-				{/if}
-			{/if}
-
-			<!-- Step 3: Staff -->
-			{#if step === 3}
-				<h2 class="mb-6 text-xl">Equipa Técnica</h2>
-				<p class="mb-4 text-sm text-text-muted">Adiciona coach e/ou analista (opcional).</p>
-
-				{#each $formData.staff as _, i}
-					<div class="mb-4 rounded-lg bg-section p-4">
-						<div class="mb-2 flex items-center justify-between">
-							<span class="text-sm text-text-muted">Staff {i + 1}</span>
-							<button
-								type="button"
-								class="cursor-pointer border-0 bg-transparent p-1 text-error"
-								onclick={() => removeStaff(i)}
-							>
-								<Icon icon="mdi:close" height="18" />
-							</button>
+						<div class="mb-4 rounded-lg bg-section p-4">
+							<h3 class="mb-2 text-sm text-text-muted">
+								Jogadores ({$formData.players.length})
+							</h3>
+							{#each $formData.players as p, i}
+								<p class="text-sm">
+									{i + 1}. {p.display_name || '—'} ({p.discord || '—'})
+								</p>
+							{/each}
 						</div>
-						<input
-							type="text"
-							name="staff[{i}].discord"
-							bind:value={$formData.staff[i].discord}
-							placeholder="Discord (Ex: @username) *"
-							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.staff?.[i]?.discord}
-							<span class="mb-2 block text-sm text-error">{$errors.staff[i].discord}</span>
+
+						{#if $formData.staff.length > 0}
+							<div class="mb-4 rounded-lg bg-section p-4">
+								<h3 class="mb-2 text-sm text-text-muted">
+									Equipa Técnica ({$formData.staff.length})
+								</h3>
+								{#each $formData.staff as st, i}
+									<p class="text-sm">
+										{i + 1}. {st.display_name || '—'} — {st.role || '—'}
+									</p>
+								{/each}
+							</div>
 						{/if}
-						<input
-							type="text"
-							name="staff[{i}].riot_id"
-							bind:value={$formData.staff[i].riot_id}
-							placeholder="Riot ID (Ex: Nome#Tag) *"
-							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.staff?.[i]?.riot_id}
-							<span class="mb-2 block text-sm text-error">{$errors.staff[i].riot_id}</span>
+					{/if}
+
+					<!-- Navigation -->
+					<div class="mt-8 flex justify-between">
+						{#if step > 0}
+							<Button type="button" variant="outline" onclick={() => (step = step - 1)}>
+								← Anterior
+							</Button>
+						{:else}
+							<div></div>
 						{/if}
-						<input
-							type="text"
-							name="staff[{i}].display_name"
-							bind:value={$formData.staff[i].display_name}
-							placeholder="Nome para os casters *"
-							class="mb-1 w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.staff?.[i]?.display_name}
-							<span class="mb-2 block text-sm text-error">{$errors.staff[i].display_name}</span>
-						{/if}
-						<input
-							type="text"
-							name="staff[{i}].role"
-							bind:value={$formData.staff[i].role}
-							placeholder="Cargo *"
-							class="w-full rounded-lg border border-border bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-primary"
-						/>
-						{#if $errors.staff?.[i]?.role}
-							<span class="block text-sm text-error">{$errors.staff[i].role}</span>
+
+						{#if step < 4}
+							<Button type="button" variant="default" onclick={nextStep}>Seguinte →</Button>
+						{:else}
+							<Button type="submit" variant="default">Submeter Inscrição</Button>
 						{/if}
 					</div>
-				{/each}
-
-				<button
-					type="button"
-					class="cursor-pointer rounded-lg border border-dashed border-border bg-transparent px-4 py-3 text-sm text-text-muted transition-colors hover:border-primary hover:text-primary"
-					onclick={addStaff}
-				>
-					+ Adicionar staff
-				</button>
-			{/if}
-
-			<!-- Step 4: Review -->
-			{#if step === 4}
-				<h2 class="mb-6 text-xl">Rever inscrição</h2>
-
-				<div class="mb-4 rounded-lg bg-section p-4">
-					<h3 class="mb-2 text-sm text-text-muted">Quem cria</h3>
-					<p><strong>Discord:</strong> {data.userDiscord}</p>
-					<p><strong>Riot ID:</strong> {$formData.creator_riot_id || '—'}</p>
-					<p>
-						<strong>Cargo:</strong>
-						{roles.find((r) => r.value === $formData.creator_role)?.label ?? '—'}
-					</p>
-				</div>
-
-				<div class="mb-4 rounded-lg bg-section p-4">
-					<h3 class="mb-2 text-sm text-text-muted">Equipa</h3>
-					<p><strong>Nome:</strong> {$formData.team_name || '—'}</p>
-					<p><strong>Tag:</strong> {$formData.team_tag || '—'}</p>
-					{#if $formData.team_logo_url}
-						<p><strong>Logo:</strong> {$formData.team_logo_url}</p>
-					{/if}
-					{#if $formData.team_socials}
-						<p><strong>Redes:</strong> {$formData.team_socials}</p>
-					{/if}
-				</div>
-
-				<div class="mb-4 rounded-lg bg-section p-4">
-					<h3 class="mb-2 text-sm text-text-muted">
-						Jogadores ({$formData.players.length})
-					</h3>
-					{#each $formData.players as p, i}
-						<p class="text-sm">
-							{i + 1}. {p.display_name || '—'} ({p.discord || '—'})
-						</p>
-					{/each}
-				</div>
-
-				{#if $formData.staff.length > 0}
-					<div class="mb-4 rounded-lg bg-section p-4">
-						<h3 class="mb-2 text-sm text-text-muted">
-							Equipa Técnica ({$formData.staff.length})
-						</h3>
-						{#each $formData.staff as st, i}
-							<p class="text-sm">
-								{i + 1}. {st.display_name || '—'} — {st.role || '—'}
-							</p>
-						{/each}
-					</div>
-				{/if}
-			{/if}
-
-			<!-- Navigation -->
-			<div class="mt-8 flex justify-between">
-				{#if step > 0}
-					<button
-						type="button"
-						class="cursor-pointer rounded-lg border-0 bg-button-ghost px-6 py-3 text-sm transition-colors hover:bg-button-ghost-hover"
-						onclick={() => (step = step - 1)}
-					>
-						← Anterior
-					</button>
-				{:else}
-					<div></div>
-				{/if}
-
-				{#if step < 4}
-					<button
-						type="button"
-						class="cursor-pointer rounded-lg bg-primary px-6 py-3 text-sm transition-colors hover:bg-primary-hover"
-						onclick={nextStep}
-					>
-						Seguinte →
-					</button>
-				{:else}
-					<button
-						type="submit"
-						class="cursor-pointer rounded-lg bg-primary px-8 py-3 font-semibold transition-colors hover:bg-primary-hover"
-					>
-						Submeter Inscrição
-					</button>
-				{/if}
-			</div>
-		</form>
+				</form>
+			</Card.Content>
+		</Card.Root>
 	{/if}
 </div>
