@@ -262,7 +262,7 @@
 								<Select.Root
 									type="single"
 									bind:value={$formData.creator_role}
-									onchange={() => {
+									onValueChange={() => {
 										validateField('creator_role');
 										checkCreatorRank();
 									}}
