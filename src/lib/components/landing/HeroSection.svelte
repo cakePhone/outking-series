@@ -34,21 +34,20 @@
 				Junta-te a mais de 150 jogadores
 			{/if}
 		</h1>
-		<p class="max-w-xl text-lg text-text-muted md:text-xl"></p>
-		<Button size="lg" class="rounded-full text-lg" onclick={handleClick}>
-			{$session.data?.user ? 'Registar Equipa' : 'Entrar com Discord'}
-		</Button>
-		<p class="text-sm text-text-dim">
+		<p class="max-w-xl text-lg text-text-muted md:text-xl">
 			{#if $session.data?.user}
 				Pronto para competir?
 			{:else}
 				Faz login com Discord para comecares.
 			{/if}
 		</p>
+		<Button size="lg" type="button" class="text-lg" onclick={handleClick}>
+			{$session.data?.user ? 'Registar Equipa' : 'Entrar com Discord'}
+		</Button>
 	</div>
 
 	<div class="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
-		<span class="text-xs text-text-inactive">Scroll</span>
-		<ChevronDownIcon class="h-5 w-5 animate-bounce text-text-inactive" />
+		<span class="text-xs">Scroll</span>
+		<ChevronDownIcon class="h-5 w-5 animate-bounce" />
 	</div>
 </section>
