@@ -4,6 +4,7 @@ import { submission, team, player, season, teamSeason, teamRoster } from '$lib/s
 import { eq, and, desc, isNull } from 'drizzle-orm';
 import { fetchGuildMember, getValidDiscordToken } from '$lib/server/discord';
 import { env } from '$env/dynamic/private';
+import { invalidatePlayerCount } from '$lib/server/player-count';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -41,6 +42,8 @@ export const actions: Actions = {
 
 		// Upsert team + players + season linkage
 		await approveSubmissionToRoster(sub);
+
+		invalidatePlayerCount();
 	},
 	decline: async (event) => {
 		const data = await event.request.formData();
