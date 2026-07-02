@@ -12,6 +12,70 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Field from '$lib/components/ui/field';
+	import {
+		page_title_register,
+		register_title,
+		register_desc,
+		register_not_member_title,
+		register_not_member_desc,
+		register_join_server,
+		register_step_creator,
+		register_step_team,
+		register_step_players,
+		register_step_staff,
+		register_step_review,
+		register_step0_heading,
+		register_field_discord,
+		register_field_riot_id,
+		register_placeholder_riot_id,
+		register_field_role,
+		register_select_role,
+		register_role_owner,
+		register_role_coach,
+		register_role_player,
+		register_checking_rank,
+		register_step1_heading,
+		register_field_team_name,
+		register_placeholder_team_name,
+		register_field_team_tag,
+		register_placeholder_team_tag,
+		register_field_logo_url,
+		register_field_socials,
+		register_placeholder_socials,
+		register_step2_heading,
+		register_step2_desc,
+		register_player_slot,
+		register_placeholder_discord,
+		register_placeholder_riot_id_player,
+		register_placeholder_display_name,
+		register_add_player,
+		register_step3_heading,
+		register_step3_desc,
+		register_staff_slot,
+		register_placeholder_role,
+		register_add_staff,
+		register_step4_heading,
+		register_review_creator,
+		register_review_team,
+		register_review_players,
+		register_review_staff,
+		register_label_discord,
+		register_label_riot_id,
+		register_label_role,
+		register_label_name,
+		register_label_tag,
+		register_label_logo,
+		register_label_socials,
+		register_button_back,
+		register_button_next,
+		register_button_submit,
+		rank_error_invalid_format,
+		rank_error_not_found,
+		rank_error_unranked,
+		rank_error_rank_too_low,
+		rank_error_generic,
+		rank_error_network
+	} from '$lib/paraglide/messages';
 
 	let { data }: PageProps = $props();
 
@@ -26,17 +90,23 @@
 		dataType: 'json'
 	});
 
-	const roles: { value: string; label: string }[] = [
-		{ value: 'owner', label: 'Dono' },
-		{ value: 'coach', label: 'Coach' },
-		{ value: 'player', label: 'Jogador' }
+	const roles: { value: string; label: () => string }[] = [
+		{ value: 'owner', label: register_role_owner },
+		{ value: 'coach', label: register_role_coach },
+		{ value: 'player', label: register_role_player }
 	];
 
 	let step = $state(0);
 	let creatorRankError = $state<string | null>(null);
 	let checkingCreatorRank = $state(false);
 
-	const stepLabels = ['Criador', 'Equipa', 'Jogadores', 'Equipa Técnica', 'Rever'];
+	const stepLabels = [
+		register_step_creator,
+		register_step_team,
+		register_step_players,
+		register_step_staff,
+		register_step_review
+	];
 
 	function addPlayer() {
 		$formData.players = [...$formData.players, { discord: '', riot_id: '', display_name: '' }];
@@ -94,31 +164,30 @@
 					body: JSON.stringify({ riotId: $formData.creator_riot_id })
 				});
 				if (!res.ok) {
-					creatorRankError = 'Falha ao verificar rank. Tenta novamente.';
+					creatorRankError = rank_error_generic();
 					return;
 				}
 				const result = await res.json();
 				if (!result.passed) {
 					switch (result.reason) {
 						case 'invalid_format':
-							creatorRankError = 'Formato invalido. Usa: Nome#Tag';
+							creatorRankError = rank_error_invalid_format();
 							break;
 						case 'not_found':
-							creatorRankError = 'Riot ID nao encontrado. Verifica o nome e a tag.';
+							creatorRankError = rank_error_not_found();
 							break;
 						case 'unranked':
-							creatorRankError = 'Ainda nao tens rank competitivo.';
+							creatorRankError = rank_error_unranked();
 							break;
 						case 'rank_too_low':
-							creatorRankError = `Rank atual: ${result.rank}. Minimo exigido: Ascendente 3.`;
+							creatorRankError = rank_error_rank_too_low({ rank: result.rank });
 							break;
 					}
 				} else {
 					creatorRankError = null;
 				}
 			} catch {
-				// Network error - non-blocking
-				creatorRankError = null;
+				creatorRankError = rank_error_network();
 			} finally {
 				checkingCreatorRank = false;
 			}
@@ -163,26 +232,25 @@
 </script>
 
 <svelte:head>
-	<title>Registo de Equipa — OutKing Series</title>
+	<title>{page_title_register()}</title>
 </svelte:head>
 
 <div class="mx-auto max-w-2xl px-4 pt-24 pb-16">
-	<h1 class="mb-2 text-center text-3xl">Registo de Equipa</h1>
+	<h1 class="mb-2 text-center text-3xl">{register_title()}</h1>
 	<p class="mb-8 text-center text-text-muted">
-		Inscreve a tua equipa para participar nos torneios da OutKing Series.
+		{register_desc()}
 	</p>
 
 	{#if !data.isMember}
 		<Alert.Root>
 			<DiscordIcon class="size-12 text-primary" />
-			<Alert.Title>Não és membro</Alert.Title>
+			<Alert.Title>{register_not_member_title()}</Alert.Title>
 			<Alert.Description>
-				Parece que ainda não fazes parte do servidor da Outking, apenas membros do servidor podem
-				participar.
+				{register_not_member_desc()}
 			</Alert.Description>
 			<Alert.Action>
 				<Button href={data.inviteUrl} target="_blank" rel="external noopener noreferrer">
-					Entrar no Servidor
+					{register_join_server()}
 				</Button>
 			</Alert.Action>
 		</Alert.Root>
@@ -199,7 +267,7 @@
 						if (i <= step || !stepBlocked) step = i;
 					}}
 				>
-					{label}
+					{label()}
 				</Button>
 			{/each}
 		</div>
@@ -218,11 +286,12 @@
 
 					<!-- Step 0: Creator -->
 					{#if step === 0}
-						<h2 class="mb-6 text-xl">Quem cria a equipa</h2>
+						<h2 class="mb-6 text-xl">{register_step0_heading()}</h2>
 
 						<Field.FieldGroup>
 							<Field.Field data-disabled>
-								<Field.FieldLabel for="creator_discord">Discord</Field.FieldLabel>
+								<Field.FieldLabel for="creator_discord">{register_field_discord()}</Field.FieldLabel
+								>
 								<Input id="creator_discord" value={data.userDiscord} disabled />
 							</Field.Field>
 
@@ -230,13 +299,13 @@
 								data-invalid={$errors.creator_riot_id || creatorRankError ? true : undefined}
 							>
 								<Field.FieldLabel for="creator_riot_id">
-									Riot ID (Nome#Tag) <span class="text-error">*</span>
+									{register_field_riot_id()} <span class="text-error">*</span>
 								</Field.FieldLabel>
 								<Input
 									id="creator_riot_id"
 									name="creator_riot_id"
 									bind:value={$formData.creator_riot_id}
-									placeholder="Ex: OutKing#1234"
+									placeholder={register_placeholder_riot_id()}
 									aria-invalid={$errors.creator_riot_id || creatorRankError ? true : undefined}
 									oninput={() => {
 										validateField('creator_riot_id');
@@ -250,13 +319,13 @@
 									<Field.FieldError>{creatorRankError}</Field.FieldError>
 								{/if}
 								{#if checkingCreatorRank}
-									<Field.FieldDescription>A verificar rank...</Field.FieldDescription>
+									<Field.FieldDescription>{register_checking_rank()}</Field.FieldDescription>
 								{/if}
 							</Field.Field>
 
 							<Field.Field data-invalid={$errors.creator_role ? true : undefined}>
 								<Field.FieldLabel for="creator_role">
-									Cargo na equipa <span class="text-error">*</span>
+									{register_field_role()} <span class="text-error">*</span>
 								</Field.FieldLabel>
 								<input type="hidden" name="creator_role" value={$formData.creator_role} />
 								<Select.Root
@@ -268,12 +337,13 @@
 									}}
 								>
 									<Select.Trigger>
-										{roles.find((r) => r.value === $formData.creator_role)?.label ?? 'Seleciona...'}
+										{roles.find((r) => r.value === $formData.creator_role)?.label() ??
+											register_select_role()}
 									</Select.Trigger>
 									<Select.Content>
 										<Select.Group>
 											{#each roles as r}
-												<Select.Item value={r.value} label={r.label} />
+												<Select.Item value={r.value} label={r.label()} />
 											{/each}
 										</Select.Group>
 									</Select.Content>
@@ -287,18 +357,18 @@
 
 					<!-- Step 1: Team info -->
 					{#if step === 1}
-						<h2 class="mb-6 text-xl">Sobre a equipa</h2>
+						<h2 class="mb-6 text-xl">{register_step1_heading()}</h2>
 
 						<Field.FieldGroup>
 							<Field.Field data-invalid={$errors.team_name ? true : undefined}>
 								<Field.FieldLabel for="team_name">
-									Nome da equipa <span class="text-error">*</span>
+									{register_field_team_name()} <span class="text-error">*</span>
 								</Field.FieldLabel>
 								<Input
 									id="team_name"
 									name="team_name"
 									bind:value={$formData.team_name}
-									placeholder="Ex: OutKing Dragons"
+									placeholder={register_placeholder_team_name()}
 									aria-invalid={$errors.team_name ? true : undefined}
 									oninput={() => validateField('team_name')}
 								/>
@@ -309,13 +379,13 @@
 
 							<Field.Field data-invalid={$errors.team_tag ? true : undefined}>
 								<Field.FieldLabel for="team_tag">
-									Tag (2-5 carateres) <span class="text-error">*</span>
+									{register_field_team_tag()} <span class="text-error">*</span>
 								</Field.FieldLabel>
 								<Input
 									id="team_tag"
 									name="team_tag"
 									bind:value={$formData.team_tag}
-									placeholder="Ex: OKD"
+									placeholder={register_placeholder_team_tag()}
 									maxlength={5}
 									aria-invalid={$errors.team_tag ? true : undefined}
 									oninput={() => validateField('team_tag')}
@@ -326,7 +396,7 @@
 							</Field.Field>
 
 							<Field.Field data-invalid={$errors.team_logo_url ? true : undefined}>
-								<Field.FieldLabel for="team_logo_url">Logo (URL)</Field.FieldLabel>
+								<Field.FieldLabel for="team_logo_url">{register_field_logo_url()}</Field.FieldLabel>
 								<Input
 									id="team_logo_url"
 									type="url"
@@ -342,12 +412,12 @@
 							</Field.Field>
 
 							<Field.Field>
-								<Field.FieldLabel for="team_socials">Redes sociais (opcional)</Field.FieldLabel>
+								<Field.FieldLabel for="team_socials">{register_field_socials()}</Field.FieldLabel>
 								<Input
 									id="team_socials"
 									name="team_socials"
 									bind:value={$formData.team_socials}
-									placeholder="Ex: @outking no X, /outking no Discord"
+									placeholder={register_placeholder_socials()}
 								/>
 							</Field.Field>
 						</Field.FieldGroup>
@@ -355,16 +425,18 @@
 
 					<!-- Step 2: Players -->
 					{#if step === 2}
-						<h2 class="mb-6 text-xl">Jogadores <span class="text-error">*</span></h2>
+						<h2 class="mb-6 text-xl">
+							{register_step2_heading()} <span class="text-error">*</span>
+						</h2>
 						<p class="mb-4 text-sm text-text-muted">
-							Adiciona os jogadores da equipa (até 7, incluindo suplentes).
+							{register_step2_desc()}
 						</p>
 
 						<Field.FieldGroup>
 							{#each $formData.players as _, i}
 								<div class={i > 0 ? 'border-t border-border-subtle pt-6' : ''}>
 									<div class="mb-3 flex items-center justify-between">
-										<Field.FieldLabel>Jogador {i + 1}</Field.FieldLabel>
+										<Field.FieldLabel>{register_player_slot({ n: i + 1 })}</Field.FieldLabel>
 										{#if $formData.players.length > 5}
 											<Button
 												type="button"
@@ -381,7 +453,7 @@
 										<Input
 											name="players[{i}].discord"
 											bind:value={$formData.players[i].discord}
-											placeholder="Discord (Ex: @username) *"
+											placeholder={register_placeholder_discord()}
 											aria-invalid={$errors.players?.[i]?.discord ? true : undefined}
 											oninput={() => validateField('players')}
 										/>
@@ -394,7 +466,7 @@
 										<Input
 											name="players[{i}].riot_id"
 											bind:value={$formData.players[i].riot_id}
-											placeholder="Riot ID (Ex: Nome#Tag) *"
+											placeholder={register_placeholder_riot_id_player()}
 											aria-invalid={$errors.players?.[i]?.riot_id ? true : undefined}
 											oninput={() => validateField('players')}
 										/>
@@ -407,7 +479,7 @@
 										<Input
 											name="players[{i}].display_name"
 											bind:value={$formData.players[i].display_name}
-											placeholder="Nome para os casters *"
+											placeholder={register_placeholder_display_name()}
 											aria-invalid={$errors.players?.[i]?.display_name ? true : undefined}
 											oninput={() => validateField('players')}
 										/>
@@ -427,21 +499,21 @@
 
 						{#if $formData.players.length < 7}
 							<Button type="button" variant="outline" class="mt-4 w-full" onclick={addPlayer}>
-								+ Adicionar jogador
+								+ {register_add_player()}
 							</Button>
 						{/if}
 					{/if}
 
 					<!-- Step 3: Staff -->
 					{#if step === 3}
-						<h2 class="mb-6 text-xl">Equipa Técnica</h2>
-						<p class="mb-4 text-sm text-text-muted">Adiciona coach e/ou analista (opcional).</p>
+						<h2 class="mb-6 text-xl">{register_step3_heading()}</h2>
+						<p class="mb-4 text-sm text-text-muted">{register_step3_desc()}</p>
 
 						<Field.FieldGroup>
 							{#each $formData.staff as _, i}
 								<div class="rounded-lg bg-section p-4">
 									<div class="mb-2 flex items-center justify-between">
-										<span class="text-sm text-text-muted">Staff {i + 1}</span>
+										<span class="text-sm text-text-muted">{register_staff_slot({ n: i + 1 })}</span>
 										<Button
 											type="button"
 											variant="ghost"
@@ -456,7 +528,7 @@
 										<Input
 											name="staff[{i}].discord"
 											bind:value={$formData.staff[i].discord}
-											placeholder="Discord (Ex: @username) *"
+											placeholder={register_placeholder_discord()}
 											aria-invalid={$errors.staff?.[i]?.discord ? true : undefined}
 											oninput={() => validateField('staff')}
 										/>
@@ -469,7 +541,7 @@
 										<Input
 											name="staff[{i}].riot_id"
 											bind:value={$formData.staff[i].riot_id}
-											placeholder="Riot ID (Ex: Nome#Tag) *"
+											placeholder={register_placeholder_riot_id_player()}
 											aria-invalid={$errors.staff?.[i]?.riot_id ? true : undefined}
 											oninput={() => validateField('staff')}
 										/>
@@ -482,7 +554,7 @@
 										<Input
 											name="staff[{i}].display_name"
 											bind:value={$formData.staff[i].display_name}
-											placeholder="Nome para os casters *"
+											placeholder={register_placeholder_display_name()}
 											aria-invalid={$errors.staff?.[i]?.display_name ? true : undefined}
 											oninput={() => validateField('staff')}
 										/>
@@ -495,7 +567,7 @@
 										<Input
 											name="staff[{i}].role"
 											bind:value={$formData.staff[i].role}
-											placeholder="Cargo *"
+											placeholder={register_placeholder_role()}
 											aria-invalid={$errors.staff?.[i]?.role ? true : undefined}
 											oninput={() => validateField('staff')}
 										/>
@@ -508,39 +580,39 @@
 						</Field.FieldGroup>
 
 						<Button type="button" variant="outline" class="mt-4 w-full" onclick={addStaff}>
-							+ Adicionar staff
+							+ {register_add_staff()}
 						</Button>
 					{/if}
 
 					<!-- Step 4: Review -->
 					{#if step === 4}
-						<h2 class="mb-6 text-xl">Rever inscrição</h2>
+						<h2 class="mb-6 text-xl">{register_step4_heading()}</h2>
 
 						<div class="mb-4 rounded-lg bg-section p-4">
-							<h3 class="mb-2 text-sm text-text-muted">Quem cria</h3>
-							<p><strong>Discord:</strong> {data.userDiscord}</p>
-							<p><strong>Riot ID:</strong> {$formData.creator_riot_id || '—'}</p>
+							<h3 class="mb-2 text-sm text-text-muted">{register_review_creator()}</h3>
+							<p><strong>{register_label_discord()}:</strong> {data.userDiscord}</p>
+							<p><strong>{register_label_riot_id()}:</strong> {$formData.creator_riot_id || '—'}</p>
 							<p>
-								<strong>Cargo:</strong>
-								{roles.find((r) => r.value === $formData.creator_role)?.label ?? '—'}
+								<strong>{register_label_role()}:</strong>
+								{roles.find((r) => r.value === $formData.creator_role)?.label() ?? '—'}
 							</p>
 						</div>
 
 						<div class="mb-4 rounded-lg bg-section p-4">
-							<h3 class="mb-2 text-sm text-text-muted">Equipa</h3>
-							<p><strong>Nome:</strong> {$formData.team_name || '—'}</p>
-							<p><strong>Tag:</strong> {$formData.team_tag || '—'}</p>
+							<h3 class="mb-2 text-sm text-text-muted">{register_review_team()}</h3>
+							<p><strong>{register_label_name()}:</strong> {$formData.team_name || '—'}</p>
+							<p><strong>{register_label_tag()}:</strong> {$formData.team_tag || '—'}</p>
 							{#if $formData.team_logo_url}
-								<p><strong>Logo:</strong> {$formData.team_logo_url}</p>
+								<p><strong>{register_label_logo()}:</strong> {$formData.team_logo_url}</p>
 							{/if}
 							{#if $formData.team_socials}
-								<p><strong>Redes:</strong> {$formData.team_socials}</p>
+								<p><strong>{register_label_socials()}:</strong> {$formData.team_socials}</p>
 							{/if}
 						</div>
 
 						<div class="mb-4 rounded-lg bg-section p-4">
 							<h3 class="mb-2 text-sm text-text-muted">
-								Jogadores ({$formData.players.length})
+								{register_review_players({ n: $formData.players.length })}
 							</h3>
 							{#each $formData.players as p, i}
 								<p class="text-sm">
@@ -552,7 +624,7 @@
 						{#if $formData.staff.length > 0}
 							<div class="mb-4 rounded-lg bg-section p-4">
 								<h3 class="mb-2 text-sm text-text-muted">
-									Equipa Técnica ({$formData.staff.length})
+									{register_review_staff({ n: $formData.staff.length })}
 								</h3>
 								{#each $formData.staff as st, i}
 									<p class="text-sm">
@@ -567,7 +639,7 @@
 					<div class="mt-8 flex justify-between">
 						{#if step > 0}
 							<Button type="button" variant="outline" onclick={() => (step = step - 1)}>
-								← Anterior
+								← {register_button_back()}
 							</Button>
 						{:else}
 							<div></div>
@@ -575,10 +647,10 @@
 
 						{#if step < 4}
 							<Button type="button" variant="default" disabled={stepBlocked} onclick={nextStep}>
-								Seguinte
+								{register_button_next()}
 							</Button>
 						{:else}
-							<Button type="submit" variant="default">Submeter Inscrição</Button>
+							<Button type="submit" variant="default">{register_button_submit()}</Button>
 						{/if}
 					</div>
 				</form>
