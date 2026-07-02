@@ -86,15 +86,13 @@
 		<a href={resolve('/rules')}>Regras</a>
 	</ul>
 
-	{#if !menuOpen}
-		<div class="ml-auto flex items-center gap-2 sm:mr-0">
-			{#if $session.data?.user}
-				<UserPopover />
-			{:else}
-				<Button variant="ghost" onclick={handleLogin}>Login</Button>
-			{/if}
-		</div>
-	{/if}
+	<div class="ml-auto flex items-center gap-2 sm:-mr-3">
+		{#if $session.data?.user}
+			<UserPopover />
+		{:else}
+			<Button variant="ghost" onclick={handleLogin}>Login</Button>
+		{/if}
+	</div>
 
 	<!-- Mobile hamburger: opens Sheet -->
 	<Button

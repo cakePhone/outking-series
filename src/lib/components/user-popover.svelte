@@ -48,7 +48,7 @@
 {#if user}
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger aria-label="User menu">
-			<Avatar.Root class="size-8 md:size-12">
+			<Avatar.Root class="mr-3 size-8 md:mr-0 md:size-13.5">
 				<Avatar.Image src={avatarUrl} alt={displayName} />
 				<Avatar.Fallback>{initials}</Avatar.Fallback>
 			</Avatar.Root>
@@ -84,7 +84,7 @@
 			<Separator />
 
 			<DropdownMenu.Group>
-				<DropdownMenu.Item onclick={handleLogout}>Sair</DropdownMenu.Item>
+				<DropdownMenu.Item class="rounded-none" onclick={handleLogout}>Sair</DropdownMenu.Item>
 			</DropdownMenu.Group>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
