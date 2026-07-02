@@ -93,6 +93,10 @@
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ riotId: $formData.creator_riot_id })
 				});
+				if (!res.ok) {
+					creatorRankError = 'Falha ao verificar rank. Tenta novamente.';
+					return;
+				}
 				const result = await res.json();
 				if (!result.passed) {
 					switch (result.reason) {
@@ -109,8 +113,11 @@
 							creatorRankError = `Rank atual: ${result.rank}. Minimo exigido: Ascendente 3.`;
 							break;
 					}
+				} else {
+					creatorRankError = null;
 				}
 			} catch {
+				// Network error - non-blocking
 				creatorRankError = null;
 			} finally {
 				checkingCreatorRank = false;
