@@ -6,37 +6,38 @@ const RIOT_API_KEY = env.RIOT_API_KEY ?? '';
 const ACCOUNT_BASE = 'https://europe.api.riotgames.com';
 const VAL_MMR_BASE = 'https://eu.api.riotgames.com';
 
-// Ascendant 3 = tier 20 (Iron 1 = 0 … Radiant = 24)
-const MIN_TIER = 20;
+// Riot MMR tier numbers (Valorant competitive):
+//   0 = Unranked, 3 = Iron 1 … 23 = Ascendant 3 … 27 = Radiant
+const MIN_TIER = 23; // Ascendant 3
 
-const TIER_NAMES = [
-	'Unranked',
-	'Iron 1',
-	'Iron 2',
-	'Iron 3',
-	'Bronze 1',
-	'Bronze 2',
-	'Bronze 3',
-	'Silver 1',
-	'Silver 2',
-	'Silver 3',
-	'Gold 1',
-	'Gold 2',
-	'Gold 3',
-	'Platinum 1',
-	'Platinum 2',
-	'Platinum 3',
-	'Diamond 1',
-	'Diamond 2',
-	'Diamond 3',
-	'Ascendant 1',
-	'Ascendant 2',
-	'Ascendant 3',
-	'Immortal 1',
-	'Immortal 2',
-	'Immortal 3',
-	'Radiant'
-];
+const TIER_NAMES: Record<number, string> = {
+	0: 'Unranked',
+	3: 'Iron 1',
+	4: 'Iron 2',
+	5: 'Iron 3',
+	6: 'Bronze 1',
+	7: 'Bronze 2',
+	8: 'Bronze 3',
+	9: 'Silver 1',
+	10: 'Silver 2',
+	11: 'Silver 3',
+	12: 'Gold 1',
+	13: 'Gold 2',
+	14: 'Gold 3',
+	15: 'Platinum 1',
+	16: 'Platinum 2',
+	17: 'Platinum 3',
+	18: 'Diamond 1',
+	19: 'Diamond 2',
+	20: 'Diamond 3',
+	21: 'Ascendant 1',
+	22: 'Ascendant 2',
+	23: 'Ascendant 3',
+	24: 'Immortal 1',
+	25: 'Immortal 2',
+	26: 'Immortal 3',
+	27: 'Radiant'
+};
 
 export function tierName(tier: number): string {
 	return TIER_NAMES[tier] ?? `Tier ${tier}`;
@@ -130,7 +131,7 @@ export async function validatePlayerRank(riotId: string): Promise<RankResult> {
 		return { passed: true, riotId, rank: null, tier: null, reason: 'api_unavailable' };
 	}
 
-	if (tier === null) {
+	if (tier === null || tier === 0) {
 		return { passed: false, riotId, rank: 'Unranked', tier: 0, reason: 'unranked' };
 	}
 
