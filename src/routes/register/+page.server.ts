@@ -9,6 +9,10 @@ import { submission } from '$lib/server/db/schema';
 import { validatePlayers } from '$lib/server/riot';
 import type { Actions, PageServerLoad } from './$types';
 
+// Cache: userId -> { isMember, timestamp }
+const memberCache = new Map<string, { isMember: boolean; ts: number }>();
+const MEMBER_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) throw redirect(303, '/');
 
@@ -32,7 +36,14 @@ export const load: PageServerLoad = async (event) => {
 		}
 	});
 
-	const member = await isGuildMember(event.locals.user.id);
+	const cached = memberCache.get(event.locals.user.id);
+	let member: boolean;
+	if (cached?.isMember && Date.now() - cached.ts < MEMBER_CACHE_TTL) {
+		member = true;
+	} else {
+		member = await isGuildMember(event.locals.user.id);
+		memberCache.set(event.locals.user.id, { isMember: member, ts: Date.now() });
+	}
 
 	return {
 		form,
