@@ -3,12 +3,24 @@
 	import Tv from '@lucide/svelte/icons/tv';
 	import Medal from '@lucide/svelte/icons/medal';
 	import TrendingUp from '@lucide/svelte/icons/trending-up';
+	import {
+		why_title,
+		why_desc,
+		why_competition,
+		why_competition_desc,
+		why_broadcast,
+		why_broadcast_desc,
+		why_recognition,
+		why_recognition_desc,
+		why_progression,
+		why_progression_desc
+	} from '$lib/paraglide/messages';
 </script>
 
 <section class="mx-auto max-w-5xl px-4 py-24">
-	<h2 class="mb-4 text-center text-3xl font-bold">Porque Participar?</h2>
+	<h2 class="mb-4 text-center text-3xl font-bold">{why_title()}</h2>
 	<p class="mx-auto mb-12 max-w-2xl text-center text-text-muted">
-		Mais do que um torneio, a OutKing Series e uma plataforma para cresceres como jogador e equipa.
+		{why_desc()}
 	</p>
 
 	<div class="grid gap-8 md:grid-cols-2">
@@ -17,10 +29,9 @@
 				<Swords class="size-6 text-primary" />
 			</div>
 			<div>
-				<h3 class="text-lg font-semibold">Competicao de Nivel</h3>
+				<h3 class="text-lg font-semibold">{why_competition()}</h3>
 				<p class="text-sm text-text-muted">
-					Enfrenta as melhores equipas de Portugal num formato justo e estruturado. Cada jogo conta
-					para a tua jornada ate ao topo.
+					{why_competition_desc()}
 				</p>
 			</div>
 		</div>
@@ -30,10 +41,9 @@
 				<Tv class="size-6 text-primary" />
 			</div>
 			<div>
-				<h3 class="text-lg font-semibold">Transmissao ao Vivo</h3>
+				<h3 class="text-lg font-semibold">{why_broadcast()}</h3>
 				<p class="text-sm text-text-muted">
-					Os jogos principais sao transmitidos com casting em portugues. Da-te a conhecer a
-					comunidade e constroi a tua marca.
+					{why_broadcast_desc()}
 				</p>
 			</div>
 		</div>
@@ -43,10 +53,9 @@
 				<Medal class="size-6 text-primary" />
 			</div>
 			<div>
-				<h3 class="text-lg font-semibold">Reconhecimento</h3>
+				<h3 class="text-lg font-semibold">{why_recognition()}</h3>
 				<p class="text-sm text-text-muted">
-					Ganha visibilidade no cenario nacional. Scouts, organizacoes e comunidade acompanham de
-					perto o talento que emerge da OutKing.
+					{why_recognition_desc()}
 				</p>
 			</div>
 		</div>
@@ -56,10 +65,9 @@
 				<TrendingUp class="size-6 text-primary" />
 			</div>
 			<div>
-				<h3 class="text-lg font-semibold">Progressao</h3>
+				<h3 class="text-lg font-semibold">{why_progression()}</h3>
 				<p class="text-sm text-text-muted">
-					Acompanha a evolucao da tua equipa epoca apos epoca. Estatisticas, historico e rankings
-					constroem o teu legado na serie.
+					{why_progression_desc()}
 				</p>
 			</div>
 		</div>

@@ -1,5 +1,6 @@
 <script>
 	import LinkIcon, { linkIconPlatforms } from './socials/link-icon.svelte';
+	import { footer_brand, footer_tagline } from '$lib/paraglide/messages';
 </script>
 
 <footer
@@ -10,9 +11,10 @@
 	</div>
 	<div class="flex flex-col gap-4">
 		<p class="sm:text-right">
-			<span class="text-[32px] leading-[1.2] font-black tracking-normal">OUTKING SERIES</span><br />
+			<span class="text-[32px] leading-[1.2] font-black tracking-normal">{footer_brand()}</span><br
+			/>
 			<span class="text-[24px] leading-[1.4] font-medium tracking-normal text-accent-text">
-				O maior torneio de Valorant em Portugal
+				{footer_tagline()}
 			</span>
 		</p>
 		<div class="flex gap-4">

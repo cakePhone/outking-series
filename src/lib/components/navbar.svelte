@@ -9,6 +9,14 @@
 	import Logo from './Logo.svelte';
 	import MenuIcon from '@lucide/svelte/icons/menu';
 	import XIcon from '@lucide/svelte/icons/x';
+	import {
+		nav_teams,
+		nav_events,
+		nav_rules,
+		nav_about,
+		nav_archive,
+		nav_login
+	} from '$lib/paraglide/messages';
 
 	let scrollY = $state(0);
 	let menuOpen = $state(false);
@@ -81,16 +89,16 @@
 
 	<Separator orientation="vertical" class="mx-10 hidden sm:block" />
 	<ul class="lhs hidden gap-8 sm:flex">
-		<a href={resolve('/teams')}>Equipas</a>
-		<a href={resolve('/events')}>Eventos</a>
-		<a href={resolve('/rules')}>Regras</a>
+		<a href={resolve('/teams')}>{nav_teams()}</a>
+		<a href={resolve('/events')}>{nav_events()}</a>
+		<a href={resolve('/rules')}>{nav_rules()}</a>
 	</ul>
 
 	<div class="ml-auto flex items-center gap-2 sm:-mr-3">
 		{#if $session.data?.user}
 			<UserPopover />
 		{:else}
-			<Button variant="ghost" onclick={handleLogin}>Login</Button>
+			<Button variant="ghost" onclick={handleLogin}>{nav_login()}</Button>
 		{/if}
 	</div>
 
@@ -122,9 +130,9 @@
 				<Sheet.Title>Navigation menu</Sheet.Title>
 				<Sheet.Description>Site navigation links</Sheet.Description>
 			</Sheet.Header>
-			<a href={resolve('/about')} onclick={closeMenu}>Sobre</a>
-			<a href={resolve('/rules')} onclick={closeMenu}>Regras</a>
-			<a href={resolve('/archive')} onclick={closeMenu}>Arquivo</a>
+			<a href={resolve('/about')} onclick={closeMenu}>{nav_about()}</a>
+			<a href={resolve('/rules')} onclick={closeMenu}>{nav_rules()}</a>
+			<a href={resolve('/archive')} onclick={closeMenu}>{nav_archive()}</a>
 		</Sheet.Content>
 	</Sheet.Portal>
 </Sheet.Root>

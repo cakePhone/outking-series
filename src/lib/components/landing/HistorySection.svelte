@@ -3,13 +3,22 @@
 	import Trophy from '@lucide/svelte/icons/trophy';
 	import Rocket from '@lucide/svelte/icons/rocket';
 	import * as Card from '$lib/components/ui/card';
+	import {
+		history_title,
+		history_desc,
+		history_foundation,
+		history_foundation_desc,
+		history_first_season,
+		history_first_season_desc,
+		history_future,
+		history_future_desc
+	} from '$lib/paraglide/messages';
 </script>
 
 <section class="mx-auto max-w-5xl px-4 py-24">
-	<h2 class="mb-4 text-center text-3xl font-bold">A Nossa Historia</h2>
+	<h2 class="mb-4 text-center text-3xl font-bold">{history_title()}</h2>
 	<p class="mx-auto mb-12 max-w-2xl text-center text-text-muted">
-		Da paixao pelo competitivo nasceu a OutKing Series - um circuito pensado para elevar o cenario
-		portugues de VALORANT, epoca apos epoca.
+		{history_desc()}
 	</p>
 
 	<div class="grid gap-6 md:grid-cols-3">
@@ -18,10 +27,9 @@
 				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
 					<Flag class="size-5 text-primary" />
 				</div>
-				<Card.Title>Fundacao</Card.Title>
+				<Card.Title>{history_foundation()}</Card.Title>
 				<Card.Description>
-					A OutKing Series nasceu em 2024 com o objetivo de criar um espaco competitivo dedicado ao
-					talento portugues no VALORANT.
+					{history_foundation_desc()}
 				</Card.Description>
 			</Card.Content>
 		</Card.Root>
@@ -31,10 +39,9 @@
 				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
 					<Trophy class="size-5 text-primary" />
 				</div>
-				<Card.Title>Primeira Epoca</Card.Title>
+				<Card.Title>{history_first_season()}</Card.Title>
 				<Card.Description>
-					A epoca inaugural colocou frente a frente as melhores equipas nacionais num formato de
-					liga com playoffs ao vivo.
+					{history_first_season_desc()}
 				</Card.Description>
 			</Card.Content>
 		</Card.Root>
@@ -44,10 +51,9 @@
 				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
 					<Rocket class="size-5 text-primary" />
 				</div>
-				<Card.Title>O Futuro</Card.Title>
+				<Card.Title>{history_future()}</Card.Title>
 				<Card.Description>
-					Estamos a preparar novas epocas, parcerias e surpresas. O melhor ainda esta para vir -
-					fica atento.
+					{history_future_desc()}
 				</Card.Description>
 			</Card.Content>
 		</Card.Root>

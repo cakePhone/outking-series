@@ -7,6 +7,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import Logo from './icons/OutkingIcon.svelte';
 	import type { DiscordUserData } from '$lib/server/discord';
+	import { nav_logout } from '$lib/paraglide/messages';
 
 	let discord = $state<DiscordUserData | null>(null);
 
@@ -84,7 +85,9 @@
 			<Separator />
 
 			<DropdownMenu.Group>
-				<DropdownMenu.Item class="rounded-none" onclick={handleLogout}>Sair</DropdownMenu.Item>
+				<DropdownMenu.Item class="rounded-none" onclick={handleLogout}
+					>{nav_logout()}</DropdownMenu.Item
+				>
 			</DropdownMenu.Group>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>

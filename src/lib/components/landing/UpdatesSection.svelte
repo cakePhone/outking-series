@@ -3,13 +3,27 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
 	import * as Card from '$lib/components/ui/card';
+	import {
+		updates_title,
+		updates_desc,
+		updates_coming_soon,
+		updates_next_season,
+		updates_next_season_desc,
+		updates_ongoing,
+		updates_registration_open,
+		updates_registration_open_desc,
+		updates_community,
+		updates_discord,
+		updates_discord_desc,
+		updates_footer
+	} from '$lib/paraglide/messages';
 </script>
 
 <section class="bg-section py-24">
 	<div class="mx-auto flex max-w-5xl flex-col gap-4 px-4">
-		<h2 class="text-center text-3xl font-bold">Novidades da Serie</h2>
+		<h2 class="text-center text-3xl font-bold">{updates_title()}</h2>
 		<p class="mx-auto max-w-2xl text-center text-text-muted">
-			Acompanha as ultimas atualizacoes sobre epocas, calendarios e anuncios da OutKing Series.
+			{updates_desc()}
 		</p>
 
 		<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -18,11 +32,10 @@
 					<Sparkles class="size-12 text-primary/40" />
 				</div>
 				<Card.Content class="flex flex-col gap-2">
-					<span class="text-xs text-text-dim">Brevemente</span>
-					<Card.Title>Proxima Epoca</Card.Title>
+					<span class="text-xs text-text-dim">{updates_coming_soon()}</span>
+					<Card.Title>{updates_next_season()}</Card.Title>
 					<Card.Description>
-						Detalhes sobre a proxima epoca serao anunciados em breve. Prepara a tua equipa e fica
-						atento as nossas redes.
+						{updates_next_season_desc()}
 					</Card.Description>
 				</Card.Content>
 			</Card.Root>
@@ -32,11 +45,10 @@
 					<Users class="size-12 text-primary/40" />
 				</div>
 				<Card.Content class="flex flex-col gap-2">
-					<span class="text-xs text-text-dim">A Decorrer</span>
-					<Card.Title>Inscricoes Abertas</Card.Title>
+					<span class="text-xs text-text-dim">{updates_ongoing()}</span>
+					<Card.Title>{updates_registration_open()}</Card.Title>
 					<Card.Description>
-						As inscricoes para equipas estao abertas. Junta o teu stack e garante o teu lugar na
-						corrida pela coroa.
+						{updates_registration_open_desc()}
 					</Card.Description>
 				</Card.Content>
 			</Card.Root>
@@ -46,18 +58,17 @@
 					<DiscordIcon class="size-12 text-primary/40" />
 				</div>
 				<Card.Content class="flex flex-col gap-2">
-					<span class="text-xs text-text-dim">Comunidade</span>
-					<Card.Title>Servidor Discord</Card.Title>
+					<span class="text-xs text-text-dim">{updates_community()}</span>
+					<Card.Title>{updates_discord()}</Card.Title>
 					<Card.Description>
-						Junta-te a nossa comunidade no Discord para conheceres outros jogadores, formares
-						equipas e receberes novidades em primeira mao.
+						{updates_discord_desc()}
 					</Card.Description>
 				</Card.Content>
 			</Card.Root>
 		</div>
 
 		<p class="mt-8 text-center text-sm text-text-dim">
-			Mais novidades em breve. Segue-nos para nao perderes nada.
+			{updates_footer()}
 		</p>
 	</div>
 </section>
