@@ -1,4 +1,4 @@
-import { i18n } from '$lib/paraglide/runtime';
-import type { Handle } from '@sveltejs/kit';
+import { createI18n } from '@inlang/paraglide-sveltekit';
+import * as runtime from '$lib/paraglide/runtime';
 
-export const handle: Handle = i18n.handle();
+export const { handle } = createI18n(runtime);
