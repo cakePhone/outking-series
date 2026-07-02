@@ -87,48 +87,55 @@
 		4: []
 	};
 
-	async function nextStep() {
-		const fields = stepFields[step];
-		if (fields?.length) {
-			for (const field of fields) {
-				await validate(field, { update: true });
-			}
-			if (fields.some((f) => $errors[f])) return;
+	// Debounced validation: re-validates a field 300ms after the user stops typing
+	const timers: Record<string, ReturnType<typeof setTimeout>> = {};
+	function validateField(field: string) {
+		if (timers[field]) clearTimeout(timers[field]);
+		timers[field] = setTimeout(() => validate(field, { update: true }), 300);
+	}
 
-			// Step 0: validate creator rank via Riot API if role is 'player'
-			if (step === 0 && $formData.creator_role === 'player' && $formData.creator_riot_id) {
-				checkingCreatorRank = true;
-				creatorRankError = null;
-				try {
-					const res = await fetch('/api/riot/check-rank', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ riotId: $formData.creator_riot_id })
-					});
-					const result = await res.json();
-					if (!result.passed) {
-						switch (result.reason) {
-							case 'invalid_format':
-								creatorRankError = 'Formato inválido. Usa: Nome#Tag';
-								break;
-							case 'not_found':
-								creatorRankError = 'Riot ID não encontrado. Verifica o nome e a tag.';
-								break;
-							case 'unranked':
-								creatorRankError = 'Ainda não tens rank competitivo.';
-								break;
-							case 'rank_too_low':
-								creatorRankError = `Rank atual: ${result.rank}. Mínimo exigido: Ascendente 3.`;
-								break;
-						}
-						checkingCreatorRank = false;
-						return;
+	// Is the current step blocking advancement?
+	const stepBlocked = $derived.by(() => {
+		if (checkingCreatorRank) return true;
+		if (step === 0 && creatorRankError) return true;
+		const fields = stepFields[step] ?? [];
+		return fields.some((f) => $errors[f] != null);
+	});
+
+	async function nextStep() {
+		// Step 0: validate creator rank via Riot API if role is 'player'
+		if (step === 0 && $formData.creator_role === 'player' && $formData.creator_riot_id) {
+			checkingCreatorRank = true;
+			creatorRankError = null;
+			try {
+				const res = await fetch('/api/riot/check-rank', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ riotId: $formData.creator_riot_id })
+				});
+				const result = await res.json();
+				if (!result.passed) {
+					switch (result.reason) {
+						case 'invalid_format':
+							creatorRankError = 'Formato invalido. Usa: Nome#Tag';
+							break;
+						case 'not_found':
+							creatorRankError = 'Riot ID nao encontrado. Verifica o nome e a tag.';
+							break;
+						case 'unranked':
+							creatorRankError = 'Ainda nao tens rank competitivo.';
+							break;
+						case 'rank_too_low':
+							creatorRankError = `Rank atual: ${result.rank}. Minimo exigido: Ascendente 3.`;
+							break;
 					}
-				} catch {
-					// API unavailable — allow proceeding
-				} finally {
 					checkingCreatorRank = false;
+					return;
 				}
+			} catch {
+				// API unavailable - allow proceeding
+			} finally {
+				checkingCreatorRank = false;
 			}
 		}
 		step++;
@@ -167,19 +174,9 @@
 					variant={i <= step ? 'default' : 'secondary'}
 					size="xs"
 					class="flex-1"
-					onclick={async () => {
-						if (i > step) {
-							for (let s = step; s < i; s++) {
-								const fields = stepFields[s];
-								if (fields?.length) {
-									for (const field of fields) {
-										await validate(field, { update: true });
-									}
-									if (fields.some((f) => $errors[f])) return;
-								}
-							}
-						}
-						step = i;
+					onclick={() => {
+						// Always allow going back; only allow forward if current step is clear
+						if (i <= step || !stepBlocked) step = i;
 					}}
 				>
 					{label}
@@ -221,6 +218,7 @@
 									bind:value={$formData.creator_riot_id}
 									placeholder="Ex: OutKing#1234"
 									aria-invalid={$errors.creator_riot_id || creatorRankError ? true : undefined}
+									oninput={() => validateField('creator_riot_id')}
 								/>
 								{#if $errors.creator_riot_id}
 									<Field.FieldError>{$errors.creator_riot_id}</Field.FieldError>
@@ -238,7 +236,10 @@
 									Cargo na equipa <span class="text-error">*</span>
 								</Field.FieldLabel>
 								<input type="hidden" name="creator_role" value={$formData.creator_role} />
-								<Select.Root bind:value={$formData.creator_role}>
+								<Select.Root
+									bind:value={$formData.creator_role}
+									onchange={() => validateField('creator_role')}
+								>
 									<Select.Trigger>
 										{roles.find((r) => r.value === $formData.creator_role)?.label ?? 'Seleciona...'}
 									</Select.Trigger>
@@ -272,6 +273,7 @@
 									bind:value={$formData.team_name}
 									placeholder="Ex: OutKing Dragons"
 									aria-invalid={$errors.team_name ? true : undefined}
+									oninput={() => validateField('team_name')}
 								/>
 								{#if $errors.team_name}
 									<Field.FieldError>{$errors.team_name}</Field.FieldError>
@@ -289,6 +291,7 @@
 									placeholder="Ex: OKD"
 									maxlength={5}
 									aria-invalid={$errors.team_tag ? true : undefined}
+									oninput={() => validateField('team_tag')}
 								/>
 								{#if $errors.team_tag}
 									<Field.FieldError>{$errors.team_tag}</Field.FieldError>
@@ -304,6 +307,7 @@
 									bind:value={$formData.team_logo_url}
 									placeholder="https://..."
 									aria-invalid={$errors.team_logo_url ? true : undefined}
+									oninput={() => validateField('team_logo_url')}
 								/>
 								{#if $errors.team_logo_url}
 									<Field.FieldError>{$errors.team_logo_url}</Field.FieldError>
@@ -352,6 +356,7 @@
 											bind:value={$formData.players[i].discord}
 											placeholder="Discord (Ex: @username) *"
 											aria-invalid={$errors.players?.[i]?.discord ? true : undefined}
+											oninput={() => validateField('players')}
 										/>
 										{#if $errors.players?.[i]?.discord}
 											<Field.FieldError>{$errors.players[i].discord}</Field.FieldError>
@@ -364,6 +369,7 @@
 											bind:value={$formData.players[i].riot_id}
 											placeholder="Riot ID (Ex: Nome#Tag) *"
 											aria-invalid={$errors.players?.[i]?.riot_id ? true : undefined}
+											oninput={() => validateField('players')}
 										/>
 										{#if $errors.players?.[i]?.riot_id}
 											<Field.FieldError>{$errors.players[i].riot_id}</Field.FieldError>
@@ -376,6 +382,7 @@
 											bind:value={$formData.players[i].display_name}
 											placeholder="Nome para os casters *"
 											aria-invalid={$errors.players?.[i]?.display_name ? true : undefined}
+											oninput={() => validateField('players')}
 										/>
 										{#if $errors.players?.[i]?.display_name}
 											<Field.FieldError>{$errors.players[i].display_name}</Field.FieldError>
@@ -424,6 +431,7 @@
 											bind:value={$formData.staff[i].discord}
 											placeholder="Discord (Ex: @username) *"
 											aria-invalid={$errors.staff?.[i]?.discord ? true : undefined}
+											oninput={() => validateField('staff')}
 										/>
 										{#if $errors.staff?.[i]?.discord}
 											<Field.FieldError>{$errors.staff[i].discord}</Field.FieldError>
@@ -436,6 +444,7 @@
 											bind:value={$formData.staff[i].riot_id}
 											placeholder="Riot ID (Ex: Nome#Tag) *"
 											aria-invalid={$errors.staff?.[i]?.riot_id ? true : undefined}
+											oninput={() => validateField('staff')}
 										/>
 										{#if $errors.staff?.[i]?.riot_id}
 											<Field.FieldError>{$errors.staff[i].riot_id}</Field.FieldError>
@@ -448,6 +457,7 @@
 											bind:value={$formData.staff[i].display_name}
 											placeholder="Nome para os casters *"
 											aria-invalid={$errors.staff?.[i]?.display_name ? true : undefined}
+											oninput={() => validateField('staff')}
 										/>
 										{#if $errors.staff?.[i]?.display_name}
 											<Field.FieldError>{$errors.staff[i].display_name}</Field.FieldError>
@@ -460,6 +470,7 @@
 											bind:value={$formData.staff[i].role}
 											placeholder="Cargo *"
 											aria-invalid={$errors.staff?.[i]?.role ? true : undefined}
+											oninput={() => validateField('staff')}
 										/>
 										{#if $errors.staff?.[i]?.role}
 											<Field.FieldError>{$errors.staff[i].role}</Field.FieldError>
@@ -536,7 +547,9 @@
 						{/if}
 
 						{#if step < 4}
-							<Button type="button" variant="default" onclick={nextStep}>Seguinte →</Button>
+							<Button type="button" variant="default" disabled={stepBlocked} onclick={nextStep}>
+								Seguinte
+							</Button>
 						{:else}
 							<Button type="submit" variant="default">Submeter Inscrição</Button>
 						{/if}

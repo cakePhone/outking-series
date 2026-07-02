@@ -28,7 +28,7 @@
 
 	<div class="relative z-10 flex flex-col items-center gap-6 px-4 text-center">
 		<h1 class="text-3xl font-extrabold tracking-tight md:text-7xl">
-			Junta-te a mais de 500 jogadores
+			Junta-te a mais de 150 jogadores
 		</h1>
 		<p class="max-w-xl text-lg text-text-muted md:text-xl"></p>
 		<Button size="lg" class="rounded-full text-lg" onclick={handleClick}>
