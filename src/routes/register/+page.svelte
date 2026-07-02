@@ -134,6 +134,15 @@
 	const stepBlocked = $derived.by(() => {
 		if (checkingCreatorRank) return true;
 		if (step === 0 && creatorRankError) return true;
+
+		// Block on empty required fields (before any validation has run)
+		if (step === 0) {
+			if (!$formData.creator_riot_id.trim() || !$formData.creator_role) return true;
+		}
+		if (step === 1) {
+			if (!$formData.team_name.trim() || !$formData.team_tag.trim()) return true;
+		}
+
 		const fields = stepFields[step] ?? [];
 		return fields.some((f) => $errors[f] != null);
 	});
