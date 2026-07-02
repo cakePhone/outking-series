@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 
-const RIOT_API_KEY = env.RIOT_API_KEY ?? '';
+const RIOT_API_KEY = env.RG_API_KEY ?? '';
 
 // European shard - OutKing runs in Portugal
 const ACCOUNT_BASE = 'https://europe.api.riotgames.com';
