@@ -72,11 +72,14 @@
 		}
 	});
 
-	// Debounced Riot rank check (only when role is 'player')
+	// Debounced Riot rank check (when role is 'player' or 'coach')
 	let rankTimer: ReturnType<typeof setTimeout>;
 	async function checkCreatorRank() {
 		clearTimeout(rankTimer);
-		if ($formData.creator_role !== 'player' || !$formData.creator_riot_id) {
+		if (
+			($formData.creator_role !== 'player' && $formData.creator_role !== 'coach') ||
+			!$formData.creator_riot_id
+		) {
 			creatorRankError = null;
 			checkingCreatorRank = false;
 			return;
@@ -250,6 +253,7 @@
 								</Field.FieldLabel>
 								<input type="hidden" name="creator_role" value={$formData.creator_role} />
 								<Select.Root
+									type="single"
 									bind:value={$formData.creator_role}
 									onchange={() => {
 										validateField('creator_role');
