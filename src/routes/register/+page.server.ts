@@ -21,7 +21,13 @@ export const load: PageServerLoad = async (event) => {
 			team_tag: '',
 			team_logo_url: '',
 			team_socials: '',
-			players: [{ discord: '', riot_id: '', display_name: '' }],
+			players: [
+				{ discord: '', riot_id: '', display_name: '' },
+				{ discord: '', riot_id: '', display_name: '' },
+				{ discord: '', riot_id: '', display_name: '' },
+				{ discord: '', riot_id: '', display_name: '' },
+				{ discord: '', riot_id: '', display_name: '' }
+			],
 			staff: []
 		}
 	});

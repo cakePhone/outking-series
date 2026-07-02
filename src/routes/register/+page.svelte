@@ -72,39 +72,16 @@
 		}
 	});
 
-	// Clear rank error when the creator changes their Riot ID or role
-	$effect(() => {
-		void $formData.creator_riot_id;
-		void $formData.creator_role;
-		creatorRankError = null;
-	});
-
-	const stepFields: Record<number, (keyof TeamRegisterForm)[]> = {
-		0: ['creator_riot_id', 'creator_role'],
-		1: ['team_name', 'team_tag'],
-		2: ['players'],
-		3: ['staff'],
-		4: []
-	};
-
-	// Debounced validation: re-validates a field 300ms after the user stops typing
-	const timers: Record<string, ReturnType<typeof setTimeout>> = {};
-	function validateField(field: string) {
-		if (timers[field]) clearTimeout(timers[field]);
-		timers[field] = setTimeout(() => validate(field, { update: true }), 300);
-	}
-
-	// Is the current step blocking advancement?
-	const stepBlocked = $derived.by(() => {
-		if (checkingCreatorRank) return true;
-		if (step === 0 && creatorRankError) return true;
-		const fields = stepFields[step] ?? [];
-		return fields.some((f) => $errors[f] != null);
-	});
-
-	async function nextStep() {
-		// Step 0: validate creator rank via Riot API if role is 'player'
-		if (step === 0 && $formData.creator_role === 'player' && $formData.creator_riot_id) {
+	// Debounced Riot rank check (only when role is 'player')
+	let rankTimer: ReturnType<typeof setTimeout>;
+	async function checkCreatorRank() {
+		clearTimeout(rankTimer);
+		if ($formData.creator_role !== 'player' || !$formData.creator_riot_id) {
+			creatorRankError = null;
+			checkingCreatorRank = false;
+			return;
+		}
+		rankTimer = setTimeout(async () => {
 			checkingCreatorRank = true;
 			creatorRankError = null;
 			try {
@@ -129,15 +106,39 @@
 							creatorRankError = `Rank atual: ${result.rank}. Minimo exigido: Ascendente 3.`;
 							break;
 					}
-					checkingCreatorRank = false;
-					return;
 				}
 			} catch {
-				// API unavailable - allow proceeding
+				creatorRankError = null;
 			} finally {
 				checkingCreatorRank = false;
 			}
-		}
+		}, 600);
+	}
+
+	const stepFields: Record<number, (keyof TeamRegisterForm)[]> = {
+		0: ['creator_riot_id', 'creator_role'],
+		1: ['team_name', 'team_tag'],
+		2: ['players'],
+		3: ['staff'],
+		4: []
+	};
+
+	// Debounced validation: re-validates a field 300ms after the user stops typing
+	const timers: Record<string, ReturnType<typeof setTimeout>> = {};
+	function validateField(field: string) {
+		if (timers[field]) clearTimeout(timers[field]);
+		timers[field] = setTimeout(() => validate(field, { update: true }), 300);
+	}
+
+	// Is the current step blocking advancement?
+	const stepBlocked = $derived.by(() => {
+		if (checkingCreatorRank) return true;
+		if (step === 0 && creatorRankError) return true;
+		const fields = stepFields[step] ?? [];
+		return fields.some((f) => $errors[f] != null);
+	});
+
+	function nextStep() {
 		step++;
 	}
 </script>
@@ -218,7 +219,10 @@
 									bind:value={$formData.creator_riot_id}
 									placeholder="Ex: OutKing#1234"
 									aria-invalid={$errors.creator_riot_id || creatorRankError ? true : undefined}
-									oninput={() => validateField('creator_riot_id')}
+									oninput={() => {
+										validateField('creator_riot_id');
+										checkCreatorRank();
+									}}
 								/>
 								{#if $errors.creator_riot_id}
 									<Field.FieldError>{$errors.creator_riot_id}</Field.FieldError>
@@ -238,7 +242,10 @@
 								<input type="hidden" name="creator_role" value={$formData.creator_role} />
 								<Select.Root
 									bind:value={$formData.creator_role}
-									onchange={() => validateField('creator_role')}
+									onchange={() => {
+										validateField('creator_role');
+										checkCreatorRank();
+									}}
 								>
 									<Select.Trigger>
 										{roles.find((r) => r.value === $formData.creator_role)?.label ?? 'Seleciona...'}
@@ -335,10 +342,10 @@
 
 						<Field.FieldGroup>
 							{#each $formData.players as _, i}
-								<div class="rounded-lg bg-section p-4">
-									<div class="mb-2 flex items-center justify-between">
-										<span class="text-sm text-text-muted">Jogador {i + 1}</span>
-										{#if $formData.players.length > 1}
+								<div class={i > 0 ? 'border-t border-border-subtle pt-6' : ''}>
+									<div class="mb-3 flex items-center justify-between">
+										<Field.FieldLabel>Jogador {i + 1}</Field.FieldLabel>
+										{#if $formData.players.length > 5}
 											<Button
 												type="button"
 												variant="ghost"
