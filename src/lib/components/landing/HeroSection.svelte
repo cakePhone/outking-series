@@ -4,7 +4,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 
-	let { onregister }: { onregister?: () => void } = $props();
+	let { onregister, playerCount = 0 }: { onregister?: () => void; playerCount?: number } = $props();
 
 	async function handleClick() {
 		if ($session.data?.user) {
@@ -28,7 +28,11 @@
 
 	<div class="relative z-10 flex flex-col items-center gap-6 px-4 text-center">
 		<h1 class="text-3xl font-extrabold tracking-tight md:text-7xl">
-			Junta-te a mais de 150 jogadores
+			{#if playerCount > 0}
+				Junta-te a mais de {playerCount} jogadores
+			{:else}
+				Junta-te a mais de 150 jogadores
+			{/if}
 		</h1>
 		<p class="max-w-xl text-lg text-text-muted md:text-xl"></p>
 		<Button size="lg" class="rounded-full text-lg" onclick={handleClick}>

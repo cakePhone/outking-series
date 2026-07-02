@@ -4,13 +4,16 @@
 	import UpdatesSection from '$lib/components/landing/UpdatesSection.svelte';
 	import WhySection from '$lib/components/landing/WhySection.svelte';
 	import CTASection from '$lib/components/landing/CTASection.svelte';
+	import type { PageProps } from './$types';
+
+	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>
 	<title>OutKing Series - Torneios de VALORANT</title>
 </svelte:head>
 
-<HeroSection />
+<HeroSection playerCount={data.playerCount} />
 <HistorySection />
 <UpdatesSection />
 <WhySection />
