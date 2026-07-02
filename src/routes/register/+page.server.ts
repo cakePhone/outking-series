@@ -7,6 +7,16 @@ import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { submission } from '$lib/server/db/schema';
 import { validatePlayers } from '$lib/server/riot';
+import {
+	register_flash_validation,
+	register_flash_not_member,
+	register_flash_rank_fail,
+	rank_error_invalid_format,
+	rank_error_not_found,
+	rank_error_unranked,
+	rank_error_rank_too_low,
+	rank_error_generic
+} from '$lib/paraglide/messages';
 import type { Actions, PageServerLoad } from './$types';
 
 // Cache: userId -> { isMember, timestamp }
@@ -64,7 +74,7 @@ export const actions: Actions = {
 		if (!form.valid) {
 			return message(form, {
 				type: 'error',
-				text: 'Por favor corrige os erros no formulário.'
+				text: register_flash_validation()
 			});
 		}
 
@@ -73,7 +83,7 @@ export const actions: Actions = {
 			const url = env.DISCORD_INVITE_URL ?? '#';
 			return message(form, {
 				type: 'error',
-				text: `Parece que ainda não fazes parte do servidor da Outking. Entra primeiro: ${url}`
+				text: register_flash_not_member({ url })
 			});
 		}
 
@@ -104,19 +114,19 @@ export const actions: Actions = {
 			let msg: string;
 			switch (r.reason) {
 				case 'invalid_format':
-					msg = 'Formato inválido. Usa: Nome#Tag';
+					msg = rank_error_invalid_format();
 					break;
 				case 'not_found':
-					msg = 'Riot ID não encontrado. Verifica o nome e a tag.';
+					msg = rank_error_not_found();
 					break;
 				case 'unranked':
-					msg = 'Este jogador ainda não tem rank competitivo.';
+					msg = rank_error_unranked();
 					break;
 				case 'rank_too_low':
-					msg = `Rank atual: ${r.rank}. Mínimo exigido: Ascendente 3.`;
+					msg = rank_error_rank_too_low({ rank: r.rank ?? '' });
 					break;
 				default:
-					msg = 'Erro ao validar o rank.';
+					msg = rank_error_generic();
 			}
 			// setError paths are runtime-validated by superforms; cast needed for dynamic indices
 			setError(form, field as never, msg);
@@ -126,7 +136,7 @@ export const actions: Actions = {
 		if (rankBlocked) {
 			return message(form, {
 				type: 'error',
-				text: 'Alguns jogadores não cumprem os requisitos de rank (Ascendente 3 ou superior).'
+				text: register_flash_rank_fail()
 			});
 		}
 

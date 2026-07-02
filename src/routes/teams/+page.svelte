@@ -6,6 +6,19 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import {
+		teams_title,
+		teams_no_seasons,
+		teams_search,
+		teams_no_results,
+		teams_empty_season,
+		teams_match_count,
+		role_player,
+		role_substitute,
+		role_coach,
+		role_owner,
+		status_ongoing
+	} from '$lib/paraglide/messages';
 
 	let { data }: { data: PageData } = $props();
 
@@ -21,23 +34,23 @@
 	}
 
 	function fmtDate(d: Date | null): string {
-		if (d === null) return 'Ongoing';
+		if (d === null) return status_ongoing();
 		return d.toLocaleDateString('pt-PT', { year: 'numeric', month: 'short', day: 'numeric' });
 	}
 
 	const roleLabel: Record<string, string> = {
-		player: 'Jogador',
-		substitute: 'Suplente',
-		coach: 'Treinador',
-		owner: 'Dono'
+		player: role_player(),
+		substitute: role_substitute(),
+		coach: role_coach(),
+		owner: role_owner()
 	};
 </script>
 
 <div class="mx-auto max-w-5xl px-4 pt-24 pb-16">
-	<h1 class="mb-10 text-center text-4xl font-bold">Equipas</h1>
+	<h1 class="mb-10 text-center text-4xl font-bold">{teams_title()}</h1>
 
 	{#if data.seasons.length === 0}
-		<p class="text-center text-text-muted">Nenhuma época encontrada.</p>
+		<p class="text-center text-text-muted">{teams_no_seasons()}</p>
 	{/if}
 
 	<Tooltip.Provider delayDuration={500}>
@@ -57,12 +70,12 @@
 					<Accordion.Content>
 						<!-- Search -->
 						<div class="mt-4 mb-6">
-							<Input bind:value={searchQuery} placeholder="Procurar equipa..." class="max-w-sm" />
+							<Input bind:value={searchQuery} placeholder={teams_search()} class="max-w-sm" />
 						</div>
 
 						{#if teams.length === 0}
 							<p class="text-sm text-text-muted">
-								{searchQuery ? 'Nenhuma equipa encontrada.' : 'Nenhuma equipa nesta época.'}
+								{searchQuery ? teams_no_results() : teams_empty_season()}
 							</p>
 						{/if}
 
@@ -88,7 +101,9 @@
 												<span class="mx-1">-</span>
 												<span class="font-semibold text-error">{team.losses}L</span>
 												{#if team.matchesPlayed > 0}
-													<div class="text-xs text-text-muted">{team.matchesPlayed} jogos</div>
+													<div class="text-xs text-text-muted">
+														{teams_match_count({ n: team.matchesPlayed })}
+													</div>
 												{/if}
 											</div>
 										</div>
