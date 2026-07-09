@@ -6,7 +6,11 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
-		paraglide({ project: './project.inlang', outdir: './src/lib/paraglide' }),
+		paraglide({
+			project: './project.inlang',
+			outdir: './src/lib/paraglide',
+			disablePreprocessor: true
+		}),
 		sveltekit()
 	]
 });
