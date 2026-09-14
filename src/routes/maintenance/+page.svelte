@@ -122,17 +122,6 @@
 			var(--theme-background) 18px,
 			var(--theme-background) 36px
 		);
-		animation: stripe-crawl 1.2s linear infinite;
-	}
-
-	@keyframes stripe-crawl {
-		from {
-			background-position: 0 0;
-		}
-		to {
-			/* 36px stripe period along the -45deg axis = 50.91px on x, so the loop is seamless */
-			background-position: 50.91px 0;
-		}
 	}
 
 	/* Soft grid texture */
@@ -161,7 +150,6 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.stripe-band,
 		.heading-flash {
 			animation: none;
 		}
