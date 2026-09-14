@@ -154,7 +154,7 @@ export async function fetchGuildMember(
 	return res.json();
 }
 
-async function fetchGuildRoles(guildId: string): Promise<DiscordRole[]> {
+export async function fetchGuildRoles(guildId: string): Promise<DiscordRole[]> {
 	if (!env.DISCORD_BOT_TOKEN) return [];
 	const res = await fetch(`${DISCORD_API}/guilds/${guildId}/roles`, {
 		headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` }

@@ -4,7 +4,8 @@
 	import Navbar from '$lib/components/navbar.svelte';
 	import Footer from '$lib/components/footer.svelte';
 
-	let { children } = $props();
+	let { data, children } = $props();
+	const bare = data.maintenance;
 </script>
 
 <svelte:head>
@@ -16,8 +17,14 @@
 		rel="stylesheet"
 	/>
 </svelte:head>
-<Navbar />
-<main class="min-h-screen">
-	{@render children()}
-</main>
-<Footer />
+{#if bare}
+	<main class="min-h-dvh">
+		{@render children()}
+	</main>
+{:else}
+	<Navbar />
+	<main class="min-h-screen">
+		{@render children()}
+	</main>
+	<Footer />
+{/if}
