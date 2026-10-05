@@ -1,0 +1,1214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.2.3" use-changelog="false" max-obj-count="34"
+	 gen-disabled-objs-code="false" show-sys-schemas-rects="true"
+	 last-position="0,-435" last-zoom="0.75" scene-rect="-1040,-580,2696.5,1823.32"
+	 default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="outking" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
+</schema>
+
+<table name="post" layers="0" alias="Post" collapse-mode="1" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-820" y="820"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="content" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="created_at" alias="Posted At" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="deleted_at" alias="Deletion Time">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="updated_at" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="visible" alias="Visibility" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="post_pk" type="pk-constr" table="public.post">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="posted_by" index="4"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_fk" index="1"/>
+	</customidxs></table>
+
+<table name="badge" layers="0" alias="Badge" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="620"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="name" alias="Name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="badge_pk" type="pk-constr" table="public.badge">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="team" layers="0" alias="Team" collapse-mode="1" max-obj-count="9" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="940" y="-140"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="name" alias="Name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="tag" alias="Tag (Acronym)" not-null="true">
+		<type name="char" length="3"/>
+	</column>
+	<column name="rank" alias="Rank" not-null="true" default-value="0">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="created_at" alias="Created At" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="retired_at" alias="Retired At" default-value="NULL">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="updated_at" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="team_pk" type="pk-constr" table="public.team">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="team_has_unique_acronym" type="uq-constr" alias="Team Tag is Unique" table="public.team">
+		<columns names="tag" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="retired_at_validity" type="ck-constr" alias="Retired At is Valid" table="public.team">
+			<expression> <![CDATA[retired_at IS NULL OR retired_at >= created_at]]> </expression>
+	</constraint>
+	<constraint name="team_rank_not_below_zero" type="ck-constr" table="public.team">
+			<expression> <![CDATA[rank >= 0]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="created_by" index="6"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_fk" index="3"/>
+	</customidxs></table>
+
+<usertype name="player_role" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="user"/>
+	<enumeration label="moderator"/>
+	<enumeration label="administrator"/>
+</usertype>
+
+<usertype name="match_result" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="team_a_won"/>
+	<enumeration label="team_b_won"/>
+</usertype>
+
+<usertype name="team_points" configuration="composite">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment> <![CDATA[A structure that holds per team points at the start and end of a match.]]> </comment>
+	<typeattrib name="start_points">
+		<type name="bigint" length="0"/>
+	</typeattrib>
+	<typeattrib name="end_points">
+		<type name="bigint" length="0"/>
+	</typeattrib>
+</usertype>
+
+<usertype name="match_state" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="cancelled"/>
+	<enumeration label="pending"/>
+	<enumeration label="in_progress"/>
+	<enumeration label="completed"/>
+</usertype>
+
+<table name="tag" layers="0" alias="Tag" collapse-mode="1" max-obj-count="1" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-460" y="1020"/>
+	<column name="name" alias="Name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="tag_pk" type="pk-constr" table="public.tag">
+		<columns names="name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tournament" layers="0" alias="Tournament" collapse-mode="1" max-obj-count="16" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1080" y="860"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="title" alias="Title" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="start_date" alias="Start Date" not-null="true" default-value="CURRENT_DATE">
+		<type name="date" length="0"/>
+	</column>
+	<column name="end_date" alias="End Date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="min_teams" alias="Minimum Teams" not-null="true" default-value="2">
+		<type name="smallint" length="0"/>
+		<comment> <![CDATA[The amount of teams required for the tournament to start.]]> </comment>
+	</column>
+	<column name="max_teams" alias="Max Teams" not-null="true">
+		<type name="smallint" length="0"/>
+		<comment> <![CDATA[The maximum teams allowed to join the tournament]]> </comment>
+	</column>
+	<column name="qualifiers_end_date" alias="Qualifiers End" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="group_stage_end_date" alias="Group Stage End" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="play_off_end_date" alias="Play Offs End" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="updated_at" alias="Last update" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="visible" alias="Visibility" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="prize_pool" alias="Prize Pool">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="tournament_pk" type="pk-constr" table="public.tournament">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="end_date_after_start_date" type="ck-constr" table="public.tournament">
+			<expression> <![CDATA[end_date > start_date]]> </expression>
+	</constraint>
+	<constraint name="correct_stage_date_order" type="ck-constr" table="public.tournament">
+			<expression> <![CDATA[qualifiers_end_date < group_stage_end_date AND group_stage_end_date < play_off_end_date]]> </expression>
+	</constraint>
+	<constraint name="two_min_teams" type="ck-constr" table="public.tournament">
+			<expression> <![CDATA[min_teams >= 2]]> </expression>
+	</constraint>
+	<constraint name="max_teams_bigger_than_min" type="ck-constr" table="public.tournament">
+			<expression> <![CDATA[max_teams >= min_teams]]> </expression>
+	</constraint>
+	<constraint name="qualifiers_cant_outlive_tournament" type="ck-constr" table="public.tournament">
+			<expression> <![CDATA[qualifiers_end_date <= end_date]]> </expression>
+		<comment> <![CDATA[This check also prevents all other stage end dates from outliving the tournament, as they must happen after qualifiers.]]> </comment>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="category" index="2"/>
+		<object name="referenced_post" index="10"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="post_fk" index="1"/>
+		<object name="tournament_category_fk" index="3"/>
+		<object name="tournament_uq" index="2"/>
+	</customidxs></table>
+
+<relationship name="many_post_has_many_tag" type="relnn" layers="0" alias="Post *-* Tag"
+	 src-col-pattern="{sc}_{st}" dst-col-pattern="{sc}_{dt}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 fk-idx-pattern="{gt}_idx"
+	 src-table="public.post"
+	 dst-table="public.tag"
+	 src-required="false" dst-required="false"
+	 table-name="post_tag">
+	<label ref-type="name-label">
+		<position x="0.242987" y="-39.153"/>
+	</label>
+</relationship>
+
+<table name="comment" layers="0" alias="Comment" collapse-mode="1" max-obj-count="9" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-720" y="360"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="content" alias="Content" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="commented_at" alias="Commented At" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="deleted_at" alias="Deletion Time">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="reply_to" alias="Replying To" default-value="NULL">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="updated_at" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="comment_pk" type="pk-constr" table="public.comment">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="commented_by" index="4"/>
+		<object name="on_post" index="5"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_fk" index="1"/>
+		<object name="post_fk" index="2"/>
+	</customidxs></table>
+
+<relationship name="post_has_many_comment" type="rel1n" layers="0" alias="Post has Comments"
+	 src-col-pattern="on_post"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.post"
+	 dst-table="public.comment"
+	 src-required="true" dst-required="false"
+	del-action="RESTRICT">
+	<label ref-type="name-label">
+		<position x="-5.30182" y="-39.353"/>
+	</label>
+</relationship>
+
+<relationship name="tournament_has_one_post" type="rel11" layers="0" alias="Tournament has a Post"
+	 src-col-pattern="referenced_post"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.post"
+	 dst-table="public.tournament"
+	 src-required="true" dst-required="false"
+	del-action="RESTRICT">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<table name="match" layers="0" alias="Match" collapse-mode="1" max-obj-count="14" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="720" y="460"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="state" alias="State" not-null="true" default-value="'pending'">
+		<type name="public.match_state" length="0"/>
+	</column>
+	<column name="match_start" alias="Start">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="match_end" alias="End">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="points_a" alias="Points A">
+		<type name="public.team_points" length="0"/>
+	</column>
+	<column name="points_b" alias="Points B">
+		<type name="public.team_points" length="0"/>
+	</column>
+	<column name="team_a" alias="Team A">
+		<type name="bigint" length="0"/>
+		<comment> <![CDATA[If team is NULL, match is planned and team has yet to be decided.]]> </comment>
+	</column>
+	<column name="team_b" alias="Team B">
+		<type name="bigint" length="0"/>
+		<comment> <![CDATA[If team is NULL, match is planned and team has yet to be decided.]]> </comment>
+	</column>
+	<column name="match_result" alias="Result">
+		<type name="public.match_result" length="0"/>
+	</column>
+	<column name="vod_url" alias="VOD URL">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="match_pk" type="pk-constr" table="public.match">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="team_a_diff_team_b" type="ck-constr" alias="Team A &lt;&gt; Team B" table="public.match">
+			<expression> <![CDATA[team_a <> team_b]]> </expression>
+	</constraint>
+	<constraint name="valid_match_winner" type="ck-constr" alias="Valid Match Winner" table="public.match">
+			<expression> <![CDATA[(match_result = 'team_a_won') = (points_a.end_points > points_b.end_points)]]> </expression>
+	</constraint>
+	<constraint name="completed_means_end_exists" type="ck-constr" table="public.match">
+			<expression> <![CDATA[state <> 'completed' OR match_end IS NOT NULL]]> </expression>
+	</constraint>
+	<constraint name="pending_state_match_end_null" type="ck-constr" table="public.match">
+			<expression> <![CDATA[state <> 'pending' OR match_end IS NULL]]> </expression>
+	</constraint>
+	<constraint name="state_is_not_completed_or_match_is_valid" type="ck-constr" table="public.match">
+			<expression> <![CDATA[state <> 'completed' OR (match_result IS NOT NULL AND points_a IS NOT NULL AND points_b IS NOT NULL)]]> </expression>
+	</constraint>
+	<constraint name="end_after_start" type="ck-constr" table="public.match">
+			<expression> <![CDATA[match_end > match_start]]> </expression>
+	</constraint>
+	<constraint name="match_data_filled_after_completion" type="ck-constr" table="public.match">
+			<expression> <![CDATA[state = 'completed' OR (match_result IS NULL AND points_a IS NULL AND points_b IS NULL)]]> </expression>
+	</constraint>
+	<constraint name="in_progress_match_started" type="ck-constr" table="public.match">
+			<expression> <![CDATA[state <> 'in_progress' OR match_start IS NOT NULL]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="played_for_tournament" index="10"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="tournament_fk" index="4"/>
+	</customidxs></table>
+
+<relationship name="tournament_has_many_match" type="rel1n" layers="0" alias="Tournament has Matches"
+	 src-col-pattern="played_for_tournament"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.tournament"
+	 dst-table="public.match"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="team_enrollment" type="relnn" layers="0" alias="Teams enroll in Tournaments"
+	 src-col-pattern="{sc}_{st}" dst-col-pattern="{sc}_{dt}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 fk-idx-pattern="{gt}_idx"
+	 src-table="public.team"
+	 dst-table="public.tournament"
+	 src-required="false" dst-required="false"
+	 table-name="team_enrollment"
+	del-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="76.1049" y="48.247"/>
+	</label>
+	<column name="enrolled_at" alias="Enrollment Time" not-null="true">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="status" not-null="true" default-value="'pending'">
+		<type name="public.enrollment_status" length="0"/>
+	</column>
+	<column name="rank_at_enrollment" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<constraint name="rank_not_below_0" type="ck-constr" table="public.team_enrollment">
+			<expression> <![CDATA[rank_at_enrollment >= 0]]> </expression>
+	</constraint>
+</relationship>
+
+<table name="match_player_stats" layers="0" alias="Match Player Stats" collapse-mode="1" max-obj-count="14" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="280" y="280"/>
+	<column name="kills" alias="Kills" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="deaths" alias="Deaths" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="assists" alias="Assists" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="hs_rate" alias="Headshot Rate" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<column name="first_bloods" alias="First Bloods" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="clutches" alias="Clutches" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="plants" alias="Plants" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="defuses" alias="Defuses" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="rank">
+		<type name="smallint" length="0"/>
+		<comment> <![CDATA[The player's rank when the match ocurred.]]> </comment>
+	</column>
+	<constraint name="hs_rate_check" type="ck-constr" alias="Headshot Rate within 0 and 1" table="public.match_player_stats">
+			<expression> <![CDATA[hs_rate BETWEEN 0 AND 1]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_match" index="1"/>
+		<object name="id_player" index="0"/>
+		<object name="id_team" index="2"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="match_fk" index="2"/>
+		<object name="match_player_stats_pk" index="0"/>
+		<object name="player_fk" index="1"/>
+		<object name="team_fk" index="3"/>
+	</customidxs></table>
+
+<relationship name="match_has_many_match_player_stats" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.match"
+	 dst-table="public.match_player_stats"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<table name="tournament_category" layers="0" alias="Tournament Category" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1340" y="440"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="title" alias="Title" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="tournament_cat_unique_title" type="uq-constr" alias="Tourney Categories must be Unique" table="public.tournament_category">
+		<columns names="title" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="tournament_category_pk" type="pk-constr" table="public.tournament_category">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tournament_category_has_many_tournament" type="rel1n" layers="0" alias="Tournaments belong to Category"
+	 src-col-pattern="category"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.tournament_category"
+	 dst-table="public.tournament"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="27.403" y="-33.4532"/>
+	</label>
+</relationship>
+
+<relationship name="team_has_many_match_player_stats" type="rel1n" layers="0" alias="Team has Stats for its Players"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.team"
+	 dst-table="public.match_player_stats"
+	 src-required="true" dst-required="false"/>
+
+<table name="team_member" layers="0" alias="Team Member" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="60" y="-400"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="joined_at" alias="Join Time" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="left_at" alias="Leave Time" default-value="NULL">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="team_member_pk" type="pk-constr" table="public.team_member">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="left_after_join" type="ck-constr" table="public.team_member">
+			<expression> <![CDATA[left_at > joined_at]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_player" index="3"/>
+		<object name="id_team" index="4"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_fk" index="0"/>
+		<object name="team_fk" index="1"/>
+	</customidxs></table>
+
+<relationship name="team_has_many_team_member" type="rel1n" layers="0" alias="Team has Team Members"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.team"
+	 dst-table="public.team_member"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="95.5856" y="-28.753"/>
+	</label>
+</relationship>
+
+<function name="set_updated_at"
+		window-func="false"
+		returns-setof="false"
+		behavior-type="RETURNS NULL ON NULL INPUT"
+		function-type="VOLATILE"
+		security-type="SECURITY INVOKER"
+		parallel-type="PARALLEL SAFE"
+		execution-cost="1"
+		row-amount="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<language name="plpgsql"/>
+	<return-type>
+	<type name="trigger" length="0"/>
+	</return-type>
+	<definition> <![CDATA[BEGIN
+	NEW.updated_at := now();
+	RETURN NEW;
+END;]]> </definition>
+</function>
+
+<table name="player_blocks" layers="0" alias="Player Blocks" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-980" y="-560"/>
+	<column name="blocked_at" alias="Block time" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="player_cant_block_self" type="ck-constr" table="public.player_blocks">
+			<expression> <![CDATA[blocked_by <> blocked_player]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="blocked_by" index="1"/>
+		<object name="blocked_player" index="2"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_blocks_pk" index="0"/>
+		<object name="player_fk" index="1"/>
+		<object name="player_fk1" index="2"/>
+	</customidxs></table>
+
+<usertype name="report_status" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="open"/>
+	<enumeration label="resolved"/>
+	<enumeration label="dismissed"/>
+</usertype>
+
+<table name="notification" layers="0" alias="Notification" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-140" y="-520"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="title" alias="Title" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="content" alias="Content" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="notified_at" alias="Notified At" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="read_at" default-value="NULL">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="notification_pk" type="pk-constr" table="public.notification">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="recipient" index="5"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_fk" index="1"/>
+	</customidxs></table>
+
+<function name="stats_team_is_playing"
+		window-func="false"
+		returns-setof="false"
+		behavior-type="CALLED ON NULL INPUT"
+		function-type="VOLATILE"
+		security-type="SECURITY INVOKER"
+		parallel-type="PARALLEL UNSAFE"
+		execution-cost="1"
+		row-amount="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<language name="plpgsql"/>
+	<return-type>
+	<type name="trigger" length="0"/>
+	</return-type>
+	<definition> <![CDATA[BEGIN
+	IF NEW.id_team <> ALL (SELECT team_a, team_b FROM match WHERE id = NEW.id_match) THEN
+	RAISE EXCEPTION 'stats team % does not belong to match %', NEW.id_team, NEW.id_match;
+	END IF;
+	RETURN NEW;
+END;
+]]> </definition>
+</function>
+
+<trigger name="trg_stats_team_is_playing" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="true" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.match_player_stats">
+		<function signature="public.stats_team_is_playing()"/>
+	<columns names="id_match,id_team"/>
+</trigger>
+
+<trigger name="trg_match_updated" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="false" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.match">
+		<function signature="public.set_updated_at()"/>
+	<columns names="id,state,match_start,match_end,points_a,points_b,team_a,team_b,match_result,played_for_tournament,vod_url"/>
+</trigger>
+
+<trigger name="trg_tournament_updated" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="false" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.tournament">
+		<function signature="public.set_updated_at()"/>
+	<columns names="id,title,category,start_date,end_date,min_teams,max_teams,qualifiers_end_date,group_stage_end_date,play_off_end_date,referenced_post,updated_at,visible,prize_pool"/>
+</trigger>
+
+<usertype name="game_roles" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="duelist"/>
+	<enumeration label="controller"/>
+	<enumeration label="initiator"/>
+	<enumeration label="sentinel"/>
+</usertype>
+
+<table name="player_reports" layers="0" alias="Player Reports" collapse-mode="2" max-obj-count="12" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-980" y="-300"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="reported_at" alias="Report time" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="reason" alias="Reason" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="status" not-null="true" default-value="'open'">
+		<type name="public.report_status" length="0"/>
+	</column>
+	<column name="resolved_at">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="player_cant_report_self" type="ck-constr" table="public.player_reports">
+			<expression> <![CDATA[reported_by <> reported_player]]> </expression>
+	</constraint>
+	<constraint name="player_reports_pk" type="pk-constr" table="public.player_reports">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="status_resolution_valid" type="ck-constr" table="public.player_reports">
+			<expression> <![CDATA[(status = 'open') <> (resolved_by IS NOT NULL AND resolved_at IS NOT NULL)]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_comment" index="9"/>
+		<object name="id_post" index="8"/>
+		<object name="reported_by" index="1"/>
+		<object name="reported_player" index="2"/>
+		<object name="resolved_by" index="6"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="comment_fk" index="7"/>
+		<object name="player_fk" index="1"/>
+		<object name="player_fk1" index="2"/>
+		<object name="player_fk2" index="3"/>
+		<object name="post_fk" index="6"/>
+	</customidxs></table>
+
+<usertype name="sanction" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="mute"/>
+	<enumeration label="suspend"/>
+	<enumeration label="ban"/>
+</usertype>
+
+<usertype name="ingame_region" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="emea"/>
+	<enumeration label="america"/>
+	<enumeration label="asia"/>
+</usertype>
+
+<table name="player_sanction" layers="0" alias="Player Sanction" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-540" y="-480"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="type" alias="Type" not-null="true">
+		<type name="public.sanction" length="0"/>
+	</column>
+	<column name="reason" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="starts_at" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="ends_at">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<constraint name="player_sanction_pk" type="pk-constr" table="public.player_sanction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="valid_ends_at" type="ck-constr" table="public.player_sanction">
+			<expression> <![CDATA[ends_at IS NULL OR ends_at > starts_at]]> </expression>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="issued_by" index="3"/>
+		<object name="sanctioned_player" index="4"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="player_fk" index="1"/>
+		<object name="player_fk1" index="2"/>
+	</customidxs></table>
+
+<table name="player" layers="0" alias="Player" collapse-mode="1" max-obj-count="14" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-140" y="60"/>
+	<column name="id" alias="ID" not-null="true"
+	 identity-type="ALWAYS" start="0" increment="1">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="nick" alias="Nickname">
+		<type name="text" length="0"/>
+	</column>
+	<column name="display_name" alias="Display Name" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="email" alias="eMail" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="pass_hash" alias="Password Hash" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="created_at" alias="Joined At" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="updated_at" alias="Last update" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="deleted_at" alias="Deletion Time">
+		<type name="timestamptz" length="0"/>
+	</column>
+	<column name="role" alias="Role" not-null="true" default-value="'user'">
+		<type name="public.player_role" length="0"/>
+	</column>
+	<column name="main_ingame_role" alias="Main In-Game Role" not-null="true">
+		<type name="public.game_roles" length="0"/>
+	</column>
+	<column name="region" alias="Region" not-null="true">
+		<type name="public.ingame_region" length="0"/>
+	</column>
+	<column name="ranked_tier">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="player_pk" type="pk-constr" table="public.player">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="player_has_unique_email" type="uq-constr" alias="Player has unique eMail" table="public.player">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="player_has_unique_nick" type="uq-constr" alias="Players have Unique Nicknames" table="public.player">
+		<columns names="nick" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<trigger name="trg_player_updated_at" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="false" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.player">
+		<function signature="public.set_updated_at()"/>
+		<columns names="updated_at,id,nick,display_name,email,pass_hash,created_at,deleted_at,role,main_ingame_role,region,ranked_tier"/>
+</trigger>
+
+<index name="player_email_index" table="public.player"
+	 concurrent="false" unique="true" fast-update="false" buffering="false" nulls-not-distinct="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<expression> <![CDATA[lower(email)]]> </expression>
+		</idxelement>
+</index>
+
+<relationship name="Player gets Sanctions" type="rel1n" layers="0" alias="Player gets Sanctions"
+	 src-col-pattern="sanctioned_player"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_sanction"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="tournament_awards_badge" type="rel1n" layers="0" alias="Tournament awards Badges"
+	 src-col-pattern="awarded_from"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.tournament"
+	 dst-table="public.badge"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="many_player_has_many_badge" type="relnn" layers="0" alias="Players have Badges"
+	 src-col-pattern="{sc}_{st}" dst-col-pattern="{sc}_{dt}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 fk-idx-pattern="{gt}_idx"
+	 src-table="public.player"
+	 dst-table="public.badge"
+	 src-required="false" dst-required="false"
+	 table-name="player_badge"
+	del-action="NO ACTION">
+	<label ref-type="name-label">
+		<position x="23.2454" y="3.04701"/>
+	</label>
+</relationship>
+
+<relationship name="player_creates_teams" type="rel1n" layers="0" alias="Players create Teams"
+	 src-col-pattern="created_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.team"
+	 src-required="true" dst-required="false"
+	del-action="RESTRICT">
+	<label ref-type="name-label">
+		<position x="-7.17518" y="-12.6924"/>
+	</label>
+</relationship>
+
+<relationship name="player_has_many_post" type="rel1n" layers="0" alias="Player makes Posts"
+	 src-col-pattern="posted_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.post"
+	 src-required="true" dst-required="false"
+	del-action="RESTRICT">
+	<label ref-type="name-label">
+		<position x="1.09689" y="8.54701"/>
+	</label>
+</relationship>
+
+<relationship name="player_has_many_comment" type="rel1n" layers="0" alias="Player makes Comments"
+	 src-col-pattern="commented_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.comment"
+	 src-required="true" dst-required="false"
+	del-action="RESTRICT">
+	<label ref-type="name-label">
+		<position x="-16.5689" y="-51.1018"/>
+	</label>
+</relationship>
+
+<relationship name="player_has_many_match_player_stats" type="rel1n" layers="0" alias="Player has Stats per Match"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.match_player_stats"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+>
+	<label ref-type="name-label">
+		<position x="-70.5729" y="-41.8372"/>
+	</label>
+</relationship>
+
+<relationship name="players_like_posts" type="relnn" layers="0" alias="Players Like Posts"
+	 src-col-pattern="liked_post" dst-col-pattern="liked_by"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 fk-idx-pattern="{gt}_idx"
+	 src-table="public.post"
+	 dst-table="public.player"
+	 src-required="false" dst-required="false"
+	 table-name="player_like_post">
+	<label ref-type="name-label">
+		<position x="-20.8298" y="-81.753"/>
+	</label>
+	<column name="liked_at" alias="Liked Time" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+</relationship>
+
+<relationship name="player_has_many_team_member" type="rel1n" layers="0" alias="Player is/was Team Member"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.team_member"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="players_like_comments" type="relnn" layers="0" alias="Players like Comments"
+	 src-col-pattern="liked_by" dst-col-pattern="liked_comment"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 fk-idx-pattern="{gt}_idx"
+	 src-table="public.player"
+	 dst-table="public.comment"
+	 src-required="false" dst-required="false"
+	 table-name="player_like_comment">
+	<label ref-type="name-label">
+		<position x="42.4311" y="-6.6595"/>
+	</label>
+	<column name="liked_at" alias="Like time" not-null="true" default-value="now()">
+		<type name="timestamptz" length="0"/>
+	</column>
+</relationship>
+
+<relationship name="player_blocks_many_players" type="rel1n" layers="0" alias="Player blocks many Players"
+	 src-col-pattern="blocked_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_blocks"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+>
+	<label ref-type="name-label">
+		<position x="-58.4715" y="-86.9485"/>
+	</label>
+</relationship>
+
+<relationship name="player_is_blocked_by_many_players" type="rel1n" layers="0" alias="Player is blocked by many Players"
+	 src-col-pattern="blocked_player"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_blocks"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+>
+	<label ref-type="name-label">
+		<position x="-43.9216" y="-56.9485"/>
+	</label>
+</relationship>
+
+<relationship name="player_reports_many_players" type="rel1n" layers="0" alias="Player reports Players"
+	 src-col-pattern="reported_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_reports"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-34.6637" y="-29.1868"/>
+	</label>
+</relationship>
+
+<relationship name="player_is_reported_by_players" type="rel1n" layers="0" alias="Player is reported by Players"
+	 src-col-pattern="reported_player"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_reports"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-14.6637" y="-82.0317"/>
+	</label>
+</relationship>
+
+<relationship name="player_has_many_notification" type="rel1n" layers="0" alias="Player gets Notified"
+	 src-col-pattern="recipient"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.notification"
+	 src-required="true" dst-required="false"
+	del-action="RESTRICT"/>
+
+<relationship name="players_follow_teams" type="relnn" layers="0" alias="Players follow Teams"
+	 src-col-pattern="follower" dst-col-pattern="followed_team"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 fk-idx-pattern="{gt}_idx"
+	 src-table="public.player"
+	 dst-table="public.team"
+	 src-required="false" dst-required="false"
+	 table-name="player_follows">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="player_resolves_reports" type="rel1n" layers="0" alias="Mod/Admin resolve Player Reports"
+	 src-col-pattern="resolved_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_reports"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="mod_sanctions_players" type="rel1n" layers="0" alias="Mod/Admin sanctions Players"
+	 src-col-pattern="issued_by"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.player"
+	 dst-table="public.player_sanction"
+	 src-required="true" dst-required="false"/>
+
+<trigger name="trg_post_updated" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="false" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.post">
+		<function signature="public.set_updated_at()"/>
+	<columns names="id,content,created_at,deleted_at,posted_by,updated_at,visible"/>
+</trigger>
+
+<trigger name="trg_team_updated" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="false" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.team">
+		<function signature="public.set_updated_at()"/>
+	<columns names="id,name,tag,rank,created_at,retired_at,created_by"/>
+</trigger>
+
+<trigger name="trg_comment_updated" firing-type="BEFORE" per-line="true" constraint="false"
+	 ins-event="false" del-event="false" upd-event="true" trunc-event="false"
+	 table="public.comment">
+		<function signature="public.set_updated_at()"/>
+	<columns names="id,content,commented_at,deleted_at,commented_by,on_post,reply_to,updated_at"/>
+</trigger>
+
+<constraint name="unique_join_player_team_triple" type="uq-constr" table="public.team_member">
+	<columns names="joined_at,id_player,id_team" ref-type="src-columns"/>
+</constraint>
+
+<relationship name="post_has_many_player_reports" type="rel1n" layers="0" alias="Reports link to Post"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.post"
+	 dst-table="public.player_reports"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="comment_has_many_player_reports" type="rel1n" layers="0" alias="Reports link to Comment"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 fk-idx-pattern="{st}_idx"
+	 src-table="public.comment"
+	 dst-table="public.player_reports"
+	 src-required="false" dst-required="false"/>
+
+<usertype name="enrollment_status" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration label="pending"/>
+	<enumeration label="rejected"/>
+	<enumeration label="accepted"/>
+</usertype>
+
+<index name="unread_notif_idx" table="public.notification"
+	 concurrent="false" unique="false" fast-update="false" buffering="false" nulls-not-distinct="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="recipient"/>
+		</idxelement>
+	<predicate> <![CDATA[read_at IS NULL]]> </predicate>
+</index>
+
+<index name="index_lower_tag_names" table="public.tag"
+	 concurrent="false" unique="true" fast-update="false" buffering="false" nulls-not-distinct="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<expression> <![CDATA[lower(name)]]> </expression>
+		</idxelement>
+</index>
+
+<constraint name="reply_fk" type="fk-constr" alias="Reply FK" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.comment" table="public.comment">
+	<columns names="reply_to" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="team_a_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.team" table="public.match">
+	<columns names="team_a" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="team_b_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.team" table="public.match">
+	<columns names="team_b" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_comment_comment" type="relfk" layers="0"
+	 src-table="public.comment"
+	 dst-table="public.comment" reference-fk="reply_fk"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="-540.453" y="435.908"/>
+	<position x="-540.453" y="327"/>
+	<position x="-622.302" y="327"/>
+	</line>
+</relationship>
+
+<relationship name="rel_match_team" type="relfk" layers="0"
+	 src-table="public.match"
+	 dst-table="public.team" reference-fk="team_a_fk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_match_team1" type="relfk" layers="0"
+	 src-table="public.match"
+	 dst-table="public.team" reference-fk="team_b_fk"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
